@@ -1435,6 +1435,168 @@ def manual_post_page(slug):
     except:
         return redirect('/latest')
 
+@app.route('/robots.txt')
+def robots_txt():
+    content = """User-agent: *
+Allow: /
+Sitemap: https://sattaking.replit.app/sitemap.xml
+"""
+    return content, 200, {'Content-Type': 'text/plain'}
+
+@app.route('/sitemap.xml')
+def sitemap_index():
+    now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://sattaking.replit.app/sitemap-pages.xml</loc>
+        <lastmod>{now}</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://sattaking.replit.app/sitemap-daily.xml</loc>
+        <lastmod>{now}</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://sattaking.replit.app/sitemap-charts.xml</loc>
+        <lastmod>{now}</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://sattaking.replit.app/sitemap-latest.xml</loc>
+        <lastmod>{now}</lastmod>
+    </sitemap>
+</sitemapindex>'''
+    return xml, 200, {'Content-Type': 'application/xml'}
+
+@app.route('/sitemap-pages.xml')
+def sitemap_pages():
+    now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://sattaking.replit.app/</loc>
+        <lastmod>{now}</lastmod>
+        <changefreq>hourly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://sattaking.replit.app/chart</loc>
+        <lastmod>{now}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://sattaking.replit.app/daily-update</loc>
+        <lastmod>{now}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://sattaking.replit.app/latest</loc>
+        <lastmod>{now}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>'''
+    return xml, 200, {'Content-Type': 'application/xml'}
+
+@app.route('/sitemap-daily.xml')
+def sitemap_daily():
+    now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    urls = []
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT slug, updated_at FROM daily_posts WHERE is_published = true ORDER BY post_date DESC LIMIT 50000")
+        posts = cur.fetchall()
+        cur.close()
+        conn.close()
+        for post in posts:
+            lastmod = post[1].strftime('%Y-%m-%dT%H:%M:%S+05:30') if post[1] else now
+            urls.append(f'''    <url>
+        <loc>https://sattaking.replit.app/{post[0]}</loc>
+        <lastmod>{lastmod}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>''')
+    except:
+        pass
+    
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{chr(10).join(urls)}
+</urlset>'''
+    return xml, 200, {'Content-Type': 'application/xml'}
+
+@app.route('/sitemap-charts.xml')
+def sitemap_charts():
+    now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    urls = []
+    try:
+        games = get_all_games_list()
+        for game in games:
+            slug = create_slug(game)
+            urls.append(f'''    <url>
+        <loc>https://sattaking.replit.app/chart?game={slug}</loc>
+        <lastmod>{now}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>''')
+    except:
+        pass
+    
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{chr(10).join(urls)}
+</urlset>'''
+    return xml, 200, {'Content-Type': 'application/xml'}
+
+@app.route('/sitemap-latest.xml')
+def sitemap_latest():
+    now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    urls = []
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT slug, updated_at FROM manual_posts WHERE is_published = true ORDER BY created_at DESC LIMIT 50000")
+        posts = cur.fetchall()
+        cur.close()
+        conn.close()
+        for post in posts:
+            lastmod = post[1].strftime('%Y-%m-%dT%H:%M:%S+05:30') if post[1] else now
+            urls.append(f'''    <url>
+        <loc>https://sattaking.replit.app/latest/{post[0]}</loc>
+        <lastmod>{lastmod}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>''')
+    except:
+        pass
+    
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{chr(10).join(urls)}
+</urlset>'''
+    return xml, 200, {'Content-Type': 'application/xml'}
+
+@app.route('/api/sitemap-stats')
+def sitemap_stats():
+    stats = {'pages': 4, 'daily': 0, 'charts': 0, 'latest': 0, 'total': 4}
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM daily_posts WHERE is_published = true")
+        stats['daily'] = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(DISTINCT name) FROM games WHERE is_active = true")
+        stats['charts'] = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM manual_posts WHERE is_published = true")
+        stats['latest'] = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        stats['total'] = stats['pages'] + stats['daily'] + stats['charts'] + stats['latest']
+    except:
+        pass
+    return jsonify(stats)
+
 @app.route('/favicon.ico')
 def favicon():
     settings = get_site_settings()
