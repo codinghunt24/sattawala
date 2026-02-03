@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ post.title }}</title>
+<meta name="description" content="{{ post.meta_description }}">
+<meta name="keywords" content="{{ post.meta_keywords }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sattaking.replit.app/post/{{ post.slug }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sattaking.replit.app/post/{{ post.slug }}">
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.meta_description }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.meta_description }}">
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ post.title }}",
+    "description": "{{ post.meta_description }}",
+    "datePublished": "{{ post.post_date }}",
+    "author": {"@type": "Organization", "name": "Satta King"},
+    "publisher": {"@type": "Organization", "name": "Satta King"}
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 15%;
+    }
+    
+    @media (max-width: 1200px) { .main-container { padding: 0 10%; } }
+    @media (max-width: 768px) { .main-container { padding: 0 3%; } }
+    @media (max-width: 480px) { .main-container { padding: 0 2%; } }
+    
+    .header-section {
+        background: transparent;
+        padding: 25px 15%;
+        text-align: center;
+    }
+    
+    @media (max-width: 1200px) { .header-section { padding: 25px 10%; } }
+    @media (max-width: 768px) { .header-section { padding: 25px 3%; } }
+    
+    .site-title { color: #333; font-size: 36px; font-weight: 700; margin: 0; }
+    .site-subtitle { color: #666; font-size: 14px; margin-top: 8px; }
+    
+    .nav-section {
+        background: #000;
+        padding: 10px 15%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 1200px) { .nav-section { padding: 10px 10%; } }
+    @media (max-width: 768px) { .nav-section { padding: 10px 3%; } }
+    
+    .nav-menu { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .nav-item { color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; transition: all 0.3s; }
+    .nav-item:hover, .nav-item.active { background: #333; }
+    
+    .post-container {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .post-header {
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .post-title {
+        color: #333;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .post-meta {
+        color: #888;
+        font-size: 14px;
+    }
+    
+    .post-content h2 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .result-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        margin: 20px 0;
+        color: #fff;
+    }
+    
+    .result-box.waiting {
+        background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+    }
+    
+    .result-box.declared {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    }
+    
+    .result-label {
+        display: block;
+        font-size: 14px;
+        opacity: 0.9;
+        margin-bottom: 10px;
+    }
+    
+    .result-value {
+        display: block;
+        font-size: 48px;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+    
+    .result-note {
+        display: block;
+        font-size: 12px;
+        opacity: 0.8;
+    }
+    
+    .post-info {
+        margin-top: 30px;
+        line-height: 1.8;
+        color: #444;
+    }
+    
+    .post-info h3 {
+        color: #333;
+        font-size: 20px;
+        margin: 25px 0 15px;
+        border-left: 4px solid #667eea;
+        padding-left: 15px;
+    }
+    
+    .post-info p {
+        margin-bottom: 15px;
+    }
+    
+    .post-info ul {
+        margin-left: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .post-info li {
+        margin-bottom: 8px;
+    }
+    
+    .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+    }
+    
+    .result-table td {
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .result-table tr:nth-child(odd) {
+        background: #f9f9f9;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #667eea;
+        font-weight: 500;
+    }
+    
+    .back-link:hover {
+        color: #764ba2;
+    }
+    
+    .footer-section {
+        background: #1a1a2e;
+        padding: 30px 15%;
+        text-align: center;
+        margin-top: 30px;
+    }
+    
+    .footer-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 15px; }
+    .footer-link { color: #a0a0b0; font-size: 14px; cursor: pointer; transition: color 0.3s; }
+    .footer-link:hover { color: #fff; }
+    .copyright { color: #6a6a7a; font-size: 12px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="header-section">
+        {% if site_settings and site_settings.logo_data %}
+        <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 80px; max-width: 300px;">
+        {% else %}
+        <div class="site-title">Satta King</div>
+        <div class="site-subtitle">Live Results & Updates</div>
+        {% endif %}
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/#daily-update" class="nav-item active">Daily Update</a>
+        </div>
+    </div>
+
+    <div class="post-container">
+        <div class="post-header">
+            <h1 class="post-title">{{ post.title }}</h1>
+            <div class="post-meta">
+                <span>{{ post.game_name }}</span> | 
+                <span>{{ post.post_date.strftime('%B %d, %Y') }}</span>
+            </div>
+        </div>
+        
+        {{ post.content | safe }}
+        
+        <a href="/" class="back-link">&larr; Back to Home</a>
+    </div>
+</div>
+
+<div class="footer-section">
+    <div class="footer-links">
+        <span class="footer-link">Privacy Policy</span>
+        <span class="footer-link">About Us</span>
+        <span class="footer-link">Contact</span>
+        <span class="footer-link">Disclaimer</span>
+    </div>
+    <div class="copyright">© 2026 Satta King. All rights reserved.</div>
+</div>
+{% endblock %}

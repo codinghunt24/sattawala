@@ -421,6 +421,7 @@
             <li><a href="/" target="_blank">View Website</a></li>
             <li><a href="#" class="active" onclick="showSection('games')">Games Management</a></li>
             <li><a href="#" onclick="showSection('scrape')">Web Scraping</a></li>
+            <li><a href="#" onclick="showSection('dailyUpdate')">Daily Update</a></li>
             <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
         </ul>
     </div>
@@ -486,6 +487,46 @@
                 
                 <div id="autoScrapeStatus" style="margin-top: 15px;"></div>
                 <div id="lastScrapeInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
+            </div>
+        </div>
+        
+        <div id="dailyUpdateSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Daily Update Auto Post</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Automatically generate SEO-optimized posts for all games daily</p>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="dailyUpdateEnabled" style="width: 18px; height: 18px; cursor: pointer;">
+                        <span>Enable Daily Auto Posting</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>Post Time (IST)</label>
+                    <input type="time" id="dailyPostTime" value="10:00" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Posts will be created daily at this time for all active games</p>
+                </div>
+                
+                <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="saveDailyUpdateSettings()">Save Settings</button>
+                    <button class="btn" style="background: #27ae60;" onclick="createPostsNow()">Create Posts Now</button>
+                </div>
+                
+                <div id="dailyUpdateStatus" style="margin-top: 15px;"></div>
+                <div id="lastPostInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">How It Works</div>
+                <ul style="color: #a0a0b0; line-height: 2; padding-left: 20px;">
+                    <li>Posts are auto-generated for each active game at the scheduled time</li>
+                    <li>Each post has SEO-optimized title, description, and keywords</li>
+                    <li>If result is not available, post shows "Waiting..." status</li>
+                    <li>Posts auto-update with results when scraping fetches new data</li>
+                    <li>Posts appear on homepage in "Daily Update" section</li>
+                    <li>Each post has its own SEO-friendly URL for Google indexing</li>
+                </ul>
             </div>
         </div>
         
@@ -586,6 +627,7 @@
         function showSection(section) {
             document.getElementById('gamesSection').style.display = section === 'games' ? 'block' : 'none';
             document.getElementById('scrapeSection').style.display = section === 'scrape' ? 'block' : 'none';
+            document.getElementById('dailyUpdateSection').style.display = section === 'dailyUpdate' ? 'block' : 'none';
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
@@ -890,9 +932,79 @@
             }
         }
         
+        async function loadDailyUpdateSettings() {
+            try {
+                const res = await fetch('/api/daily-update-settings');
+                const settings = await res.json();
+                
+                document.getElementById('dailyUpdateEnabled').checked = settings.enabled || false;
+                document.getElementById('dailyPostTime').value = settings.post_time || '10:00';
+                
+                const lastPostEl = document.getElementById('lastPostInfo');
+                if (settings.last_post_date) {
+                    lastPostEl.innerHTML = `<span style="color: #2ecc71;">Last post created: ${settings.last_post_date}</span>`;
+                } else {
+                    lastPostEl.innerHTML = '<span>No posts created yet</span>';
+                }
+                
+                const statusEl = document.getElementById('dailyUpdateStatus');
+                if (settings.enabled) {
+                    statusEl.innerHTML = `<span style="color: #2ecc71;">Auto posting enabled at ${settings.post_time} IST daily</span>`;
+                } else {
+                    statusEl.innerHTML = '<span style="color: #e74c3c;">Auto posting disabled</span>';
+                }
+            } catch (e) {
+                console.error('Error loading daily update settings:', e);
+            }
+        }
+        
+        async function saveDailyUpdateSettings() {
+            const enabled = document.getElementById('dailyUpdateEnabled').checked;
+            const postTime = document.getElementById('dailyPostTime').value;
+            const statusEl = document.getElementById('dailyUpdateStatus');
+            
+            try {
+                const res = await fetch('/api/daily-update-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled, post_time: postTime })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    statusEl.innerHTML = '<span style="color: #2ecc71;">Settings saved successfully!</span>';
+                    loadDailyUpdateSettings();
+                } else {
+                    statusEl.innerHTML = '<span style="color: #e74c3c;">' + (result.error || 'Error saving') + '</span>';
+                }
+            } catch (e) {
+                statusEl.innerHTML = '<span style="color: #e74c3c;">Error saving settings</span>';
+            }
+        }
+        
+        async function createPostsNow() {
+            const statusEl = document.getElementById('dailyUpdateStatus');
+            const lastPostEl = document.getElementById('lastPostInfo');
+            statusEl.innerHTML = '<span style="color: #f39c12;">Creating posts...</span>';
+            
+            try {
+                const res = await fetch('/api/create-daily-posts', { method: 'POST' });
+                const result = await res.json();
+                if (res.ok) {
+                    statusEl.innerHTML = '<span style="color: #2ecc71;">Posts created successfully!</span>';
+                    const now = new Date();
+                    lastPostEl.innerHTML = '<span style="color: #2ecc71;">Last post created: ' + now.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'}) + '</span>';
+                } else {
+                    statusEl.innerHTML = '<span style="color: #e74c3c;">' + (result.error || 'Error creating posts') + '</span>';
+                }
+            } catch (e) {
+                statusEl.innerHTML = '<span style="color: #e74c3c;">Error creating posts</span>';
+            }
+        }
+        
         loadGames();
         loadScrapeSettings();
         loadSiteSettings();
+        loadDailyUpdateSettings();
     </script>
     
 </body>

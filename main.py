@@ -159,6 +159,30 @@ def init_database():
                 site_title VARCHAR(255) DEFAULT 'Satta King',
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            
+            CREATE TABLE IF NOT EXISTS daily_update_settings (
+                id SERIAL PRIMARY KEY,
+                enabled BOOLEAN DEFAULT false,
+                post_time VARCHAR(10) DEFAULT '10:00',
+                last_post_date DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            CREATE TABLE IF NOT EXISTS daily_posts (
+                id SERIAL PRIMARY KEY,
+                game_name VARCHAR(255) NOT NULL,
+                slug VARCHAR(255) NOT NULL,
+                title VARCHAR(500) NOT NULL,
+                content TEXT,
+                result VARCHAR(50),
+                post_date DATE NOT NULL,
+                meta_description TEXT,
+                meta_keywords TEXT,
+                is_published BOOLEAN DEFAULT true,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(game_name, post_date)
+            );
         """)
         conn.commit()
         cur.close()
@@ -186,7 +210,8 @@ def index():
             'slug': create_slug(game[0])
         })
     site_settings = get_site_settings()
-    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings)
+    daily_posts = get_daily_posts_for_display()
+    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, daily_posts=daily_posts)
 
 @app.route('/chart')
 def chart():
@@ -693,6 +718,307 @@ def api_update_scrape_settings():
         return jsonify({'error': str(e)}), 500
 
 setup_auto_scrape()
+
+def get_daily_update_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, enabled, post_time, last_post_date FROM daily_update_settings LIMIT 1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {
+                'id': row[0],
+                'enabled': row[1],
+                'post_time': row[2],
+                'last_post_date': str(row[3]) if row[3] else None
+            }
+        return {'enabled': False, 'post_time': '10:00', 'last_post_date': None}
+    except:
+        return {'enabled': False, 'post_time': '10:00', 'last_post_date': None}
+
+def generate_seo_post_content(game_name, result, post_date):
+    date_str = post_date.strftime("%B %d, %Y")
+    date_short = post_date.strftime("%d-%m-%Y")
+    
+    result_display = result if result and result != '--' else 'Waiting...'
+    is_waiting = result_display == 'Waiting...'
+    
+    slug = f"{create_slug(game_name)}-result-{post_date.strftime('%d-%m-%Y')}"
+    
+    title = f"{game_name} Result Today {date_str} | Live Satta King Result"
+    
+    meta_description = f"Check {game_name} Satta King result for {date_str}. Get live {game_name} result, chart, and record. Fast update with accurate {game_name} winning number."
+    
+    meta_keywords = f"{game_name}, {game_name} result, {game_name} today, {game_name} {date_short}, satta king {game_name}, {game_name} live, {game_name} chart, {game_name} record, {game_name.lower()} result today"
+    
+    if is_waiting:
+        content = f"""
+<div class="post-content">
+    <h2>{game_name} Result - {date_str}</h2>
+    <div class="result-box waiting">
+        <span class="result-label">Today's Result</span>
+        <span class="result-value waiting-text">Waiting...</span>
+        <span class="result-note">Result will be updated soon</span>
+    </div>
+    <div class="post-info">
+        <p>The {game_name} Satta King result for {date_str} has not been declared yet. Please check back later for the live result update. Our system automatically updates results as soon as they are announced.</p>
+        <h3>About {game_name}</h3>
+        <p>{game_name} is one of the most popular Satta King games. Players eagerly wait for daily results which are announced at specific times. Stay tuned for the latest {game_name} result.</p>
+        <h3>How to Check {game_name} Result</h3>
+        <ul>
+            <li>Visit our website daily for accurate results</li>
+            <li>Check the Record Chart for historical data</li>
+            <li>Results are updated in real-time</li>
+        </ul>
+    </div>
+</div>
+"""
+    else:
+        content = f"""
+<div class="post-content">
+    <h2>{game_name} Result - {date_str}</h2>
+    <div class="result-box declared">
+        <span class="result-label">Today's Result</span>
+        <span class="result-value">{result_display}</span>
+        <span class="result-note">Result declared for {date_str}</span>
+    </div>
+    <div class="post-info">
+        <p>The {game_name} Satta King result for {date_str} is <strong>{result_display}</strong>. This result has been verified and updated on our platform.</p>
+        <h3>About {game_name}</h3>
+        <p>{game_name} is among the most searched Satta King games in India. Daily thousands of players check {game_name} result on our website for accurate and fast updates.</p>
+        <h3>{game_name} Result Details</h3>
+        <table class="result-table">
+            <tr><td>Game Name</td><td><strong>{game_name}</strong></td></tr>
+            <tr><td>Result Date</td><td>{date_str}</td></tr>
+            <tr><td>Winning Number</td><td><strong>{result_display}</strong></td></tr>
+            <tr><td>Status</td><td>Declared</td></tr>
+        </table>
+        <h3>Check More Results</h3>
+        <p>View the complete {game_name} record chart to analyze past results and patterns. Our chart shows daily results organized by month and year.</p>
+    </div>
+</div>
+"""
+    
+    return {
+        'slug': slug,
+        'title': title,
+        'content': content,
+        'meta_description': meta_description,
+        'meta_keywords': meta_keywords,
+        'result': result_display
+    }
+
+def create_daily_posts():
+    try:
+        today = get_ist_now().date()
+        games = get_games()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        for game in games:
+            game_name = game[0]
+            today_result = game[3] if game[3] else '--'
+            
+            post_data = generate_seo_post_content(game_name, today_result, today)
+            
+            cur.execute("""
+                INSERT INTO daily_posts (game_name, slug, title, content, result, post_date, meta_description, meta_keywords)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (game_name, post_date) 
+                DO UPDATE SET content = EXCLUDED.content, result = EXCLUDED.result, title = EXCLUDED.title, 
+                              meta_description = EXCLUDED.meta_description, meta_keywords = EXCLUDED.meta_keywords,
+                              updated_at = CURRENT_TIMESTAMP
+            """, (game_name, post_data['slug'], post_data['title'], post_data['content'], 
+                  post_data['result'], today, post_data['meta_description'], post_data['meta_keywords']))
+        
+        cur.execute("""
+            UPDATE daily_update_settings SET last_post_date = %s WHERE id = (SELECT id FROM daily_update_settings LIMIT 1)
+        """, (today,))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"Daily posts created/updated for {len(games)} games on {today}")
+        return True
+    except Exception as e:
+        print(f"Error creating daily posts: {e}")
+        return False
+
+def update_daily_posts_results():
+    try:
+        today = get_ist_now().date()
+        games = get_games()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        for game in games:
+            game_name = game[0]
+            today_result = game[3] if game[3] else '--'
+            
+            if today_result and today_result != '--':
+                post_data = generate_seo_post_content(game_name, today_result, today)
+                cur.execute("""
+                    UPDATE daily_posts SET content = %s, result = %s, updated_at = CURRENT_TIMESTAMP
+                    WHERE game_name = %s AND post_date = %s
+                """, (post_data['content'], post_data['result'], game_name, today))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error updating daily posts: {e}")
+        return False
+
+def setup_daily_post_scheduler():
+    settings = get_daily_update_settings()
+    try:
+        if scheduler.get_job('daily_post'):
+            scheduler.remove_job('daily_post')
+        if scheduler.get_job('update_post_results'):
+            scheduler.remove_job('update_post_results')
+        
+        if settings.get('enabled'):
+            post_time = settings.get('post_time', '10:00')
+            hour, minute = map(int, post_time.split(':'))
+            
+            scheduler.add_job(
+                create_daily_posts,
+                trigger='cron',
+                hour=hour,
+                minute=minute,
+                timezone=IST,
+                id='daily_post',
+                replace_existing=True
+            )
+            
+            scheduler.add_job(
+                update_daily_posts_results,
+                trigger='interval',
+                minutes=5,
+                id='update_post_results',
+                replace_existing=True
+            )
+            print(f"Daily post scheduler enabled at {post_time} IST")
+    except Exception as e:
+        print(f"Error setting up daily post scheduler: {e}")
+
+@app.route('/api/daily-update-settings', methods=['GET'])
+def api_get_daily_update_settings():
+    return jsonify(get_daily_update_settings())
+
+@app.route('/api/daily-update-settings', methods=['POST'])
+def api_update_daily_update_settings():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT id FROM daily_update_settings LIMIT 1")
+        existing = cur.fetchone()
+        
+        if existing:
+            cur.execute("""
+                UPDATE daily_update_settings SET enabled=%s, post_time=%s WHERE id=%s
+            """, (data.get('enabled', False), data.get('post_time', '10:00'), existing[0]))
+        else:
+            cur.execute("""
+                INSERT INTO daily_update_settings (enabled, post_time)
+                VALUES (%s, %s)
+            """, (data.get('enabled', False), data.get('post_time', '10:00')))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        setup_daily_post_scheduler()
+        
+        return jsonify({'message': 'Settings saved', 'enabled': data.get('enabled'), 'post_time': data.get('post_time')})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_daily_posts_for_display():
+    try:
+        today = get_ist_now().date()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, game_name, slug, title, result, post_date, created_at 
+            FROM daily_posts 
+            WHERE post_date = %s AND is_published = true
+            ORDER BY created_at DESC
+        """, (today,))
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        posts = []
+        for row in rows:
+            posts.append({
+                'id': row[0],
+                'game_name': row[1],
+                'slug': row[2],
+                'title': row[3],
+                'result': row[4],
+                'post_date': str(row[5]),
+                'created_at': str(row[6])
+            })
+        return posts
+    except Exception as e:
+        return []
+
+@app.route('/api/daily-posts', methods=['GET'])
+def api_get_daily_posts():
+    try:
+        posts = get_daily_posts_for_display()
+        return jsonify(posts)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/create-daily-posts', methods=['POST'])
+def api_create_daily_posts():
+    try:
+        create_daily_posts()
+        return jsonify({'message': 'Daily posts created successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/post/<slug>')
+def view_post(slug):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, game_name, slug, title, content, result, post_date, meta_description, meta_keywords
+            FROM daily_posts WHERE slug = %s AND is_published = true
+        """, (slug,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if not row:
+            return "Post not found", 404
+        
+        post = {
+            'id': row[0],
+            'game_name': row[1],
+            'slug': row[2],
+            'title': row[3],
+            'content': row[4],
+            'result': row[5],
+            'post_date': row[6],
+            'meta_description': row[7],
+            'meta_keywords': row[8]
+        }
+        
+        site_settings = get_site_settings()
+        return render_template('post.html', post=post, site_settings=site_settings)
+    except Exception as e:
+        return f"Error: {e}", 500
+
+setup_daily_post_scheduler()
 
 def get_site_settings():
     try:
