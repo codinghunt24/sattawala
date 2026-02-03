@@ -71,6 +71,25 @@ st.markdown("""
         }
     }
     
+    [data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+    }
+    
+    [data-testid="stHorizontalBlock"] > div {
+        min-width: 0 !important;
+        flex: 1 !important;
+    }
+    
+    [data-testid="stHorizontalBlock"] label {
+        font-size: 11px !important;
+    }
+    
+    [data-testid="stHorizontalBlock"] .stSelectbox > div > div {
+        font-size: 12px !important;
+        padding: 5px 8px !important;
+    }
+    
     .chart-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 20px;
