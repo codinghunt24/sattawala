@@ -163,6 +163,23 @@ def init_database():
             
             ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS ga_tracking_id VARCHAR(50);
             
+            CREATE TABLE IF NOT EXISTS ad_settings (
+                id SERIAL PRIMARY KEY,
+                adsense_publisher_id VARCHAR(50),
+                auto_ads_enabled BOOLEAN DEFAULT false,
+                ad_header BOOLEAN DEFAULT false,
+                ad_after_header BOOLEAN DEFAULT false,
+                ad_between_games BOOLEAN DEFAULT false,
+                ad_before_footer BOOLEAN DEFAULT false,
+                ad_sidebar BOOLEAN DEFAULT false,
+                manual_ad_code_header TEXT,
+                manual_ad_code_after_header TEXT,
+                manual_ad_code_between_games TEXT,
+                manual_ad_code_before_footer TEXT,
+                manual_ad_code_sidebar TEXT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
             CREATE TABLE IF NOT EXISTS daily_update_settings (
                 id SERIAL PRIMARY KEY,
                 enabled BOOLEAN DEFAULT false,
@@ -231,8 +248,9 @@ def index():
             'slug': create_slug(game[0])
         })
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     daily_posts = get_daily_posts_for_display()
-    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, daily_posts=daily_posts)
+    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, ad_settings=ad_settings, daily_posts=daily_posts)
 
 @app.route('/daily-update')
 def daily_update_page():
@@ -240,7 +258,8 @@ def daily_update_page():
     today_date = now.strftime("%B %d, %Y")
     daily_posts = get_daily_posts_for_display()
     site_settings = get_site_settings()
-    return render_template('daily_update.html', daily_posts=daily_posts, today_date=today_date, site_settings=site_settings)
+    ad_settings = get_ad_settings()
+    return render_template('daily_update.html', daily_posts=daily_posts, today_date=today_date, site_settings=site_settings, ad_settings=ad_settings)
 
 @app.route('/chart')
 def chart():
@@ -352,6 +371,7 @@ def chart():
         schema_data["hasPart"] = faq_schema
     
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     return render_template('chart.html',
         game_name=game_name,
         game_slug=game_slug,
@@ -372,7 +392,8 @@ def chart():
         avg_result=avg_result,
         related_games=related_games,
         faqs=faqs,
-        site_settings=site_settings
+        site_settings=site_settings,
+        ad_settings=ad_settings
     )
 
 @app.route('/admin')
@@ -1086,7 +1107,8 @@ def view_post(slug):
         }
         
         site_settings = get_site_settings()
-        return render_template('post.html', post=post, site_settings=site_settings)
+        ad_settings = get_ad_settings()
+        return render_template('post.html', post=post, site_settings=site_settings, ad_settings=ad_settings)
     except Exception as e:
         return f"Error: {e}", 500
 
@@ -1156,6 +1178,86 @@ def api_update_site_settings():
         cur.close()
         conn.close()
         return jsonify({'message': 'Settings saved successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_ad_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""SELECT adsense_publisher_id, auto_ads_enabled, ad_header, ad_after_header, 
+                       ad_between_games, ad_before_footer, ad_sidebar, manual_ad_code_header,
+                       manual_ad_code_after_header, manual_ad_code_between_games, 
+                       manual_ad_code_before_footer, manual_ad_code_sidebar FROM ad_settings LIMIT 1""")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {
+                'adsense_publisher_id': row[0],
+                'auto_ads_enabled': row[1],
+                'ad_header': row[2],
+                'ad_after_header': row[3],
+                'ad_between_games': row[4],
+                'ad_before_footer': row[5],
+                'ad_sidebar': row[6],
+                'manual_ad_code_header': row[7],
+                'manual_ad_code_after_header': row[8],
+                'manual_ad_code_between_games': row[9],
+                'manual_ad_code_before_footer': row[10],
+                'manual_ad_code_sidebar': row[11]
+            }
+        return {}
+    except:
+        return {}
+
+@app.route('/api/ad-settings', methods=['GET'])
+def api_get_ad_settings():
+    return jsonify(get_ad_settings())
+
+@app.route('/api/ad-settings', methods=['POST'])
+def api_save_ad_settings():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT id FROM ad_settings LIMIT 1")
+        existing = cur.fetchone()
+        
+        if existing:
+            cur.execute("""UPDATE ad_settings SET 
+                adsense_publisher_id = %s, auto_ads_enabled = %s,
+                ad_header = %s, ad_after_header = %s, ad_between_games = %s,
+                ad_before_footer = %s, ad_sidebar = %s,
+                manual_ad_code_header = %s, manual_ad_code_after_header = %s,
+                manual_ad_code_between_games = %s, manual_ad_code_before_footer = %s,
+                manual_ad_code_sidebar = %s, updated_at = %s WHERE id = %s""",
+                (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
+                 data.get('ad_header', False), data.get('ad_after_header', False),
+                 data.get('ad_between_games', False), data.get('ad_before_footer', False),
+                 data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
+                 data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
+                 data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
+                 get_ist_now(), existing[0]))
+        else:
+            cur.execute("""INSERT INTO ad_settings (adsense_publisher_id, auto_ads_enabled,
+                ad_header, ad_after_header, ad_between_games, ad_before_footer, ad_sidebar,
+                manual_ad_code_header, manual_ad_code_after_header, manual_ad_code_between_games,
+                manual_ad_code_before_footer, manual_ad_code_sidebar, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
+                 data.get('ad_header', False), data.get('ad_after_header', False),
+                 data.get('ad_between_games', False), data.get('ad_before_footer', False),
+                 data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
+                 data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
+                 data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
+                 get_ist_now()))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'Ad settings saved successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -1295,10 +1397,12 @@ def get_manual_posts_published():
 def latest_page():
     posts = get_manual_posts_published()
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     now = get_ist_now()
     return render_template('latest.html',
                          posts=posts,
                          site_settings=site_settings,
+                         ad_settings=ad_settings,
                          current_date=now.strftime("%d-%m-%Y"),
                          current_time=now.strftime("%I:%M:%S %p"))
 
@@ -1325,7 +1429,8 @@ def manual_post_page(slug):
                 'schema_type': row[10] or 'Article', 'publish_date': row[11]
             }
             site_settings = get_site_settings()
-            return render_template('manual_post.html', post=post, site_settings=site_settings)
+            ad_settings = get_ad_settings()
+            return render_template('manual_post.html', post=post, site_settings=site_settings, ad_settings=ad_settings)
         return redirect('/latest')
     except:
         return redirect('/latest')

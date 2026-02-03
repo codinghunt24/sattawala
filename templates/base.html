@@ -13,6 +13,14 @@
         gtag('config', '{{ site_settings.ga_tracking_id }}');
     </script>
     {% endif %}
+    {% if ad_settings and ad_settings.adsense_publisher_id %}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ ad_settings.adsense_publisher_id }}" crossorigin="anonymous"></script>
+    {% if ad_settings.auto_ads_enabled %}
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    {% endif %}
+    {% endif %}
     {% block head %}
     <title>{% block title %}Satta King{% endblock %}</title>
     {% endblock %}

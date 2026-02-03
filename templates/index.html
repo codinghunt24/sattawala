@@ -502,6 +502,17 @@
         </div>
     </div>
 
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div class="ad-container" style="text-align: center; padding: 15px 0; background: #f8f9fa; margin: 10px 0;">
+        {% if ad_settings.manual_ad_code_after_header %}
+        {{ ad_settings.manual_ad_code_after_header|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <div class="hero-section">
         <div class="hero-title">Popular Satta King Games</div>
         <div class="hero-subtitle">Get Live Results & Charts for All Top Games</div>
@@ -573,6 +584,17 @@
     </div>
     {% endif %}
     </div>
+    
+    {% if ad_settings and ad_settings.ad_before_footer %}
+    <div class="ad-container" style="text-align: center; padding: 20px 0; background: #f8f9fa; margin: 20px 0; border-radius: 8px;">
+        {% if ad_settings.manual_ad_code_before_footer %}
+        {{ ad_settings.manual_ad_code_before_footer|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
     
 </div>
 

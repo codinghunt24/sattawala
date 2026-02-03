@@ -423,6 +423,7 @@
             <li><a href="#" onclick="showSection('scrape')">Web Scraping</a></li>
             <li><a href="#" onclick="showSection('dailyUpdate')">Daily Update</a></li>
             <li><a href="#" onclick="showSection('posts')">Posts</a></li>
+            <li><a href="#" onclick="showSection('ads')">Ads Management</a></li>
             <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
         </ul>
     </div>
@@ -541,6 +542,104 @@
                 <div class="games-list" id="postsList">
                     <div class="loading">Loading posts...</div>
                 </div>
+            </div>
+        </div>
+        
+        <div id="adsSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Ads Management</div>
+                <p style="color: #a0a0b0; margin-bottom: 20px;">Configure Google AdSense and manage ad placements</p>
+                
+                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3); margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">💰</div>
+                        <div>
+                            <div style="font-weight: 700; color: #fff; font-size: 18px;">Google AdSense</div>
+                            <div style="font-size: 12px; color: #6a6a8a;">Monetize your website with ads</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>AdSense Publisher ID</label>
+                        <input type="text" id="adsensePublisherId" placeholder="ca-pub-XXXXXXXXXXXXXXXX">
+                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Your AdSense publisher ID (starts with ca-pub-)</p>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="autoAdsEnabled" style="width: 18px; height: 18px;">
+                            <span>Enable Auto Ads</span>
+                        </label>
+                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Let Google automatically place ads on your site</p>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,193,7,0.3);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📍</div>
+                        <div>
+                            <div style="font-weight: 700; color: #fff; font-size: 18px;">Manual Ad Placements</div>
+                            <div style="font-size: 12px; color: #6a6a8a;">Choose where to show ads on your website</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
+                                    <input type="checkbox" id="adHeader" style="width: 18px; height: 18px;">
+                                    <span>Header Ad (Top of Page)</span>
+                                </label>
+                            </div>
+                            <textarea id="adCodeHeader" rows="3" placeholder="Paste your ad code here (optional - uses auto ad unit if empty)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                        </div>
+                        
+                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
+                                    <input type="checkbox" id="adAfterHeader" style="width: 18px; height: 18px;">
+                                    <span>After Header (Below Navigation)</span>
+                                </label>
+                            </div>
+                            <textarea id="adCodeAfterHeader" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                        </div>
+                        
+                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
+                                    <input type="checkbox" id="adBetweenGames" style="width: 18px; height: 18px;">
+                                    <span>Between Games (Middle of Content)</span>
+                                </label>
+                            </div>
+                            <textarea id="adCodeBetweenGames" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                        </div>
+                        
+                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
+                                    <input type="checkbox" id="adBeforeFooter" style="width: 18px; height: 18px;">
+                                    <span>Before Footer (Bottom of Content)</span>
+                                </label>
+                            </div>
+                            <textarea id="adCodeBeforeFooter" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                        </div>
+                        
+                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
+                                    <input type="checkbox" id="adSidebar" style="width: 18px; height: 18px;">
+                                    <span>Sidebar Ad (Desktop Only)</span>
+                                </label>
+                            </div>
+                            <textarea id="adCodeSidebar" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="saveAdSettings()">Save Ad Settings</button>
+                </div>
+                <div id="adSettingsStatus" style="margin-top: 15px;"></div>
             </div>
         </div>
         
@@ -882,10 +981,12 @@
             document.getElementById('scrapeSection').style.display = section === 'scrape' ? 'block' : 'none';
             document.getElementById('dailyUpdateSection').style.display = section === 'dailyUpdate' ? 'block' : 'none';
             document.getElementById('postsSection').style.display = section === 'posts' ? 'block' : 'none';
+            document.getElementById('adsSection').style.display = section === 'ads' ? 'block' : 'none';
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
             if (section === 'posts') loadManualPosts();
+            if (section === 'ads') loadAdSettings();
         }
         
         async function loadGames() {
@@ -1188,6 +1289,62 @@
                 }
             } catch (e) {
                 statusEl.innerHTML = '<span style="color: #e74c3c;">Error saving settings</span>';
+            }
+        }
+        
+        async function loadAdSettings() {
+            try {
+                const res = await fetch('/api/ad-settings');
+                const settings = await res.json();
+                
+                document.getElementById('adsensePublisherId').value = settings.adsense_publisher_id || '';
+                document.getElementById('autoAdsEnabled').checked = settings.auto_ads_enabled || false;
+                document.getElementById('adHeader').checked = settings.ad_header || false;
+                document.getElementById('adAfterHeader').checked = settings.ad_after_header || false;
+                document.getElementById('adBetweenGames').checked = settings.ad_between_games || false;
+                document.getElementById('adBeforeFooter').checked = settings.ad_before_footer || false;
+                document.getElementById('adSidebar').checked = settings.ad_sidebar || false;
+                document.getElementById('adCodeHeader').value = settings.manual_ad_code_header || '';
+                document.getElementById('adCodeAfterHeader').value = settings.manual_ad_code_after_header || '';
+                document.getElementById('adCodeBetweenGames').value = settings.manual_ad_code_between_games || '';
+                document.getElementById('adCodeBeforeFooter').value = settings.manual_ad_code_before_footer || '';
+                document.getElementById('adCodeSidebar').value = settings.manual_ad_code_sidebar || '';
+            } catch (e) {
+                console.error('Error loading ad settings:', e);
+            }
+        }
+        
+        async function saveAdSettings() {
+            const statusEl = document.getElementById('adSettingsStatus');
+            try {
+                const data = {
+                    adsense_publisher_id: document.getElementById('adsensePublisherId').value.trim(),
+                    auto_ads_enabled: document.getElementById('autoAdsEnabled').checked,
+                    ad_header: document.getElementById('adHeader').checked,
+                    ad_after_header: document.getElementById('adAfterHeader').checked,
+                    ad_between_games: document.getElementById('adBetweenGames').checked,
+                    ad_before_footer: document.getElementById('adBeforeFooter').checked,
+                    ad_sidebar: document.getElementById('adSidebar').checked,
+                    manual_ad_code_header: document.getElementById('adCodeHeader').value,
+                    manual_ad_code_after_header: document.getElementById('adCodeAfterHeader').value,
+                    manual_ad_code_between_games: document.getElementById('adCodeBetweenGames').value,
+                    manual_ad_code_before_footer: document.getElementById('adCodeBeforeFooter').value,
+                    manual_ad_code_sidebar: document.getElementById('adCodeSidebar').value
+                };
+                
+                const res = await fetch('/api/ad-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    statusEl.innerHTML = '<span style="color: #2ecc71;">Ad settings saved successfully!</span>';
+                } else {
+                    statusEl.innerHTML = '<span style="color: #e74c3c;">' + (result.error || 'Error saving') + '</span>';
+                }
+            } catch (e) {
+                statusEl.innerHTML = '<span style="color: #e74c3c;">Error saving ad settings</span>';
             }
         }
         
