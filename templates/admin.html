@@ -711,7 +711,18 @@
                 const lastScrapeEl = document.getElementById('lastScrapeInfo');
                 if (settings.last_scrape) {
                     const lastDate = new Date(settings.last_scrape);
-                    lastScrapeEl.textContent = `Last scrape: ${lastDate.toLocaleString()}`;
+                    const options = { 
+                        timeZone: 'Asia/Kolkata', 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        second: '2-digit',
+                        hour12: true 
+                    };
+                    const istTime = lastDate.toLocaleString('en-IN', options);
+                    lastScrapeEl.textContent = `Last scrape: ${istTime} IST`;
                 } else {
                     lastScrapeEl.textContent = 'Last scrape: Never';
                 }
