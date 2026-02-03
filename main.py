@@ -8,9 +8,16 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import random
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+import atexit
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'satta-king-secret-key')
+
+scheduler = BackgroundScheduler()
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
 
 def get_db_connection():
     return psycopg2.connect(os.environ['DATABASE_URL'])
@@ -469,6 +476,153 @@ def api_clear_games():
         return jsonify({'message': 'All games cleared'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+def get_scrape_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, scrape_url, auto_scrape, interval_minutes, last_scrape FROM scrape_settings LIMIT 1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {
+                'id': row[0],
+                'scrape_url': row[1] or 'https://satta-king-fast.com/',
+                'auto_scrape': row[2] or False,
+                'interval_minutes': row[3] or 5,
+                'last_scrape': row[4].isoformat() if row[4] else None
+            }
+        return {
+            'id': None,
+            'scrape_url': 'https://satta-king-fast.com/',
+            'auto_scrape': False,
+            'interval_minutes': 5,
+            'last_scrape': None
+        }
+    except Exception as e:
+        print(f"Error getting scrape settings: {e}")
+        return {'auto_scrape': False, 'interval_minutes': 5, 'last_scrape': None}
+
+def update_last_scrape():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE scrape_settings SET last_scrape = %s WHERE id = (SELECT id FROM scrape_settings LIMIT 1)", (datetime.now(),))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error updating last scrape: {e}")
+
+def auto_scrape_job():
+    print(f"[{datetime.now()}] Running auto-scrape job...")
+    try:
+        games_data, error = scrape_satta_games()
+        if error:
+            print(f"Auto-scrape error: {error}")
+            return
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
+        
+        for index, game in enumerate(games_data):
+            if 'SHOW YOUR GAME HERE' in game['name'].upper():
+                continue
+            
+            cur.execute("SELECT id FROM games WHERE name = %s", (game['name'],))
+            existing = cur.fetchone()
+            
+            if existing:
+                cur.execute("""
+                    UPDATE games SET game_time=%s, yesterday_result=%s, today_result=%s, 
+                    display_order=%s, updated_at=%s WHERE name=%s
+                """, (game['game_time'], game['yesterday_result'], game['today_result'], 
+                      index, datetime.now(), game['name']))
+            else:
+                cur.execute("""
+                    INSERT INTO games (name, game_time, yesterday_result, today_result, is_active, display_order)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (game['name'], game['game_time'], game['yesterday_result'], game['today_result'], True, index))
+            
+            if game['today_result'] and game['today_result'] != '--':
+                cur.execute("""
+                    INSERT INTO game_results (game_name, result_date, result)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (game_name, result_date) DO UPDATE SET result = %s
+                """, (game['name'], today, game['today_result'], game['today_result']))
+            
+            if game['yesterday_result'] and game['yesterday_result'] != '--':
+                cur.execute("""
+                    INSERT INTO game_results (game_name, result_date, result)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (game_name, result_date) DO UPDATE SET result = %s
+                """, (game['name'], yesterday, game['yesterday_result'], game['yesterday_result']))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        update_last_scrape()
+        print(f"[{datetime.now()}] Auto-scrape completed: {len(games_data)} games processed")
+    except Exception as e:
+        print(f"Auto-scrape job error: {e}")
+
+def setup_auto_scrape():
+    settings = get_scrape_settings()
+    try:
+        if scheduler.get_job('auto_scrape'):
+            scheduler.remove_job('auto_scrape')
+    except:
+        pass
+    
+    if settings.get('auto_scrape'):
+        interval = settings.get('interval_minutes', 5)
+        scheduler.add_job(
+            auto_scrape_job,
+            IntervalTrigger(minutes=interval),
+            id='auto_scrape',
+            replace_existing=True
+        )
+        print(f"Auto-scrape scheduled every {interval} minutes")
+
+@app.route('/api/scrape-settings', methods=['GET'])
+def api_get_scrape_settings():
+    return jsonify(get_scrape_settings())
+
+@app.route('/api/scrape-settings', methods=['POST'])
+def api_update_scrape_settings():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT id FROM scrape_settings LIMIT 1")
+        existing = cur.fetchone()
+        
+        if existing:
+            cur.execute("""
+                UPDATE scrape_settings SET auto_scrape=%s, interval_minutes=%s WHERE id=%s
+            """, (data.get('auto_scrape', False), data.get('interval_minutes', 5), existing[0]))
+        else:
+            cur.execute("""
+                INSERT INTO scrape_settings (scrape_url, auto_scrape, interval_minutes)
+                VALUES (%s, %s, %s)
+            """, ('https://satta-king-fast.com/', data.get('auto_scrape', False), data.get('interval_minutes', 5)))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        setup_auto_scrape()
+        
+        return jsonify({'message': 'Settings updated', 'auto_scrape': data.get('auto_scrape'), 'interval_minutes': data.get('interval_minutes')})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+setup_auto_scrape()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

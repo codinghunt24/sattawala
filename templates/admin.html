@@ -459,13 +459,46 @@
         
         <div id="scrapeSection" style="display: none;">
             <div class="card">
-                <div class="card-title">Web Scraping</div>
+                <div class="card-title">Manual Scraping</div>
                 <p style="color: #a0a0b0; margin-bottom: 15px;">Scrape games data from satta-king-fast.com</p>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <button class="btn btn-primary" onclick="scrapeGames()" id="scrapeBtn">Scrape Now</button>
                     <button class="btn btn-danger" onclick="clearAllGames()">Clear All Games</button>
                 </div>
                 <div id="scrapeStatus" style="margin-top: 15px;"></div>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">Auto Scraping Schedule</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Set up automatic scraping at regular intervals</p>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="autoScrapeEnabled" style="width: 18px; height: 18px; cursor: pointer;">
+                        <span>Enable Auto Scraping</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>Scrape Interval (minutes)</label>
+                    <select id="scrapeInterval" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                        <option value="1">Every 1 minute</option>
+                        <option value="2">Every 2 minutes</option>
+                        <option value="3">Every 3 minutes</option>
+                        <option value="5" selected>Every 5 minutes</option>
+                        <option value="10">Every 10 minutes</option>
+                        <option value="15">Every 15 minutes</option>
+                        <option value="30">Every 30 minutes</option>
+                        <option value="60">Every 1 hour</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-primary" onclick="saveAutoScrapeSettings()">Save Settings</button>
+                </div>
+                
+                <div id="autoScrapeStatus" style="margin-top: 15px;"></div>
+                <div id="lastScrapeInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
             </div>
         </div>
     </div>
@@ -681,7 +714,66 @@
             }
         }
         
+        async function loadScrapeSettings() {
+            try {
+                const res = await fetch('/api/scrape-settings');
+                const settings = await res.json();
+                
+                document.getElementById('autoScrapeEnabled').checked = settings.auto_scrape || false;
+                document.getElementById('scrapeInterval').value = settings.interval_minutes || 5;
+                
+                const lastScrapeEl = document.getElementById('lastScrapeInfo');
+                if (settings.last_scrape) {
+                    const lastDate = new Date(settings.last_scrape);
+                    lastScrapeEl.textContent = `Last scrape: ${lastDate.toLocaleString()}`;
+                } else {
+                    lastScrapeEl.textContent = 'Last scrape: Never';
+                }
+                
+                updateAutoScrapeStatusDisplay(settings.auto_scrape, settings.interval_minutes);
+            } catch (e) {
+                console.error('Error loading scrape settings:', e);
+            }
+        }
+        
+        function updateAutoScrapeStatusDisplay(enabled, interval) {
+            const statusEl = document.getElementById('autoScrapeStatus');
+            if (enabled) {
+                statusEl.innerHTML = `<div class="status-msg status-success">Auto-scraping is ACTIVE - Running every ${interval} minute(s)</div>`;
+            } else {
+                statusEl.innerHTML = `<div style="color: #a0a0b0; font-size: 13px;">Auto-scraping is disabled</div>`;
+            }
+        }
+        
+        async function saveAutoScrapeSettings() {
+            const autoScrape = document.getElementById('autoScrapeEnabled').checked;
+            const interval = parseInt(document.getElementById('scrapeInterval').value);
+            
+            try {
+                const res = await fetch('/api/scrape-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        auto_scrape: autoScrape,
+                        interval_minutes: interval
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (res.ok) {
+                    showStatus(autoScrape ? `Auto-scraping enabled! Running every ${interval} minute(s)` : 'Auto-scraping disabled');
+                    updateAutoScrapeStatusDisplay(autoScrape, interval);
+                } else {
+                    showStatus(result.error || 'Error saving settings', true);
+                }
+            } catch (e) {
+                showStatus('Error saving settings', true);
+            }
+        }
+        
         loadGames();
+        loadScrapeSettings();
     </script>
     
     <div class="footer-section">
