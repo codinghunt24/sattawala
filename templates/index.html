@@ -340,7 +340,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px;
+        gap: 3px 8px;
         position: relative;
         z-index: 1;
     }
@@ -349,10 +349,11 @@
         background: transparent;
         border: none;
         color: #333;
-        padding: 2px 4px;
-        font-size: 10px;
+        padding: 0 2px;
+        font-size: 11px;
         font-weight: 500;
         cursor: default;
+        white-space: nowrap;
     }
     
     .game-tag.featured {
@@ -362,13 +363,14 @@
     
     @media (max-width: 768px) {
         .hero-title { font-size: 14px; }
-        .game-tag { font-size: 9px; }
+        .game-tag { font-size: 10px; }
+        .game-tags-container { gap: 2px 6px; }
     }
     
     @media (max-width: 480px) {
         .hero-title { font-size: 12px; }
-        .game-tags-container { gap: 2px; }
-        .game-tag { font-size: 8px; padding: 1px 3px; }
+        .game-tags-container { gap: 2px 4px; }
+        .game-tag { font-size: 9px; }
     }
     
     .no-games {
