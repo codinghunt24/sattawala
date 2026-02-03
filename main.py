@@ -2398,5 +2398,18 @@ def page_not_found(e):
         return redirect(redirect_url)
     return "Page Not Found", 404
 
+@app.route('/download-project')
+def download_project():
+    import subprocess
+    import os
+    
+    project_path = '/home/runner/workspace'
+    tar_file = os.path.join(project_path, 'sattaking-project.tar.gz')
+    
+    subprocess.run(['tar', '-czvf', tar_file, 'main.py', 'templates/', 'pyproject.toml'], 
+                   cwd=project_path, capture_output=True)
+    
+    return send_file(tar_file, as_attachment=True, download_name='sattaking-project.tar.gz')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
