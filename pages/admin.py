@@ -1,7 +1,7 @@
 import streamlit as st
 import psycopg2
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -189,6 +189,8 @@ def save_scraped_games(games_data):
         
         saved_count = 0
         updated_count = 0
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
         
         for index, game in enumerate(games_data):
             if 'SHOW YOUR GAME HERE' in game['name'].upper():
@@ -210,6 +212,20 @@ def save_scraped_games(games_data):
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, (game['name'], game['game_time'], game['yesterday_result'], game['today_result'], True, index))
                 saved_count += 1
+            
+            if game['today_result'] and game['today_result'] != '--' and game['today_result'] != 'XX':
+                cur.execute("""
+                    INSERT INTO game_results (game_name, result_date, result)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (game_name, result_date) DO UPDATE SET result = %s
+                """, (game['name'], today, game['today_result'], game['today_result']))
+            
+            if game['yesterday_result'] and game['yesterday_result'] != '--' and game['yesterday_result'] != 'XX':
+                cur.execute("""
+                    INSERT INTO game_results (game_name, result_date, result)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (game_name, result_date) DO UPDATE SET result = %s
+                """, (game['name'], yesterday, game['yesterday_result'], game['yesterday_result']))
         
         conn.commit()
         cur.close()
