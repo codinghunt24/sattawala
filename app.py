@@ -49,6 +49,22 @@ st.markdown("""
     .stMainBlockContainer {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+        padding-left: 10% !important;
+        padding-right: 10% !important;
+    }
+    
+    @media (min-width: 1200px) {
+        .stMainBlockContainer {
+            padding-left: 15% !important;
+            padding-right: 15% !important;
+        }
+    }
+    
+    @media (min-width: 1600px) {
+        .stMainBlockContainer {
+            padding-left: 20% !important;
+            padding-right: 20% !important;
+        }
     }
     
     section[data-testid="stSidebar"] {
