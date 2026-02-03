@@ -761,6 +761,67 @@ def generate_seo_post_content(game_name, result, post_date):
     
     meta_keywords = f"{game_name}, {game_name} result, {game_name} today, {game_name} {date_short}, satta king {game_name}, {game_name} live, {game_name} chart, {game_name} record, {game_name.lower()} result today"
     
+    game_name_lower = game_name.lower()
+    
+    common_content = f"""
+    <div class="post-info">
+        <h3>About {game_name}</h3>
+        <p>{game_name} is one of the most popular and trusted Satta King games in India. Every day, thousands of players eagerly await the {game_name} result. Our platform provides fast, accurate, and verified {game_name} results as soon as they are declared.</p>
+        
+        <h3>{game_name} Game Information</h3>
+        <table class="result-table">
+            <tr><td>Game Name</td><td><strong>{game_name}</strong></td></tr>
+            <tr><td>Result Date</td><td>{date_str}</td></tr>
+            <tr><td>Game Type</td><td>Satta King</td></tr>
+            <tr><td>Result Frequency</td><td>Daily</td></tr>
+            <tr><td>Result Status</td><td>{result_display if result_display != 'Waiting...' else 'Pending'}</td></tr>
+        </table>
+        
+        <h3>How to Check {game_name} Result</h3>
+        <ul>
+            <li>Visit our website daily at the scheduled time for live {game_name} result</li>
+            <li>Check the {game_name} Record Chart for complete historical data</li>
+            <li>Bookmark this page for quick access to {game_name} updates</li>
+            <li>Our system automatically updates results in real-time</li>
+            <li>All results are verified before being published</li>
+        </ul>
+        
+        <h3>{game_name} Record Chart</h3>
+        <p>View the complete <a href="/chart?game={create_slug(game_name)}" style="color: #667eea; font-weight: 600;">{game_name} Monthly Record Chart</a> to analyze past results, identify patterns, and track winning numbers. Our record chart displays daily results organized by month and year for easy reference.</p>
+        
+        <h3>Why Choose Our Website for {game_name} Result?</h3>
+        <ul>
+            <li><strong>Fast Updates:</strong> We update {game_name} results within seconds of declaration</li>
+            <li><strong>100% Accurate:</strong> All results are verified from authentic sources</li>
+            <li><strong>Complete History:</strong> Access {game_name} record charts for any month/year</li>
+            <li><strong>Mobile Friendly:</strong> Check results easily on any device</li>
+            <li><strong>Free Access:</strong> No registration or fees required</li>
+        </ul>
+        
+        <h3>{game_name} FAQs</h3>
+        <div class="faq-section">
+            <p><strong>Q: What time does {game_name} result come?</strong></p>
+            <p>A: {game_name} result is declared daily at the scheduled game time. Check our homepage for the exact timing.</p>
+            
+            <p><strong>Q: How can I check old {game_name} results?</strong></p>
+            <p>A: Visit our {game_name} Record Chart page where you can view results for any month and year.</p>
+            
+            <p><strong>Q: Is this {game_name} result website reliable?</strong></p>
+            <p>A: Yes, we provide 100% verified and accurate {game_name} results. Our platform is trusted by thousands of daily visitors.</p>
+            
+            <p><strong>Q: Can I get {game_name} result notification?</strong></p>
+            <p>A: Bookmark our website and check back at the result time for live updates.</p>
+        </div>
+        
+        <h3>Related Satta King Games</h3>
+        <p>Apart from {game_name}, we also provide live results for other popular Satta King games including Gali, Disawar, Faridabad, Ghaziabad, Delhi Bazaar, and many more. Check our homepage for complete list of games and their results.</p>
+        
+        <h3>Important Notice</h3>
+        <p style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">This website is for informational purposes only. We do not encourage or promote any form of gambling. Please check and follow your local laws and regulations. Always play responsibly.</p>
+    </div>
+</div>
+"""
+    
     if is_waiting:
         content = f"""
 <div class="post-content">
@@ -769,18 +830,11 @@ def generate_seo_post_content(game_name, result, post_date):
         <span class="result-value waiting-text">Waiting...</span>
         <span class="result-note">Result will be updated soon</span>
     </div>
-    <div class="post-info">
-        <p>The {game_name} Satta King result for {date_str} has not been declared yet. Please check back later for the live result update. Our system automatically updates results as soon as they are announced.</p>
-        <h3>About {game_name}</h3>
-        <p>{game_name} is one of the most popular Satta King games. Players eagerly wait for daily results which are announced at specific times. Stay tuned for the latest {game_name} result.</p>
-        <h3>How to Check {game_name} Result</h3>
-        <ul>
-            <li>Visit our website daily for accurate results</li>
-            <li>Check the Record Chart for historical data</li>
-            <li>Results are updated in real-time</li>
-        </ul>
+    <div class="waiting-info" style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+        <p style="margin: 0; color: #1565c0; font-size: 16px;">The {game_name} result for {date_str} has not been declared yet.</p>
+        <p style="margin: 10px 0 0; color: #1976d2; font-size: 14px;">This page will automatically update when the result is announced.</p>
     </div>
-</div>
+    {common_content}
 """
     else:
         content = f"""
@@ -790,21 +844,11 @@ def generate_seo_post_content(game_name, result, post_date):
         <span class="result-value">{result_display}</span>
         <span class="result-note">Result declared for {date_str}</span>
     </div>
-    <div class="post-info">
-        <p>The {game_name} Satta King result for {date_str} is <strong>{result_display}</strong>. This result has been verified and updated on our platform.</p>
-        <h3>About {game_name}</h3>
-        <p>{game_name} is among the most searched Satta King games in India. Daily thousands of players check {game_name} result on our website for accurate and fast updates.</p>
-        <h3>{game_name} Result Details</h3>
-        <table class="result-table">
-            <tr><td>Game Name</td><td><strong>{game_name}</strong></td></tr>
-            <tr><td>Result Date</td><td>{date_str}</td></tr>
-            <tr><td>Winning Number</td><td><strong>{result_display}</strong></td></tr>
-            <tr><td>Status</td><td>Declared</td></tr>
-        </table>
-        <h3>Check More Results</h3>
-        <p>View the complete {game_name} record chart to analyze past results and patterns. Our chart shows daily results organized by month and year.</p>
+    <div class="declared-info" style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+        <p style="margin: 0; color: #2e7d32; font-size: 16px;">Congratulations! The {game_name} winning number for {date_str} is <strong>{result_display}</strong></p>
+        <p style="margin: 10px 0 0; color: #388e3c; font-size: 14px;">This result has been verified and confirmed.</p>
     </div>
-</div>
+    {common_content}
 """
     
     return {
