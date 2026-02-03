@@ -631,79 +631,164 @@
     </div>
     
     <div class="modal" id="postModal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <div class="modal-title" id="postModalTitle">Create Post</div>
-                <button class="modal-close" onclick="closePostModal()">&times;</button>
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px 25px; border-radius: 12px 12px 0 0;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 20px;">📝</span>
+                    </div>
+                    <div>
+                        <div class="modal-title" id="postModalTitle" style="font-size: 20px; font-weight: 700;">Create New Post</div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px;">Full SEO Control</div>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closePostModal()" style="background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 8px; color: #fff; font-size: 20px; cursor: pointer;">&times;</button>
             </div>
-            <form id="postForm" onsubmit="savePost(event)">
-                <input type="hidden" id="postId">
-                <div class="form-group">
-                    <label>Post Title *</label>
-                    <input type="text" id="postTitle" required placeholder="Enter post title">
+            
+            <div style="padding: 25px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                    <button type="button" class="post-tab active" onclick="showPostTab('basic')" id="tabBasic" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s;">📄 Basic</button>
+                    <button type="button" class="post-tab" onclick="showPostTab('seo')" id="tabSeo" style="padding: 10px 20px; background: #2a2a4a; border: none; border-radius: 8px; color: #a0a0b0; font-weight: 600; cursor: pointer; transition: all 0.3s;">🔍 SEO</button>
+                    <button type="button" class="post-tab" onclick="showPostTab('social')" id="tabSocial" style="padding: 10px 20px; background: #2a2a4a; border: none; border-radius: 8px; color: #a0a0b0; font-weight: 600; cursor: pointer; transition: all 0.3s;">📱 Social</button>
+                    <button type="button" class="post-tab" onclick="showPostTab('advanced')" id="tabAdvanced" style="padding: 10px 20px; background: #2a2a4a; border: none; border-radius: 8px; color: #a0a0b0; font-weight: 600; cursor: pointer; transition: all 0.3s;">⚙️ Advanced</button>
                 </div>
-                <div class="form-group">
-                    <label>URL Slug *</label>
-                    <input type="text" id="postSlug" required placeholder="auto-generated-from-title">
-                </div>
-                <div class="form-group">
-                    <label>Content</label>
-                    <textarea id="postContent" rows="8" placeholder="Write your post content here..."></textarea>
-                </div>
-                <div style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <h4 style="color: #667eea; margin-bottom: 15px;">SEO Settings</h4>
-                    <div class="form-group">
-                        <label>Meta Title</label>
-                        <input type="text" id="postMetaTitle" placeholder="SEO title (defaults to post title)">
+                
+                <form id="postForm" onsubmit="savePost(event)">
+                    <input type="hidden" id="postId">
+                    
+                    <div id="postTabBasic">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group" style="grid-column: 1/-1;">
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
+                                    <span style="color: #667eea;">✦</span> Post Title <span style="color: #e74c3c;">*</span>
+                                </label>
+                                <input type="text" id="postTitle" required placeholder="Enter an engaging post title..." style="font-size: 16px; padding: 14px 16px;">
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
+                                    <span style="color: #667eea;">🔗</span> URL Slug <span style="color: #e74c3c;">*</span>
+                                </label>
+                                <input type="text" id="postSlug" required placeholder="auto-generated-from-title" style="font-family: monospace;">
+                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">URL: /latest/<span id="slugPreview">your-slug</span></div>
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
+                                    <span style="color: #27ae60;">●</span> Status
+                                </label>
+                                <select id="postPublished" style="padding: 14px 16px;">
+                                    <option value="true">✅ Published</option>
+                                    <option value="false">📝 Draft</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
+                                <span style="color: #667eea;">📝</span> Content
+                            </label>
+                            <textarea id="postContent" rows="12" placeholder="Write your post content here... You can use HTML tags for formatting." style="font-size: 14px; line-height: 1.6;"></textarea>
+                            <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Supports HTML formatting: &lt;b&gt;, &lt;i&gt;, &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;li&gt;, etc.</div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Meta Description</label>
-                        <textarea id="postMetaDesc" rows="2" placeholder="SEO description (150-160 characters recommended)"></textarea>
+                    
+                    <div id="postTabSeo" style="display: none;">
+                        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3);">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">🔍</div>
+                                <div>
+                                    <div style="font-weight: 700; color: #fff;">Search Engine Optimization</div>
+                                    <div style="font-size: 12px; color: #6a6a8a;">Control how your post appears in Google search results</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Meta Title <span style="color: #6a6a8a; font-weight: 400;">(60 characters recommended)</span></label>
+                                <input type="text" id="postMetaTitle" placeholder="SEO optimized title for search engines" maxlength="70">
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #6a6a8a; margin-top: 5px;">
+                                    <span>Appears in browser tab & search results</span>
+                                    <span id="metaTitleCount">0/70</span>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Meta Description <span style="color: #6a6a8a; font-weight: 400;">(150-160 characters)</span></label>
+                                <textarea id="postMetaDesc" rows="3" placeholder="Write a compelling description that will appear in search results..." maxlength="160"></textarea>
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #6a6a8a; margin-top: 5px;">
+                                    <span>Shows below title in Google search</span>
+                                    <span id="metaDescCount">0/160</span>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Meta Keywords <span style="color: #6a6a8a; font-weight: 400;">(comma separated)</span></label>
+                                <input type="text" id="postMetaKeywords" placeholder="satta king, satta result, gali result, desawar">
+                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Target keywords for better ranking</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #0d0d15; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div style="font-weight: 600; color: #667eea; margin-bottom: 10px;">🔎 Google Preview</div>
+                            <div style="background: #fff; padding: 15px; border-radius: 8px;">
+                                <div id="googlePreviewTitle" style="color: #1a0dab; font-size: 18px; font-weight: 400; margin-bottom: 3px;">Post Title Preview</div>
+                                <div id="googlePreviewUrl" style="color: #006621; font-size: 13px; margin-bottom: 3px;">https://yoursite.com/latest/post-slug</div>
+                                <div id="googlePreviewDesc" style="color: #545454; font-size: 13px; line-height: 1.4;">Meta description will appear here. Write a compelling description to improve click-through rate from search results.</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Meta Keywords</label>
-                        <input type="text" id="postMetaKeywords" placeholder="keyword1, keyword2, keyword3">
+                    
+                    <div id="postTabSocial" style="display: none;">
+                        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3);">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #1877f2 0%, #0d65d9 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">📱</div>
+                                <div>
+                                    <div style="font-weight: 700; color: #fff;">Open Graph Tags</div>
+                                    <div style="font-size: 12px; color: #6a6a8a;">Control how your post appears when shared on Facebook, Twitter, WhatsApp</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">OG Title</label>
+                                <input type="text" id="postOgTitle" placeholder="Title for social media sharing">
+                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Leave empty to use Meta Title</div>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">OG Description</label>
+                                <textarea id="postOgDesc" rows="3" placeholder="Description for social media sharing"></textarea>
+                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Leave empty to use Meta Description</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <h4 style="color: #667eea; margin-bottom: 15px;">Open Graph (Social Media)</h4>
-                    <div class="form-group">
-                        <label>OG Title</label>
-                        <input type="text" id="postOgTitle" placeholder="Title for social media sharing">
+                    
+                    <div id="postTabAdvanced" style="display: none;">
+                        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3);">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">⚙️</div>
+                                <div>
+                                    <div style="font-weight: 700; color: #fff;">Advanced SEO Settings</div>
+                                    <div style="font-size: 12px; color: #6a6a8a;">Schema markup and canonical URL configuration</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Canonical URL</label>
+                                <input type="text" id="postCanonical" placeholder="https://yoursite.com/latest/post-slug">
+                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Prevents duplicate content issues. Leave empty for auto-generated URL.</div>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Schema.org Type</label>
+                                <select id="postSchemaType" style="padding: 14px 16px;">
+                                    <option value="Article">📄 Article - General articles</option>
+                                    <option value="NewsArticle">📰 News Article - News & updates</option>
+                                    <option value="BlogPosting">📝 Blog Posting - Blog posts</option>
+                                    <option value="WebPage">🌐 Web Page - General page</option>
+                                </select>
+                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Helps Google understand your content type for rich snippets</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>OG Description</label>
-                        <textarea id="postOgDesc" rows="2" placeholder="Description for social media sharing"></textarea>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 14px 25px; font-size: 15px; font-weight: 600; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span>💾</span> Save Post
+                        </button>
+                        <button type="button" class="btn" style="padding: 14px 25px; background: #3a3a5a; color: #b0b0c0;" onclick="closePostModal()">Cancel</button>
                     </div>
-                </div>
-                <div style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <h4 style="color: #667eea; margin-bottom: 15px;">Advanced SEO</h4>
-                    <div class="form-group">
-                        <label>Canonical URL</label>
-                        <input type="text" id="postCanonical" placeholder="https://yoursite.com/post-slug">
-                    </div>
-                    <div class="form-group">
-                        <label>Schema Type</label>
-                        <select id="postSchemaType">
-                            <option value="Article">Article</option>
-                            <option value="NewsArticle">News Article</option>
-                            <option value="BlogPosting">Blog Posting</option>
-                            <option value="WebPage">Web Page</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="postPublished">
-                        <option value="true">Published</option>
-                        <option value="false">Draft</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-primary">Save Post</button>
-                    <button type="button" class="btn btn-secondary" onclick="closePostModal()">Cancel</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
     
@@ -1126,8 +1211,42 @@
             }
         }
         
+        function showPostTab(tab) {
+            document.getElementById('postTabBasic').style.display = tab === 'basic' ? 'block' : 'none';
+            document.getElementById('postTabSeo').style.display = tab === 'seo' ? 'block' : 'none';
+            document.getElementById('postTabSocial').style.display = tab === 'social' ? 'block' : 'none';
+            document.getElementById('postTabAdvanced').style.display = tab === 'advanced' ? 'block' : 'none';
+            
+            ['Basic', 'Seo', 'Social', 'Advanced'].forEach(t => {
+                const btn = document.getElementById('tab' + t);
+                if (t.toLowerCase() === tab) {
+                    btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    btn.style.color = '#fff';
+                } else {
+                    btn.style.background = '#2a2a4a';
+                    btn.style.color = '#a0a0b0';
+                }
+            });
+        }
+        
+        function updateGooglePreview() {
+            const title = document.getElementById('postMetaTitle').value || document.getElementById('postTitle').value || 'Post Title Preview';
+            const desc = document.getElementById('postMetaDesc').value || 'Meta description will appear here. Write a compelling description to improve click-through rate from search results.';
+            const slug = document.getElementById('postSlug').value || 'post-slug';
+            
+            document.getElementById('googlePreviewTitle').textContent = title;
+            document.getElementById('googlePreviewUrl').textContent = 'https://yoursite.com/latest/' + slug;
+            document.getElementById('googlePreviewDesc').textContent = desc;
+        }
+        
+        function updateCharCount(input, countId, max) {
+            const count = input.value.length;
+            document.getElementById(countId).textContent = count + '/' + max;
+            document.getElementById(countId).style.color = count > max * 0.9 ? '#e74c3c' : '#6a6a8a';
+        }
+        
         function openPostModal() {
-            document.getElementById('postModalTitle').textContent = 'Create Post';
+            document.getElementById('postModalTitle').textContent = 'Create New Post';
             document.getElementById('postId').value = '';
             document.getElementById('postTitle').value = '';
             document.getElementById('postSlug').value = '';
@@ -1140,12 +1259,32 @@
             document.getElementById('postCanonical').value = '';
             document.getElementById('postSchemaType').value = 'Article';
             document.getElementById('postPublished').value = 'true';
+            document.getElementById('slugPreview').textContent = 'your-slug';
+            document.getElementById('metaTitleCount').textContent = '0/70';
+            document.getElementById('metaDescCount').textContent = '0/160';
+            showPostTab('basic');
+            updateGooglePreview();
             document.getElementById('postModal').style.display = 'flex';
         }
         
         function closePostModal() {
             document.getElementById('postModal').style.display = 'none';
         }
+        
+        document.getElementById('postSlug').addEventListener('input', function() {
+            document.getElementById('slugPreview').textContent = this.value || 'your-slug';
+            updateGooglePreview();
+        });
+        
+        document.getElementById('postMetaTitle').addEventListener('input', function() {
+            updateCharCount(this, 'metaTitleCount', 70);
+            updateGooglePreview();
+        });
+        
+        document.getElementById('postMetaDesc').addEventListener('input', function() {
+            updateCharCount(this, 'metaDescCount', 160);
+            updateGooglePreview();
+        });
         
         document.getElementById('postTitle').addEventListener('input', function() {
             if (!document.getElementById('postId').value) {
@@ -1171,6 +1310,11 @@
                 document.getElementById('postCanonical').value = post.canonical_url || '';
                 document.getElementById('postSchemaType').value = post.schema_type || 'Article';
                 document.getElementById('postPublished').value = post.is_published ? 'true' : 'false';
+                document.getElementById('slugPreview').textContent = post.slug || 'your-slug';
+                updateCharCount(document.getElementById('postMetaTitle'), 'metaTitleCount', 70);
+                updateCharCount(document.getElementById('postMetaDesc'), 'metaDescCount', 160);
+                showPostTab('basic');
+                updateGooglePreview();
                 document.getElementById('postModal').style.display = 'flex';
             } catch (e) {
                 showStatus('Error loading post', true);
