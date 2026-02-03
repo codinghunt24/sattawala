@@ -158,6 +158,11 @@ st.markdown("""
         text-align: center;
     }
     
+    .games-table th:first-child {
+        width: 180px;
+        text-align: left;
+    }
+    
     .games-table tbody tr {
         background: linear-gradient(135deg, #252540 0%, #2a2a50 100%);
         transition: all 0.3s;
@@ -178,10 +183,28 @@ st.markdown("""
         border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     
+    .games-table td:first-child {
+        text-align: left;
+        width: 180px;
+    }
+    
     .game-name {
         color: #00d4ff;
         font-weight: 600;
         font-size: 15px;
+    }
+    
+    .record-chart-link {
+        color: #667eea;
+        font-size: 12px;
+        text-decoration: none;
+        margin-left: 10px;
+        font-weight: 500;
+    }
+    
+    .record-chart-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
     }
     
     .game-time {
@@ -378,7 +401,7 @@ if games:
         yesterday_class = "result-pending" if yesterday == '--' else "result-yesterday"
         today_class = "result-pending" if today == '--' else "result-today"
         
-        table_html += f'<tr><td><span class="game-name">{name}</span><br><span class="game-time">{time_val}</span></td><td><span class="{yesterday_class}">{yesterday}</span></td><td><span class="{today_class}">{today}</span></td></tr>'
+        table_html += f'<tr><td><span class="game-name">{name}</span><br><span class="game-time">{time_val}</span><a href="#" class="record-chart-link">Record Chart</a></td><td><span class="{yesterday_class}">{yesterday}</span></td><td><span class="{today_class}">{today}</span></td></tr>'
     
     table_html += '</tbody></table><div class="refresh-note">Results are updated automatically</div>'
     
