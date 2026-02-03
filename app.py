@@ -102,13 +102,13 @@ st.markdown("""
         align-items: center;
         flex-wrap: wrap;
         gap: 5px;
-        padding: 15px 20px;
+        padding: 8px 20px;
     }
     
     .nav-item {
         color: white;
         text-decoration: none;
-        padding: 12px 25px;
+        padding: 6px 18px;
         border-radius: 5px;
         transition: all 0.3s ease;
         font-weight: 500;
