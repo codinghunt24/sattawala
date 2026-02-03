@@ -337,9 +337,6 @@ st.markdown("""
 st.markdown("""
 <div class="logo-section">
     <div class="responsive-container">
-        <div class="logo-container">
-            <div class="logo">🌐</div>
-        </div>
         <div class="logo-text">Satta King</div>
     </div>
 </div>
