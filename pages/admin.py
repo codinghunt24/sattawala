@@ -86,6 +86,15 @@ def init_database():
                 last_scrape TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            
+            CREATE TABLE IF NOT EXISTS game_results (
+                id SERIAL PRIMARY KEY,
+                game_name VARCHAR(255) NOT NULL,
+                result_date DATE NOT NULL,
+                result VARCHAR(10),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(game_name, result_date)
+            );
         """)
         conn.commit()
         cur.close()

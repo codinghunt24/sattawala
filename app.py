@@ -2,6 +2,7 @@ import streamlit as st
 import psycopg2
 import os
 from datetime import datetime
+import urllib.parse
 
 st.set_page_config(
     page_title="Satta King",
@@ -423,7 +424,8 @@ if games:
         yesterday_class = "result-pending" if yesterday == '--' else "result-yesterday"
         today_class = "result-pending" if today == '--' else "result-today"
         
-        table_html += f'<tr><td><span class="game-name">{name}</span><br><span class="game-time">{time_val}</span><a href="#" class="record-chart-link">Record Chart</a></td><td><span class="{yesterday_class}">{yesterday}</span></td><td><span class="{today_class}">{today}</span></td></tr>'
+        chart_url = f"/chart?game={urllib.parse.quote(name)}"
+        table_html += f'<tr><td><span class="game-name">{name}</span><br><span class="game-time">{time_val}</span><a href="{chart_url}" target="_top" class="record-chart-link">Record Chart</a></td><td><span class="{yesterday_class}">{yesterday}</span></td><td><span class="{today_class}">{today}</span></td></tr>'
     
     table_html += '</tbody></table><div class="refresh-note">Results are updated automatically</div>'
     
