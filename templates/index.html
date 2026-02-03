@@ -305,54 +305,35 @@
     
     /* Hero Section Styles */
     .hero-section {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        padding: 30px 15%;
+        background: #fff;
+        padding: 15px 15%;
         text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .hero-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 50%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
-        pointer-events: none;
+        border-bottom: 1px solid #e0e0e0;
     }
     
     @media (max-width: 1200px) {
-        .hero-section { padding: 25px 10%; }
+        .hero-section { padding: 12px 10%; }
     }
     
     @media (max-width: 768px) {
-        .hero-section { padding: 20px 3%; }
+        .hero-section { padding: 10px 3%; }
     }
     
     @media (max-width: 480px) {
-        .hero-section { padding: 15px 2%; }
+        .hero-section { padding: 8px 2%; }
     }
     
     .hero-title {
-        color: #fff;
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 20px;
+        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
         text-transform: uppercase;
         letter-spacing: 1px;
-        position: relative;
-        z-index: 1;
     }
     
     .hero-subtitle {
-        color: #a0a0b0;
-        font-size: 14px;
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 1;
+        display: none;
     }
     
     .game-tags-container {
@@ -367,16 +348,15 @@
     .game-tag {
         background: transparent;
         border: none;
-        color: #fff;
-        padding: 5px 8px;
-        font-size: 14px;
+        color: #333;
+        padding: 3px 6px;
+        font-size: 13px;
         font-weight: 500;
         cursor: default;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
     
     .game-tag.featured {
-        color: #ffd700;
+        color: #667eea;
         font-weight: 600;
     }
     
