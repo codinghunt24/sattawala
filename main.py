@@ -452,127 +452,319 @@ def disclaimer_page():
 
 def get_privacy_policy_content():
     return """
-    <h2>Privacy Policy</h2>
-    <p>Last updated: February 2026</p>
+    <p><strong>Effective Date:</strong> January 1, 2024 | <strong>Last Updated:</strong> February 2026</p>
     
-    <h3>Information We Collect</h3>
-    <p>We collect information you provide directly to us when you use our website. This may include:</p>
+    <p>At Satta King 786, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website. Please read this policy carefully to understand our practices regarding your data.</p>
+    
+    <h2>1. Information We Collect</h2>
+    
+    <h3>1.1 Automatically Collected Information</h3>
+    <p>When you visit our website, we automatically collect certain information about your device and browsing activity, including:</p>
     <ul>
-        <li>Usage data and analytics</li>
-        <li>Device and browser information</li>
-        <li>IP address and location data</li>
+        <li><strong>Device Information:</strong> Browser type, operating system, device type (mobile, tablet, desktop), screen resolution</li>
+        <li><strong>Usage Data:</strong> Pages visited, time spent on pages, click patterns, navigation paths</li>
+        <li><strong>Network Information:</strong> IP address, Internet Service Provider (ISP), approximate geographic location</li>
+        <li><strong>Referral Data:</strong> The website or source that referred you to our site</li>
     </ul>
     
-    <h3>How We Use Your Information</h3>
-    <p>We use the information we collect to:</p>
+    <h3>1.2 Cookies and Similar Technologies</h3>
+    <p>We use cookies, web beacons, and similar tracking technologies to enhance your browsing experience. These technologies help us:</p>
     <ul>
-        <li>Provide, maintain, and improve our services</li>
-        <li>Analyze usage patterns and trends</li>
-        <li>Deliver relevant advertisements</li>
+        <li>Remember your preferences and settings</li>
+        <li>Understand how you interact with our website</li>
+        <li>Analyze website traffic and performance</li>
+        <li>Deliver personalized content and advertisements</li>
     </ul>
     
-    <h3>Cookies and Tracking</h3>
-    <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>
+    <h2>2. How We Use Your Information</h2>
+    <p>We use the collected information for the following purposes:</p>
+    <ul>
+        <li><strong>Service Improvement:</strong> To understand user behavior and improve our website functionality</li>
+        <li><strong>Content Personalization:</strong> To deliver relevant content based on your interests</li>
+        <li><strong>Analytics:</strong> To analyze traffic patterns and website performance</li>
+        <li><strong>Advertising:</strong> To display relevant advertisements through third-party ad networks</li>
+        <li><strong>Security:</strong> To detect and prevent fraud, abuse, and security threats</li>
+        <li><strong>Legal Compliance:</strong> To comply with applicable laws and regulations</li>
+    </ul>
     
-    <h3>Third-Party Services</h3>
-    <p>We may use third-party services such as Google Analytics and Google AdSense. These services may collect information about your use of our website.</p>
+    <h2>3. Third-Party Services</h2>
     
-    <h3>Data Security</h3>
-    <p>We implement appropriate security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.</p>
+    <h3>3.1 Google Analytics</h3>
+    <p>We use Google Analytics to analyze website traffic and user behavior. Google Analytics collects data through cookies and provides us with aggregated reports. You can learn more about Google's privacy practices at <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>
     
-    <h3>Contact Us</h3>
-    <p>If you have any questions about this Privacy Policy, please contact us through our Contact page.</p>
+    <h3>3.2 Google AdSense</h3>
+    <p>We participate in Google AdSense to display advertisements. Google uses cookies to serve ads based on your prior visits to our website or other websites. You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</p>
+    
+    <h3>3.3 Other Third-Party Services</h3>
+    <p>We may use additional third-party services for functionality, analytics, or advertising purposes. Each third-party service has its own privacy policy governing the use of your information.</p>
+    
+    <h2>4. Data Security</h2>
+    <p>We implement industry-standard security measures to protect your information, including:</p>
+    <ul>
+        <li>Secure Socket Layer (SSL) encryption for data transmission</li>
+        <li>Regular security assessments and updates</li>
+        <li>Access controls and authentication mechanisms</li>
+        <li>Secure data storage practices</li>
+    </ul>
+    <p>However, no method of transmission over the Internet or electronic storage is 100% secure. While we strive to protect your information, we cannot guarantee absolute security.</p>
+    
+    <h2>5. Your Rights and Choices</h2>
+    <p>You have the following rights regarding your information:</p>
+    <ul>
+        <li><strong>Cookie Preferences:</strong> You can manage cookie settings through your browser preferences</li>
+        <li><strong>Opt-Out:</strong> You can opt out of personalized advertising through industry opt-out tools</li>
+        <li><strong>Do Not Track:</strong> We respect Do Not Track browser signals when applicable</li>
+        <li><strong>Data Access:</strong> You may request information about the data we collect</li>
+    </ul>
+    
+    <h2>6. Children's Privacy</h2>
+    <p>Our website is not intended for children under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately.</p>
+    
+    <h2>7. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. We will notify you of any material changes by posting the updated policy on this page with a new "Last Updated" date.</p>
+    
+    <h2>8. Contact Us</h2>
+    <div class="info-box">
+        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
+        <p><strong>Email:</strong> privacy@sattaking786.com</p>
+        <p><strong>Response Time:</strong> We aim to respond to all inquiries within 48 hours</p>
+    </div>
+    
+    <p>By using our website, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.</p>
     """
 
 def get_about_content():
     return """
-    <h2>About Satta King 786</h2>
+    <p>Welcome to <strong>Satta King 786</strong> — India's most trusted and reliable destination for live Satta King results, record charts, and daily game updates. Since our establishment in 2024, we have been serving millions of users with fast, accurate, and verified Satta King results.</p>
     
-    <h3>Our Mission</h3>
-    <p>Satta King 786 is dedicated to providing fast, accurate, and reliable Satta King results to millions of users across India. Our platform has been serving the community since 2024, offering comprehensive coverage of all major Satta King games.</p>
+    <h2>Our Mission and Vision</h2>
+    <p>Our mission is simple: to provide the fastest and most accurate Satta King results to our users. We understand the importance of timely information, which is why our dedicated team works around the clock to ensure that every result is updated within seconds of official declaration.</p>
+    <p>We envision becoming the number one platform for Satta King information in India, trusted by millions for our reliability, accuracy, and user-friendly experience.</p>
     
-    <h3>What We Offer</h3>
+    <h2>What We Offer</h2>
+    
+    <h3>Live Results</h3>
+    <p>Our primary service is providing real-time Satta King results for 80+ games. Whether you're looking for Gali, Disawar, Faridabad, Ghaziabad, or any regional game, you'll find the latest results on our homepage updated throughout the day.</p>
+    
+    <h3>Record Charts</h3>
+    <p>Access complete historical data through our comprehensive Record Chart feature. View monthly and yearly charts for any game dating back to 2024. Our charts help you analyze patterns and track results over time.</p>
+    
+    <h3>Daily Updates</h3>
+    <p>Our Daily Update section features detailed posts for every game result. Each post includes comprehensive information about the game, result details, historical context, and analysis that helps you stay informed.</p>
+    
+    <h3>Mobile-Friendly Design</h3>
+    <p>Access our website from any device — smartphone, tablet, or desktop. Our responsive design ensures a seamless experience regardless of screen size, making it easy to check results on the go.</p>
+    
+    <h2>Games We Cover</h2>
+    <p>Our comprehensive coverage includes all major Satta King games across India:</p>
     <ul>
-        <li><strong>Live Results:</strong> Real-time updates for 80+ Satta King games including Gali, Disawar, Faridabad, Ghaziabad, and more</li>
-        <li><strong>Record Charts:</strong> Complete monthly and yearly charts for historical result analysis</li>
-        <li><strong>Daily Updates:</strong> Fresh content every day with detailed game information</li>
-        <li><strong>Mobile-Friendly:</strong> Access results easily from any device</li>
+        <li><strong>Popular Games:</strong> Gali, Disawar, Faridabad, Ghaziabad, Delhi Bazaar</li>
+        <li><strong>Satta Matka:</strong> Kalyan Matka, Mumbai Matka, Rajdhani Day/Night</li>
+        <li><strong>Regional Games:</strong> UP Satta King, Black Satta, Shri Ganesh, Taj, Play Bazaar</li>
+        <li><strong>Special Games:</strong> Desawar, Sridevi, Madhur Day/Night, Time Bazaar</li>
+        <li><strong>Other Games:</strong> And 70+ more games updated daily</li>
     </ul>
     
-    <h3>Our Commitment</h3>
-    <p>We are committed to providing:</p>
+    <h2>Why Choose Satta King 786?</h2>
+    <div class="info-box">
+        <ul>
+            <li><strong>Speed:</strong> Results updated within seconds of official declaration</li>
+            <li><strong>Accuracy:</strong> Every result is verified before publishing</li>
+            <li><strong>Reliability:</strong> 24/7 availability with minimal downtime</li>
+            <li><strong>Free Access:</strong> No registration, no fees, no hidden charges</li>
+            <li><strong>History:</strong> Complete record charts from 2024 to present</li>
+            <li><strong>User-Friendly:</strong> Clean interface designed for easy navigation</li>
+        </ul>
+    </div>
+    
+    <h2>Our Team</h2>
+    <p>Behind Satta King 786 is a dedicated team of professionals who are passionate about delivering the best service to our users. Our team includes:</p>
     <ul>
-        <li>100% accurate and verified results</li>
-        <li>Fastest updates in the industry</li>
-        <li>Clean and user-friendly interface</li>
-        <li>Free access without registration</li>
+        <li><strong>Result Updaters:</strong> Working in shifts to ensure 24/7 coverage</li>
+        <li><strong>Content Writers:</strong> Creating informative daily updates</li>
+        <li><strong>Technical Team:</strong> Maintaining website performance and security</li>
+        <li><strong>Support Staff:</strong> Responding to user queries and feedback</li>
     </ul>
     
-    <h3>Popular Games We Cover</h3>
-    <p>Our coverage includes Gali Satta King, Disawar Satta King, Satta Matka, Kalyan Satta Matka, Shri Ganesh Satta King, Black Satta King, Madhur Satta, Delhi Bazar, Taj Satta King, Play Bazaar, UP Satta King, and many more regional games.</p>
+    <h2>Our Commitment to Quality</h2>
+    <p>We are committed to maintaining the highest standards of quality in everything we do:</p>
+    <ul>
+        <li>Every result is cross-verified from multiple sources before publishing</li>
+        <li>Our website is regularly updated with the latest security measures</li>
+        <li>We continuously improve our user interface based on feedback</li>
+        <li>We maintain transparency in all our operations</li>
+    </ul>
     
-    <h3>Our Team</h3>
-    <p>Our dedicated team works round the clock to ensure you get the fastest and most accurate results. We verify every result before publishing to maintain our high standards of accuracy.</p>
+    <h2>Contact Information</h2>
+    <p>We value your feedback and suggestions. If you have any questions, concerns, or ideas for improvement, please don't hesitate to reach out to us through our <a href="/contact">Contact page</a>.</p>
+    
+    <p>Thank you for choosing Satta King 786. We are honored to serve you and committed to being your trusted source for Satta King results.</p>
     """
 
 def get_contact_content():
     return """
-    <h2>Contact Us</h2>
+    <p>We value your feedback and are committed to providing excellent support to all our users. Whether you have a question, suggestion, or concern, we're here to help. Please use the information below to get in touch with us.</p>
     
-    <p>We value your feedback and are here to help with any questions or concerns you may have about our website.</p>
-    
-    <h3>How to Reach Us</h3>
-    <p>You can reach out to us through the following methods:</p>
-    
-    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-        <p><strong>Email:</strong> support@sattaking.com</p>
-        <p><strong>Response Time:</strong> We typically respond within 24-48 hours</p>
+    <h2>Get in Touch</h2>
+    <div class="info-box">
+        <p><strong>Email Support:</strong> support@sattaking786.com</p>
+        <p><strong>General Inquiries:</strong> info@sattaking786.com</p>
+        <p><strong>Technical Issues:</strong> tech@sattaking786.com</p>
+        <p><strong>Response Time:</strong> We typically respond within 24-48 hours on business days</p>
+        <p><strong>Working Hours:</strong> Monday to Sunday, 9:00 AM to 11:00 PM IST</p>
     </div>
     
-    <h3>Frequently Asked Questions</h3>
+    <h2>How We Can Help</h2>
+    <p>Our support team can assist you with:</p>
+    <ul>
+        <li><strong>Result Verification:</strong> Questions about specific game results</li>
+        <li><strong>Website Navigation:</strong> Help finding features or information</li>
+        <li><strong>Technical Issues:</strong> Problems accessing the website or viewing results</li>
+        <li><strong>Chart Queries:</strong> Questions about record charts and historical data</li>
+        <li><strong>Feedback:</strong> Suggestions for improving our services</li>
+        <li><strong>Error Reporting:</strong> Reporting incorrect information or bugs</li>
+    </ul>
     
-    <p><strong>Q: How often are results updated?</strong></p>
-    <p>A: Results are updated in real-time as soon as they are officially declared.</p>
+    <h2>Frequently Asked Questions</h2>
     
-    <p><strong>Q: Can I access old results?</strong></p>
-    <p>A: Yes, use our Record Chart feature to view historical results for any game.</p>
+    <h3>About Results</h3>
+    <p><strong>Q: How quickly are results updated?</strong></p>
+    <p>A: Our results are updated in real-time, typically within seconds of official declaration. We have a dedicated team monitoring results throughout the day.</p>
     
+    <p><strong>Q: What if I see "--" instead of a result?</strong></p>
+    <p>A: The "--" symbol indicates that the game result has not been declared yet. Please check back at the scheduled game time or refresh the page.</p>
+    
+    <p><strong>Q: Are all results verified?</strong></p>
+    <p>A: Yes, every result is cross-verified from multiple reliable sources before being published on our website.</p>
+    
+    <h3>About Record Charts</h3>
+    <p><strong>Q: How far back do your record charts go?</strong></p>
+    <p>A: Our record charts contain historical data from January 2024 to the present. We continuously update our database with new results.</p>
+    
+    <p><strong>Q: How do I view a specific game's chart?</strong></p>
+    <p>A: Visit the <a href="/chart">Record Chart</a> page, select your desired game from the dropdown menu, choose the month and year, and click "View Chart".</p>
+    
+    <h3>About Our Website</h3>
     <p><strong>Q: Is the website free to use?</strong></p>
-    <p>A: Yes, our website is completely free with no registration required.</p>
+    <p>A: Absolutely! Our website is completely free with no registration, no subscription, and no hidden charges.</p>
     
-    <h3>Report an Issue</h3>
-    <p>If you notice any incorrect information or technical issues with our website, please let us know immediately so we can address it.</p>
+    <p><strong>Q: Can I access the website on my mobile phone?</strong></p>
+    <p>A: Yes, our website is fully responsive and optimized for all devices including smartphones, tablets, and desktop computers.</p>
+    
+    <p><strong>Q: How often is the website updated?</strong></p>
+    <p>A: Results are updated throughout the day as games are declared. Our Daily Update posts are published regularly with comprehensive game information.</p>
+    
+    <h2>Report an Issue</h2>
+    <p>Found an error or technical problem? We appreciate your help in keeping our website accurate and functional. When reporting an issue, please include:</p>
+    <ul>
+        <li>The date and time when you noticed the issue</li>
+        <li>The specific page or game affected</li>
+        <li>A description of the problem</li>
+        <li>Screenshots if possible</li>
+        <li>Your device and browser information</li>
+    </ul>
+    
+    <h2>Feedback and Suggestions</h2>
+    <p>We're always looking to improve our services. If you have ideas for new features, improvements, or content suggestions, we'd love to hear from you. Your feedback helps us serve you better.</p>
+    
+    <div class="warning-box">
+        <p><strong>Note:</strong> We do not provide any tips, predictions, or leak numbers. Please do not contact us for such requests. We are strictly an informational website providing result updates only.</p>
+    </div>
+    
+    <p>Thank you for choosing Satta King 786. We look forward to hearing from you!</p>
     """
 
 def get_disclaimer_content():
     return """
-    <h2>Disclaimer</h2>
+    <p><strong>Effective Date:</strong> January 1, 2024 | <strong>Last Updated:</strong> February 2026</p>
     
-    <p><strong>Last Updated: February 2026</strong></p>
+    <p>Please read this disclaimer carefully before using Satta King 786 website. By accessing or using our website, you agree to be bound by the terms and conditions outlined in this disclaimer. If you do not agree with any part of this disclaimer, please do not use our website.</p>
     
-    <h3>General Information</h3>
-    <p>The information provided on Satta King 786 website is for general informational and entertainment purposes only. We do not encourage, promote, or facilitate any form of gambling, betting, or illegal activities.</p>
+    <h2>1. Nature of Website</h2>
+    <p>Satta King 786 is an <strong>informational website only</strong>. We provide historical results, charts, and data related to various Satta King games for informational and entertainment purposes. Our website serves as a repository of publicly available information compiled for user convenience.</p>
     
-    <h3>Legal Notice</h3>
-    <p>Gambling and betting may be illegal in your jurisdiction. It is your sole responsibility to check and comply with the laws applicable in your area before using any information from this website. We are not responsible for any legal issues that may arise from your use of this information.</p>
+    <h2>2. No Promotion of Gambling</h2>
+    <div class="warning-box">
+        <p><strong>IMPORTANT:</strong> We do not encourage, promote, facilitate, or endorse any form of gambling, betting, lottery, or any illegal activities. This website is strictly for informational purposes. We do not provide:</p>
+    </div>
+    <ul>
+        <li>Tips, predictions, or "leak" numbers</li>
+        <li>Betting services or platforms</li>
+        <li>Money transactions or payment services</li>
+        <li>Any form of gambling assistance</li>
+    </ul>
     
-    <h3>No Guarantee of Accuracy</h3>
-    <p>While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information on this website.</p>
+    <h2>3. Legal Compliance</h2>
+    <p>Gambling laws vary significantly across different states and countries. It is your sole responsibility to:</p>
+    <ul>
+        <li>Understand and comply with the laws applicable in your jurisdiction</li>
+        <li>Verify the legality of any activity before participating</li>
+        <li>Accept full responsibility for your actions</li>
+    </ul>
+    <p>We are not responsible for any legal consequences arising from your use of information on this website. If gambling is illegal in your area, please do not participate in any such activities.</p>
     
-    <h3>No Financial Advice</h3>
-    <p>The results and information displayed on this website should not be considered as financial advice. We do not recommend or encourage any form of gambling or financial speculation based on the information provided.</p>
+    <h2>4. Accuracy of Information</h2>
+    <p>While we make every effort to ensure the accuracy of information on our website:</p>
+    <ul>
+        <li>We do not guarantee 100% accuracy of any result or data</li>
+        <li>Information may contain errors, omissions, or outdated data</li>
+        <li>Results should be verified from official sources</li>
+        <li>We are not liable for any losses resulting from inaccurate information</li>
+    </ul>
     
-    <h3>Third-Party Content</h3>
-    <p>Our website may contain links to third-party websites or services that are not owned or controlled by us. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services.</p>
+    <h2>5. No Warranties</h2>
+    <p>This website is provided "as is" without any representations or warranties, express or implied. We make no warranties regarding:</p>
+    <ul>
+        <li>The completeness or accuracy of information</li>
+        <li>The availability or uninterrupted access to the website</li>
+        <li>The absence of viruses or other harmful components</li>
+        <li>The fitness for any particular purpose</li>
+    </ul>
     
-    <h3>Limitation of Liability</h3>
-    <p>In no event shall Satta King 786, its operators, or its affiliates be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of this website.</p>
+    <h2>6. Limitation of Liability</h2>
+    <p>To the fullest extent permitted by law, Satta King 786, its owners, operators, employees, and affiliates shall not be liable for:</p>
+    <ul>
+        <li>Any direct, indirect, incidental, or consequential damages</li>
+        <li>Loss of profits, data, or business opportunities</li>
+        <li>Any harm arising from the use or inability to use this website</li>
+        <li>Any actions taken based on information provided on this website</li>
+    </ul>
     
-    <h3>Age Restriction</h3>
-    <p>This website is intended for users who are 18 years of age or older. By using this website, you confirm that you are at least 18 years old.</p>
+    <h2>7. Third-Party Links</h2>
+    <p>Our website may contain links to third-party websites. These links are provided for convenience only. We do not:</p>
+    <ul>
+        <li>Endorse or control third-party content</li>
+        <li>Accept responsibility for third-party websites</li>
+        <li>Guarantee the accuracy of third-party information</li>
+    </ul>
     
-    <h3>Play Responsibly</h3>
-    <p style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">If you choose to participate in any form of gambling, please do so responsibly. Set limits, never gamble more than you can afford to lose, and seek help if you feel you have a gambling problem. Resources for gambling addiction help are available in your area.</p>
+    <h2>8. Age Restriction</h2>
+    <div class="warning-box">
+        <p>This website is intended for users who are <strong>18 years of age or older</strong>. By using this website, you confirm that you are at least 18 years old. Minors are strictly prohibited from accessing this website.</p>
+    </div>
+    
+    <h2>9. Responsible Gaming</h2>
+    <p>If you choose to participate in any form of gaming or gambling (where legal):</p>
+    <ul>
+        <li><strong>Set limits:</strong> Decide how much time and money you can afford before you start</li>
+        <li><strong>Never chase losses:</strong> Accept that losing is part of the game</li>
+        <li><strong>Don't borrow:</strong> Never gamble with borrowed money</li>
+        <li><strong>Take breaks:</strong> Regular breaks help maintain perspective</li>
+        <li><strong>Seek help:</strong> If you feel you have a problem, professional help is available</li>
+    </ul>
+    
+    <h2>10. Changes to Disclaimer</h2>
+    <p>We reserve the right to modify this disclaimer at any time without prior notice. Changes will be effective immediately upon posting. Your continued use of the website after any changes constitutes acceptance of the modified disclaimer.</p>
+    
+    <h2>11. Governing Law</h2>
+    <p>This disclaimer shall be governed by and construed in accordance with the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in India.</p>
+    
+    <h2>12. Contact</h2>
+    <p>If you have any questions about this disclaimer, please contact us through our <a href="/contact">Contact page</a>.</p>
+    
+    <div class="info-box">
+        <p><strong>Remember:</strong> This website is for informational purposes only. We strongly advise against any form of gambling. If you choose to engage in such activities, please do so responsibly and in compliance with your local laws.</p>
+    </div>
     """
 
 @app.route('/_stcore/health')
