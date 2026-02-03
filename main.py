@@ -161,8 +161,11 @@ init_database()
 @app.route('/')
 def index():
     games = get_games()
-    current_date = get_ist_now().strftime("%d-%m-%Y")
-    current_time = get_ist_now().strftime("%I:%M:%S %p")
+    now = get_ist_now()
+    current_date = now.strftime("%d-%m-%Y")
+    current_time = now.strftime("%I:%M:%S %p")
+    today_date = now.strftime("%B %d, %Y")
+    yesterday_date = (now - timedelta(days=1)).strftime("%B %d, %Y")
     games_with_slug = []
     for game in games:
         games_with_slug.append({
@@ -172,7 +175,7 @@ def index():
             'today': game[3] or '--',
             'slug': create_slug(game[0])
         })
-    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time)
+    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date)
 
 @app.route('/chart')
 def chart():
