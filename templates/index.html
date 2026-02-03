@@ -582,7 +582,9 @@
                     <div class="post-card-title">{{ post.title }}</div>
                     <div class="post-card-date">{{ post.post_date }}</div>
                     <div class="post-card-desc">{{ post.description }}</div>
-                    <span class="post-card-result {% if post.result == 'Waiting...' %}waiting{% else %}declared{% endif %}">{{ post.result }}</span>
+                    {% if post.result != 'Waiting...' %}
+                    <span class="post-card-result declared">{{ post.result }}</span>
+                    {% endif %}
                 </a>
                 {% endfor %}
             {% else %}
