@@ -1,0 +1,23 @@
+lrwxrwxrwx 1 root root   43 Feb  2 21:37 sattaking.com.im -> /etc/nginx/sites-available/sattaking.com.im
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sudo ln -s /etc/nginx/sites-available/jj-communication.com /etc/nginx/sites-enabled/jj-communication.com
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sudo systemctl restart nginx
+(venv) root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep gunicorn
+root     1269120  0.0  0.2  27584 19372 ?        Ss   Feb01   0:35 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     1269135  0.5  1.8 435088 149516 ?       Sl   Feb01  18:33 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     1269136  0.5  1.9 436080 157536 ?       Sl   Feb01  18:17 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     1269137  0.5  1.8 435712 149260 ?       Sl   Feb01  18:28 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     2322349  0.0  0.9 312072 76792 ?        Ssl  Feb03   0:36 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app
+root     2708010  0.3  0.7 314336 61148 ?        S    Feb03   1:25 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app
+root     2902513  0.0  0.2  27588 19488 pts/0    S    00:16   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn -b 0.0.0.0:8002 main:app
+root     2904922  2.0  0.5 146284 44828 pts/0    Sl   00:22   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn -b 0.0.0.0:8002 main:app
+root     2905087  0.0  0.0   8160  2480 pts/0    S+   00:22   0:00 grep --color=auto gunicorn
+(venv) root@mail:/home/digitalcash24/jj-communication.com# cd /home/digitalcash24/jj-communication.com
+(venv) root@mail:/home/digitalcash24/jj-communication.com# source venv/bin/activate
+(venv) root@mail:/home/digitalcash24/jj-communication.com# export DATABASE_URL="postgresql://sattaadmin:SattaKing2026Secure@localhost:5432/sattaking_db"
+(venv) root@mail:/home/digitalcash24/jj-communication.com# export SESSION_SECRET="SattaKingSession2026Key"
+(venv) root@mail:/home/digitalcash24/jj-communication.com# nohup gunicorn -b 0.0.0.0:8002 main:app > app.log 2>&1 &
+[2] 2905188
+(venv) root@mail:/home/digitalcash24/jj-communication.com# 
