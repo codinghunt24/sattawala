@@ -46,18 +46,23 @@
         color: #333;
     }
     
-    .nav-section {
-        background: #000;
-        padding: 10px 15%;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .nav-wrapper {
+        padding: 0 15%;
     }
     
     @media (max-width: 1200px) {
-        .nav-section { padding: 12px 10%; }
+        .nav-wrapper { padding: 0 10%; }
     }
     
     @media (max-width: 768px) {
-        .nav-section { padding: 12px 3%; }
+        .nav-wrapper { padding: 0 3%; }
+    }
+    
+    .nav-section {
+        background: #000;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .nav-menu {
@@ -256,12 +261,14 @@
     </div>
 </div>
 
-<div class="nav-section">
-    <div class="nav-menu">
-        <a href="/" class="nav-item">Home</a>
-        <a href="/chart" class="nav-item">Chart</a>
-        <a href="/daily-update" class="nav-item active">Daily Update</a>
-        <a href="/latest" class="nav-item">Latest</a>
+<div class="nav-wrapper">
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/daily-update" class="nav-item active">Daily Update</a>
+            <a href="/latest" class="nav-item">Latest</a>
+        </div>
     </div>
 </div>
 
