@@ -414,6 +414,167 @@ def chart():
 def admin():
     return render_template('admin.html')
 
+@app.route('/privacy-policy')
+def privacy_policy():
+    site_settings = get_site_settings()
+    return render_template('static_page.html', 
+        page_title="Privacy Policy",
+        page_content=get_privacy_policy_content(),
+        site_settings=site_settings
+    )
+
+@app.route('/about')
+def about_page():
+    site_settings = get_site_settings()
+    return render_template('static_page.html', 
+        page_title="About Us",
+        page_content=get_about_content(),
+        site_settings=site_settings
+    )
+
+@app.route('/contact')
+def contact_page():
+    site_settings = get_site_settings()
+    return render_template('static_page.html', 
+        page_title="Contact Us",
+        page_content=get_contact_content(),
+        site_settings=site_settings
+    )
+
+@app.route('/disclaimer')
+def disclaimer_page():
+    site_settings = get_site_settings()
+    return render_template('static_page.html', 
+        page_title="Disclaimer",
+        page_content=get_disclaimer_content(),
+        site_settings=site_settings
+    )
+
+def get_privacy_policy_content():
+    return """
+    <h2>Privacy Policy</h2>
+    <p>Last updated: February 2026</p>
+    
+    <h3>Information We Collect</h3>
+    <p>We collect information you provide directly to us when you use our website. This may include:</p>
+    <ul>
+        <li>Usage data and analytics</li>
+        <li>Device and browser information</li>
+        <li>IP address and location data</li>
+    </ul>
+    
+    <h3>How We Use Your Information</h3>
+    <p>We use the information we collect to:</p>
+    <ul>
+        <li>Provide, maintain, and improve our services</li>
+        <li>Analyze usage patterns and trends</li>
+        <li>Deliver relevant advertisements</li>
+    </ul>
+    
+    <h3>Cookies and Tracking</h3>
+    <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>
+    
+    <h3>Third-Party Services</h3>
+    <p>We may use third-party services such as Google Analytics and Google AdSense. These services may collect information about your use of our website.</p>
+    
+    <h3>Data Security</h3>
+    <p>We implement appropriate security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.</p>
+    
+    <h3>Contact Us</h3>
+    <p>If you have any questions about this Privacy Policy, please contact us through our Contact page.</p>
+    """
+
+def get_about_content():
+    return """
+    <h2>About Satta King 786</h2>
+    
+    <h3>Our Mission</h3>
+    <p>Satta King 786 is dedicated to providing fast, accurate, and reliable Satta King results to millions of users across India. Our platform has been serving the community since 2024, offering comprehensive coverage of all major Satta King games.</p>
+    
+    <h3>What We Offer</h3>
+    <ul>
+        <li><strong>Live Results:</strong> Real-time updates for 80+ Satta King games including Gali, Disawar, Faridabad, Ghaziabad, and more</li>
+        <li><strong>Record Charts:</strong> Complete monthly and yearly charts for historical result analysis</li>
+        <li><strong>Daily Updates:</strong> Fresh content every day with detailed game information</li>
+        <li><strong>Mobile-Friendly:</strong> Access results easily from any device</li>
+    </ul>
+    
+    <h3>Our Commitment</h3>
+    <p>We are committed to providing:</p>
+    <ul>
+        <li>100% accurate and verified results</li>
+        <li>Fastest updates in the industry</li>
+        <li>Clean and user-friendly interface</li>
+        <li>Free access without registration</li>
+    </ul>
+    
+    <h3>Popular Games We Cover</h3>
+    <p>Our coverage includes Gali Satta King, Disawar Satta King, Satta Matka, Kalyan Satta Matka, Shri Ganesh Satta King, Black Satta King, Madhur Satta, Delhi Bazar, Taj Satta King, Play Bazaar, UP Satta King, and many more regional games.</p>
+    
+    <h3>Our Team</h3>
+    <p>Our dedicated team works round the clock to ensure you get the fastest and most accurate results. We verify every result before publishing to maintain our high standards of accuracy.</p>
+    """
+
+def get_contact_content():
+    return """
+    <h2>Contact Us</h2>
+    
+    <p>We value your feedback and are here to help with any questions or concerns you may have about our website.</p>
+    
+    <h3>How to Reach Us</h3>
+    <p>You can reach out to us through the following methods:</p>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <p><strong>Email:</strong> support@sattaking.com</p>
+        <p><strong>Response Time:</strong> We typically respond within 24-48 hours</p>
+    </div>
+    
+    <h3>Frequently Asked Questions</h3>
+    
+    <p><strong>Q: How often are results updated?</strong></p>
+    <p>A: Results are updated in real-time as soon as they are officially declared.</p>
+    
+    <p><strong>Q: Can I access old results?</strong></p>
+    <p>A: Yes, use our Record Chart feature to view historical results for any game.</p>
+    
+    <p><strong>Q: Is the website free to use?</strong></p>
+    <p>A: Yes, our website is completely free with no registration required.</p>
+    
+    <h3>Report an Issue</h3>
+    <p>If you notice any incorrect information or technical issues with our website, please let us know immediately so we can address it.</p>
+    """
+
+def get_disclaimer_content():
+    return """
+    <h2>Disclaimer</h2>
+    
+    <p><strong>Last Updated: February 2026</strong></p>
+    
+    <h3>General Information</h3>
+    <p>The information provided on Satta King 786 website is for general informational and entertainment purposes only. We do not encourage, promote, or facilitate any form of gambling, betting, or illegal activities.</p>
+    
+    <h3>Legal Notice</h3>
+    <p>Gambling and betting may be illegal in your jurisdiction. It is your sole responsibility to check and comply with the laws applicable in your area before using any information from this website. We are not responsible for any legal issues that may arise from your use of this information.</p>
+    
+    <h3>No Guarantee of Accuracy</h3>
+    <p>While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information on this website.</p>
+    
+    <h3>No Financial Advice</h3>
+    <p>The results and information displayed on this website should not be considered as financial advice. We do not recommend or encourage any form of gambling or financial speculation based on the information provided.</p>
+    
+    <h3>Third-Party Content</h3>
+    <p>Our website may contain links to third-party websites or services that are not owned or controlled by us. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services.</p>
+    
+    <h3>Limitation of Liability</h3>
+    <p>In no event shall Satta King 786, its operators, or its affiliates be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of this website.</p>
+    
+    <h3>Age Restriction</h3>
+    <p>This website is intended for users who are 18 years of age or older. By using this website, you confirm that you are at least 18 years old.</p>
+    
+    <h3>Play Responsibly</h3>
+    <p style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">If you choose to participate in any form of gambling, please do so responsibly. Set limits, never gamble more than you can afford to lose, and seek help if you feel you have a gambling problem. Resources for gambling addiction help are available in your area.</p>
+    """
+
 @app.route('/_stcore/health')
 def stcore_health():
     return jsonify({'status': 'ok'})
