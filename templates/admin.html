@@ -421,6 +421,7 @@
             <li><a href="/" target="_blank">View Website</a></li>
             <li><a href="#" class="active" onclick="showSection('games')">Games Management</a></li>
             <li><a href="#" onclick="showSection('scrape')">Web Scraping</a></li>
+            <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
         </ul>
     </div>
     
@@ -486,8 +487,10 @@
                 <div id="autoScrapeStatus" style="margin-top: 15px;"></div>
                 <div id="lastScrapeInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
             </div>
-            
-            <div class="card" style="margin-top: 20px;">
+        </div>
+        
+        <div id="settingsSection" style="display: none;">
+            <div class="card">
                 <div class="card-title">Site Settings</div>
                 <p style="color: #a0a0b0; margin-bottom: 15px;">Upload logo and favicon for your website</p>
                 
@@ -583,6 +586,7 @@
         function showSection(section) {
             document.getElementById('gamesSection').style.display = section === 'games' ? 'block' : 'none';
             document.getElementById('scrapeSection').style.display = section === 'scrape' ? 'block' : 'none';
+            document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
         }
@@ -891,14 +895,5 @@
         loadSiteSettings();
     </script>
     
-    <div class="footer-section">
-        <div class="footer-links">
-            <span class="footer-link">Privacy Policy</span>
-            <span class="footer-link">About Us</span>
-            <span class="footer-link">Contact</span>
-            <span class="footer-link">Disclaimer</span>
-        </div>
-        <div class="copyright">© 2026 Satta King. All rights reserved.</div>
-    </div>
 </body>
 </html>
