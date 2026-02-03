@@ -50,34 +50,32 @@
     }
     
     .header-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 25px 15%;
+        background: #fff;
+        padding: 15px 0;
         text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border-bottom: 3px solid #ffd700;
     }
     
-    @media (max-width: 1200px) {
-        .header-section { padding: 25px 10%; }
+    .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
     
-    @media (max-width: 768px) {
-        .header-section { padding: 25px 3%; }
-    }
-    
-    @media (max-width: 480px) {
-        .header-section { padding: 25px 2%; }
+    .logo-container img {
+        max-height: 60px;
     }
     
     .site-title {
-        color: #fff;
-        font-size: 36px;
-        font-weight: 700;
+        color: #333;
+        font-size: 28px;
+        font-weight: 800;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     
     .site-subtitle {
-        color: rgba(255,255,255,0.9);
+        color: #666;
         font-size: 14px;
         margin-top: 8px;
     }
@@ -468,12 +466,13 @@
 {% block content %}
 <div class="main-container">
     <div class="header-section">
-        {% if site_settings and site_settings.logo_data %}
-        <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 80px; max-width: 300px;">
-        {% else %}
-        <div class="site-title">Satta King</div>
-        <div class="site-subtitle">Live Results & Updates</div>
-        {% endif %}
+        <div class="logo-container">
+            {% if site_settings and site_settings.logo_data %}
+            <img src="{{ site_settings.logo_data }}" alt="Satta King">
+            {% else %}
+            <span class="site-title">Satta King</span>
+            {% endif %}
+        </div>
     </div>
 
     <div class="nav-section">
