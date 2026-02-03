@@ -573,24 +573,6 @@
     {% endif %}
     </div>
     
-    <div class="daily-update-section" id="daily-update">
-        <div class="daily-posts-grid">
-            {% if daily_posts and daily_posts|length > 0 %}
-                {% for post in daily_posts %}
-                <a href="/{{ post.slug }}" class="post-card">
-                    <div class="post-card-title">{{ post.title }}</div>
-                    <div class="post-card-date">{{ post.post_date }}</div>
-                    <div class="post-card-desc">{{ post.description }}</div>
-                    {% if post.result != 'Waiting...' %}
-                    <span class="post-card-result declared">{{ post.result }}</span>
-                    {% endif %}
-                </a>
-                {% endfor %}
-            {% else %}
-            <div class="no-posts">No daily updates yet. Posts will appear once auto-posting is enabled.</div>
-            {% endif %}
-        </div>
-    </div>
 </div>
 
 <div class="footer-section">
