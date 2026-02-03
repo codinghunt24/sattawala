@@ -14,19 +14,21 @@
 
 {% block styles %}
 <style>
-    .header-section {
-        background: #fff;
-        padding: 25px 15%;
-        text-align: center;
-        border-bottom: 3px solid #ffd700;
-    }
-    
-    @media (max-width: 1200px) {
-        .header-section { padding: 25px 10%; }
+    .main-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
     }
     
     @media (max-width: 768px) {
-        .header-section { padding: 20px 3%; }
+        .main-wrapper { padding: 0 10px; }
+    }
+    
+    .header-section {
+        background: #fff;
+        padding: 25px 0;
+        text-align: center;
+        border-bottom: 3px solid #ffd700;
     }
     
     .logo-container {
@@ -48,20 +50,8 @@
     
     .nav-section {
         background: #000;
-        padding: 10px 15%;
+        padding: 10px 0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    @media (max-width: 1200px) {
-        .nav-section { padding: 12px 10%; }
-    }
-    
-    @media (max-width: 768px) {
-        .nav-section { padding: 12px 3%; }
-    }
-    
-    @media (max-width: 480px) {
-        .nav-section { padding: 12px 2%; }
     }
     
     .nav-menu {
@@ -87,15 +77,7 @@
     }
     
     .main-content {
-        padding: 20px 15%;
-    }
-    
-    @media (max-width: 1200px) {
-        .main-content { padding: 20px 10%; }
-    }
-    
-    @media (max-width: 768px) {
-        .main-content { padding: 20px 3%; }
+        padding: 20px 0;
     }
     
     .page-title {
@@ -226,21 +208,9 @@
     
     .footer-section {
         background: #1a1a2e;
-        padding: 25px 15%;
+        padding: 25px 0;
         text-align: center;
         margin-top: 40px;
-    }
-    
-    @media (max-width: 1200px) {
-        .footer-section { padding: 25px 10%; }
-    }
-    
-    @media (max-width: 768px) {
-        .footer-section { padding: 25px 3%; }
-    }
-    
-    @media (max-width: 480px) {
-        .footer-section { padding: 25px 2%; }
     }
     
     .footer-links {
@@ -264,27 +234,28 @@
 {% endblock %}
 
 {% block content %}
-<div class="header-section">
-    <div class="logo-container">
-        {% if site_settings and site_settings.logo %}
-        <img src="data:image/png;base64,{{ site_settings.logo }}" alt="Satta King Logo">
-        {% else %}
-        <span class="site-title">Satta King</span>
-        {% endif %}
+<div class="main-wrapper">
+    <div class="header-section">
+        <div class="logo-container">
+            {% if site_settings and site_settings.logo %}
+            <img src="data:image/png;base64,{{ site_settings.logo }}" alt="Satta King Logo">
+            {% else %}
+            <span class="site-title">Satta King</span>
+            {% endif %}
+        </div>
     </div>
-</div>
 
-<div class="nav-section">
-    <div class="nav-menu">
-        <a href="/" class="nav-item">Home</a>
-        <a href="/chart" class="nav-item">Chart</a>
-        <a href="/daily-update" class="nav-item active">Daily Update</a>
-        <a href="/latest" class="nav-item">Latest</a>
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/daily-update" class="nav-item active">Daily Update</a>
+            <a href="/latest" class="nav-item">Latest</a>
+        </div>
     </div>
-</div>
 
-<div class="main-content">
-    <div class="page-title">Daily Update</div>
+    <div class="main-content">
+        <div class="page-title">Daily Update</div>
     
     <div class="daily-posts-grid">
         {% if daily_posts and daily_posts|length > 0 %}
@@ -343,13 +314,14 @@
     {% endif %}
 </div>
 
-<div class="footer-section">
-    <div class="footer-links">
-        <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
-        <a href="/about" class="footer-link">About Us</a>
-        <a href="/contact" class="footer-link">Contact</a>
-        <a href="/disclaimer" class="footer-link">Disclaimer</a>
+    <div class="footer-section">
+        <div class="footer-links">
+            <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+            <a href="/about" class="footer-link">About Us</a>
+            <a href="/contact" class="footer-link">Contact</a>
+            <a href="/disclaimer" class="footer-link">Disclaimer</a>
+        </div>
+        <div class="copyright">© 2026 Satta King. All rights reserved.</div>
     </div>
-    <div class="copyright">© 2026 Satta King. All rights reserved.</div>
 </div>
 {% endblock %}
