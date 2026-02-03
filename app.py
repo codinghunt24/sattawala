@@ -15,10 +15,33 @@ st.markdown("""
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Main container styling */
+    /* Remove all default padding and margins */
+    .stApp {
+        background: white !important;
+    }
+    
     .main .block-container {
         padding: 0 !important;
         max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .stMainBlockContainer {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    .stApp > header {
+        display: none !important;
+    }
+    
+    section[data-testid="stSidebar"] {
+        display: none !important;
+    }
+    
+    div[data-testid="stAppViewBlockContainer"] {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
     
     /* Base responsive container */
