@@ -2,6 +2,8 @@ import streamlit as st
 import psycopg2
 import os
 from datetime import datetime
+import requests
+from bs4 import BeautifulSoup
 
 st.set_page_config(
     page_title="Admin Panel - Satta King",
@@ -44,6 +46,84 @@ def init_database():
         st.error(f"Database connection error: {e}")
 
 init_database()
+
+def scrape_satta_games():
+    try:
+        url = "https://satta-king-fast.com/"
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        games_data = []
+        
+        game_rows = soup.find_all('tr', class_='game-result')
+        
+        for row in game_rows:
+            try:
+                game_name_elem = row.find('h3', class_='game-name')
+                game_time_elem = row.find('h3', class_='game-time')
+                today_result_elem = row.find('td', class_='today-number')
+                
+                if game_name_elem:
+                    game_name = game_name_elem.get_text(strip=True)
+                    game_time = game_time_elem.get_text(strip=True).replace('at ', '') if game_time_elem else ''
+                    
+                    today_result = '--'
+                    if today_result_elem:
+                        result_h3 = today_result_elem.find('h3')
+                        if result_h3:
+                            today_result = result_h3.get_text(strip=True)
+                            if today_result in ['XX', '--', '']:
+                                today_result = '--'
+                    
+                    games_data.append({
+                        'name': game_name,
+                        'result': today_result,
+                        'result_time': game_time
+                    })
+            except Exception as e:
+                continue
+        
+        return games_data, None
+    except Exception as e:
+        return [], str(e)
+
+def save_scraped_games(games_data):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        saved_count = 0
+        updated_count = 0
+        
+        for game in games_data:
+            cur.execute("SELECT id FROM games WHERE name = %s", (game['name'],))
+            existing = cur.fetchone()
+            
+            if existing:
+                cur.execute("""
+                    UPDATE games 
+                    SET result = %s, result_time = %s, updated_at = %s
+                    WHERE name = %s
+                """, (game['result'], game['result_time'], datetime.now(), game['name']))
+                updated_count += 1
+            else:
+                cur.execute("""
+                    INSERT INTO games (name, result, result_time, is_active)
+                    VALUES (%s, %s, %s, %s)
+                """, (game['name'], game['result'], game['result_time'], True))
+                saved_count += 1
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return saved_count, updated_count, None
+    except Exception as e:
+        return 0, 0, str(e)
 
 def init_session_state():
     if 'current_page' not in st.session_state:
@@ -170,6 +250,10 @@ with st.sidebar:
     if st.button("Game", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
         st.session_state.current_page = 'games'
         st.session_state.edit_game_id = None
+        st.rerun()
+    
+    if st.button("Scrape", use_container_width=True, type="primary" if st.session_state.current_page == 'scrape' else "secondary"):
+        st.session_state.current_page = 'scrape'
         st.rerun()
     
     if st.button("Post", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
@@ -380,3 +464,66 @@ elif st.session_state.current_page == 'posts':
                     st.rerun()
                 else:
                     st.error("Please enter post title!")
+
+elif st.session_state.current_page == 'scrape':
+    st.subheader("🔄 Scrape Games")
+    
+    st.info("Scrape realtime game results from satta-king-fast.com")
+    
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        if st.button("🔄 Scrape Now", use_container_width=True, type="primary"):
+            with st.spinner("Scraping data from website..."):
+                games_data, error = scrape_satta_games()
+                
+                if error:
+                    st.error(f"Scraping failed: {error}")
+                elif games_data:
+                    st.success(f"Found {len(games_data)} games!")
+                    
+                    saved, updated, save_error = save_scraped_games(games_data)
+                    
+                    if save_error:
+                        st.error(f"Error saving: {save_error}")
+                    else:
+                        st.success(f"✅ New games added: {saved}")
+                        st.success(f"✅ Games updated: {updated}")
+                else:
+                    st.warning("No games found on the website.")
+    
+    with col2:
+        if st.button("🗑️ Delete All Games", use_container_width=True, type="secondary"):
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("DELETE FROM games")
+            conn.commit()
+            cur.close()
+            conn.close()
+            st.success("All games deleted!")
+            st.rerun()
+    
+    st.divider()
+    st.subheader("📋 Current Games in Database")
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id, name, result, result_time FROM games ORDER BY name ASC")
+    all_games = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    if all_games:
+        st.write(f"Total games: **{len(all_games)}**")
+        
+        for game in all_games:
+            col1, col2, col3 = st.columns([3, 2, 2])
+            with col1:
+                st.write(f"**{game[1]}**")
+            with col2:
+                st.write(f"Result: {game[2] or '--'}")
+            with col3:
+                st.write(f"Time: {game[3] or '--'}")
+        st.divider()
+    else:
+        st.info("No games in database. Click 'Scrape Now' to fetch games.")
