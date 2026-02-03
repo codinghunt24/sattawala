@@ -146,18 +146,35 @@ st.markdown("""
     [data-testid="stSidebar"] {
         min-width: 220px !important;
         max-width: 220px !important;
+        width: 220px !important;
         background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%) !important;
+        transform: none !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        z-index: 999 !important;
     }
     
     [data-testid="stSidebar"] > div {
         background: transparent !important;
         padding-top: 20px;
+        width: 220px !important;
+    }
+    
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        min-width: 220px !important;
+        max-width: 220px !important;
+        width: 220px !important;
+        margin-left: 0 !important;
+        transform: none !important;
     }
     
     [data-testid="stSidebarCollapseButton"] {display: none !important;}
     [data-testid="collapsedControl"] {display: none !important;}
     
     .main .block-container {
+        margin-left: 220px !important;
         padding: 20px 30px;
         max-width: 100%;
     }
@@ -234,8 +251,15 @@ st.markdown("""
         [data-testid="stSidebar"] {
             min-width: 180px !important;
             max-width: 180px !important;
+            width: 180px !important;
+            position: fixed !important;
+            transform: none !important;
+        }
+        [data-testid="stSidebar"] > div {
+            width: 180px !important;
         }
         .main .block-container {
+            margin-left: 180px !important;
             padding: 15px;
         }
         .content-card {
