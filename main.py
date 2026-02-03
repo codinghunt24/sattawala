@@ -819,61 +819,91 @@ def generate_seo_post_content(game_name, result, post_date):
     
     game_name_lower = game_name.lower()
     
+    month_name = post_date.strftime("%B")
+    year = post_date.strftime("%Y")
+    
     common_content = f"""
     <div class="post-info">
-        <h3>About {game_name}</h3>
-        <p>{game_name} is one of the most popular and trusted Satta King games in India. Every day, thousands of players eagerly await the {game_name} result. Our platform provides fast, accurate, and verified {game_name} results as soon as they are declared.</p>
+        <h2>About {game_name}</h2>
+        <p>{game_name} is one of the most popular and trusted Satta King games in India. Every day, thousands of players eagerly await the {game_name} result. Our platform provides fast, accurate, and verified {game_name} results as soon as they are declared. The {game_name} game has gained immense popularity due to its simple format and daily result declaration.</p>
         
-        <h3>{game_name} Game Information</h3>
+        <p>Players across India follow {game_name} results with great interest. The game operates on a fixed schedule, and results are declared at the same time every day. Our website ensures that you get the {game_name} result as soon as it is officially announced, without any delay.</p>
+        
+        <h2>{game_name} Game Information</h2>
         <table class="result-table">
             <tr><td>Game Name</td><td><strong>{game_name}</strong></td></tr>
             <tr><td>Result Date</td><td>{date_str}</td></tr>
+            <tr><td>Result Month</td><td>{month_name} {year}</td></tr>
             <tr><td>Game Type</td><td>Satta King</td></tr>
             <tr><td>Result Frequency</td><td>Daily</td></tr>
             <tr><td>Result Status</td><td>{result_display if result_display != 'Waiting...' else 'Pending'}</td></tr>
         </table>
         
-        <h3>How to Check {game_name} Result</h3>
+        <h2>How to Check {game_name} Result</h2>
+        <p>Checking {game_name} result on our website is very easy. Follow these simple steps to get your result quickly:</p>
         <ul>
             <li>Visit our website daily at the scheduled time for live {game_name} result</li>
             <li>Check the {game_name} Record Chart for complete historical data</li>
             <li>Bookmark this page for quick access to {game_name} updates</li>
             <li>Our system automatically updates results in real-time</li>
             <li>All results are verified before being published</li>
+            <li>You can also check previous day results from our archive</li>
         </ul>
         
-        <h3>{game_name} Record Chart</h3>
-        <p>View the complete <a href="/chart?game={create_slug(game_name)}" style="color: #667eea; font-weight: 600;">{game_name} Monthly Record Chart</a> to analyze past results, identify patterns, and track winning numbers. Our record chart displays daily results organized by month and year for easy reference.</p>
+        <h2>{game_name} Result Chart {month_name} {year}</h2>
+        <p>View the complete <a href="/chart?game={create_slug(game_name)}" style="color: #667eea; font-weight: 600;">{game_name} Monthly Record Chart for {month_name} {year}</a> to analyze past results, identify patterns, and track winning numbers. Our record chart displays daily results organized by month and year for easy reference.</p>
         
-        <h3>Why Choose Our Website for {game_name} Result?</h3>
+        <p>The {game_name} chart is updated daily with new results. You can use the chart to view historical data, compare results across different months, and keep track of all winning numbers. Our chart feature allows you to select any month and year to view the complete result history.</p>
+        
+        <h2>Why Choose Our Website for {game_name} Result?</h2>
+        <p>Our website is the most trusted source for {game_name} results. Here's why thousands of players choose us:</p>
         <ul>
-            <li><strong>Fast Updates:</strong> We update {game_name} results within seconds of declaration</li>
-            <li><strong>100% Accurate:</strong> All results are verified from authentic sources</li>
-            <li><strong>Complete History:</strong> Access {game_name} record charts for any month/year</li>
-            <li><strong>Mobile Friendly:</strong> Check results easily on any device</li>
-            <li><strong>Free Access:</strong> No registration or fees required</li>
+            <li><strong>Fastest Updates:</strong> We update {game_name} results within seconds of declaration. You won't find faster updates anywhere else.</li>
+            <li><strong>100% Accurate:</strong> All results are verified from authentic sources before publishing. We never post unverified results.</li>
+            <li><strong>Complete History:</strong> Access {game_name} record charts for any month and year. Our database goes back several years.</li>
+            <li><strong>Mobile Friendly:</strong> Check results easily on any device - mobile, tablet, or desktop. Our website is fully responsive.</li>
+            <li><strong>Free Access:</strong> No registration, no fees, no hidden charges. Everything is completely free.</li>
+            <li><strong>No Ads Interference:</strong> Clean interface without intrusive popups or misleading ads.</li>
         </ul>
         
-        <h3>{game_name} FAQs</h3>
+        <h2>{game_name} Result Today - {date_str}</h2>
+        <p>The {game_name} result for today ({date_str}) is displayed at the top of this page. If the result shows "Waiting", it means the result has not been declared yet. Once the result is announced, this page will automatically update with the winning number.</p>
+        
+        <p>We recommend refreshing this page around the scheduled result time to get the latest {game_name} result. You can also enable browser notifications to get instant alerts when new results are posted.</p>
+        
+        <h2>{game_name} FAQs</h2>
         <div class="faq-section">
             <p><strong>Q: What time does {game_name} result come?</strong></p>
-            <p>A: {game_name} result is declared daily at the scheduled game time. Check our homepage for the exact timing.</p>
+            <p>A: {game_name} result is declared daily at the scheduled game time. The exact timing varies by game. Check our homepage to see the scheduled time for {game_name}.</p>
             
             <p><strong>Q: How can I check old {game_name} results?</strong></p>
-            <p>A: Visit our {game_name} Record Chart page where you can view results for any month and year.</p>
+            <p>A: Visit our {game_name} Record Chart page where you can view results for any month and year. Simply select the month and year from the dropdown menu to view historical results.</p>
             
             <p><strong>Q: Is this {game_name} result website reliable?</strong></p>
-            <p>A: Yes, we provide 100% verified and accurate {game_name} results. Our platform is trusted by thousands of daily visitors.</p>
+            <p>A: Yes, we provide 100% verified and accurate {game_name} results. Our platform is trusted by thousands of daily visitors. We have been providing reliable results for many years.</p>
             
             <p><strong>Q: Can I get {game_name} result notification?</strong></p>
-            <p>A: Bookmark our website and check back at the result time for live updates.</p>
+            <p>A: Bookmark our website and check back at the result time for live updates. You can also save this page to your home screen for quick access.</p>
+            
+            <p><strong>Q: What if {game_name} result is not showing?</strong></p>
+            <p>A: If the result shows "Waiting", the result has not been declared yet. Please wait for the scheduled time. If there's any delay from the official source, the result will be updated as soon as it's available.</p>
+            
+            <p><strong>Q: How often is {game_name} result updated?</strong></p>
+            <p>A: {game_name} result is updated daily. Each day's result is posted as soon as it is officially declared.</p>
         </div>
         
-        <h3>Related Satta King Games</h3>
-        <p>Apart from {game_name}, we also provide live results for other popular Satta King games including Gali, Disawar, Faridabad, Ghaziabad, Delhi Bazaar, and many more. Check our homepage for complete list of games and their results.</p>
+        <h2>Related Satta King Games</h2>
+        <p>Apart from {game_name}, we also provide live results for other popular Satta King games. Our comprehensive coverage includes Gali, Disawar, Faridabad, Ghaziabad, Delhi Bazaar, Shri Ganesh, Taj, and many more games. Check our <a href="/" style="color: #667eea; font-weight: 600;">homepage</a> for the complete list of games and their latest results.</p>
         
-        <h3>Important Notice</h3>
-        <p style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">This website is for informational purposes only. We do not encourage or promote any form of gambling. Please check and follow your local laws and regulations. Always play responsibly.</p>
+        <p>Each game has its own dedicated result page and record chart. You can easily navigate between different games using our menu or the homepage game list.</p>
+        
+        <h2>About Satta King</h2>
+        <p>Satta King is a popular lottery-style game that has been played in India for decades. The game involves selecting numbers, and results are declared daily. Different games have different result times, and our website covers all major Satta King games with live result updates.</p>
+        
+        <p>Our website serves as an information portal for Satta King results. We compile results from various sources and present them in an easy-to-read format. Our goal is to provide accurate and timely information to our visitors.</p>
+        
+        <h2>Important Disclaimer</h2>
+        <p style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">This website is for informational and entertainment purposes only. We do not encourage, promote, or facilitate any form of gambling or betting. Gambling may be illegal in your jurisdiction. Please check and follow your local laws and regulations before engaging in any form of gambling. Always play responsibly and within your means. If you have a gambling problem, please seek professional help.</p>
     </div>
 </div>
 """
