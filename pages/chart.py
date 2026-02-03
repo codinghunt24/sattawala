@@ -32,12 +32,13 @@ def get_all_games():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT DISTINCT name FROM games WHERE is_active = true ORDER BY display_order ASC")
+        cur.execute("SELECT DISTINCT name FROM games WHERE is_active = true ORDER BY name ASC")
         games = [row[0] for row in cur.fetchall()]
         cur.close()
         conn.close()
         return games
-    except:
+    except Exception as e:
+        st.error(f"Error loading games: {e}")
         return []
 
 game_name = st.query_params.get("game", "")
