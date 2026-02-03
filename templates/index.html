@@ -289,6 +289,8 @@
         padding: 15px;
         border-left: 4px solid #667eea;
         transition: all 0.3s;
+        text-decoration: none;
+        display: block;
     }
     
     .post-card:hover {
@@ -298,10 +300,23 @@
     
     .post-card-title {
         color: #333;
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
         line-height: 1.4;
+    }
+    
+    .post-card-date {
+        color: #888;
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .post-card-desc {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 10px;
     }
     
     .post-card-result {
@@ -564,7 +579,9 @@
             {% if daily_posts and daily_posts|length > 0 %}
                 {% for post in daily_posts %}
                 <a href="/post/{{ post.slug }}" class="post-card">
-                    <div class="post-card-title">{{ post.game_name }} Result Today</div>
+                    <div class="post-card-title">{{ post.title }}</div>
+                    <div class="post-card-date">{{ post.post_date }}</div>
+                    <div class="post-card-desc">{{ post.description }}</div>
                     <span class="post-card-result {% if post.result == 'Waiting...' %}waiting{% else %}declared{% endif %}">{{ post.result }}</span>
                 </a>
                 {% endfor %}

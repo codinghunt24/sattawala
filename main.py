@@ -945,7 +945,7 @@ def get_daily_posts_for_display():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            SELECT id, game_name, slug, title, result, post_date, created_at 
+            SELECT id, game_name, slug, title, result, post_date, created_at, meta_description 
             FROM daily_posts 
             WHERE post_date = %s AND is_published = true
             ORDER BY created_at DESC
@@ -963,7 +963,8 @@ def get_daily_posts_for_display():
                 'title': row[3],
                 'result': row[4],
                 'post_date': str(row[5]),
-                'created_at': str(row[6])
+                'created_at': str(row[6]),
+                'description': row[7][:120] + '...' if row[7] and len(row[7]) > 120 else (row[7] or '')
             })
         return posts
     except Exception as e:
