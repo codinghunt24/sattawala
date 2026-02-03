@@ -157,8 +157,11 @@ def init_database():
                 logo_data TEXT,
                 favicon_data TEXT,
                 site_title VARCHAR(255) DEFAULT 'Satta King',
+                ga_tracking_id VARCHAR(50),
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            
+            ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS ga_tracking_id VARCHAR(50);
             
             CREATE TABLE IF NOT EXISTS daily_update_settings (
                 id SERIAL PRIMARY KEY,
@@ -1093,7 +1096,7 @@ def get_site_settings():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, logo_data, favicon_data, site_title FROM site_settings LIMIT 1")
+        cur.execute("SELECT id, logo_data, favicon_data, site_title, ga_tracking_id FROM site_settings LIMIT 1")
         row = cur.fetchone()
         cur.close()
         conn.close()
@@ -1102,11 +1105,12 @@ def get_site_settings():
                 'id': row[0],
                 'logo_data': row[1],
                 'favicon_data': row[2],
-                'site_title': row[3]
+                'site_title': row[3],
+                'ga_tracking_id': row[4]
             }
-        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King'}
+        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King', 'ga_tracking_id': None}
     except:
-        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King'}
+        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King', 'ga_tracking_id': None}
 
 @app.route('/api/site-settings', methods=['GET'])
 def api_get_site_settings():
@@ -1134,6 +1138,9 @@ def api_update_site_settings():
             if 'site_title' in data:
                 updates.append("site_title = %s")
                 values.append(data['site_title'])
+            if 'ga_tracking_id' in data:
+                updates.append("ga_tracking_id = %s")
+                values.append(data['ga_tracking_id'] if data['ga_tracking_id'] else None)
             updates.append("updated_at = %s")
             values.append(get_ist_now())
             values.append(existing[0])
@@ -1141,9 +1148,9 @@ def api_update_site_settings():
             cur.execute(f"UPDATE site_settings SET {', '.join(updates)} WHERE id = %s", values)
         else:
             cur.execute("""
-                INSERT INTO site_settings (logo_data, favicon_data, site_title, updated_at)
-                VALUES (%s, %s, %s, %s)
-            """, (data.get('logo_data'), data.get('favicon_data'), data.get('site_title', 'Satta King'), get_ist_now()))
+                INSERT INTO site_settings (logo_data, favicon_data, site_title, ga_tracking_id, updated_at)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (data.get('logo_data'), data.get('favicon_data'), data.get('site_title', 'Satta King'), data.get('ga_tracking_id'), get_ist_now()))
         
         conn.commit()
         cur.close()
