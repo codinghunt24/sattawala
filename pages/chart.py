@@ -4,6 +4,11 @@ import os
 from datetime import datetime
 import calendar
 import re
+import json
+
+current_month_name = datetime.now().strftime("%B")
+current_year = datetime.now().year
+current_month = datetime.now().month
 
 st.set_page_config(page_title="Record Chart - Satta King", page_icon="📊", layout="wide")
 
@@ -58,6 +63,88 @@ def get_all_games():
 game_slug = st.query_params.get("game", "")
 games_list = get_all_games()
 game_name = find_game_by_slug(game_slug, games_list) if game_slug else ""
+
+month_param = st.query_params.get("month", str(current_month))
+year_param = st.query_params.get("year", str(current_year))
+try:
+    seo_month = int(month_param)
+    seo_year = int(year_param)
+except:
+    seo_month = current_month
+    seo_year = current_year
+
+months_list = ["January", "February", "March", "April", "May", "June", 
+               "July", "August", "September", "October", "November", "December"]
+seo_month_name = months_list[seo_month - 1] if 1 <= seo_month <= 12 else current_month_name
+
+if game_name:
+    seo_title = f"{game_name} Result Chart {seo_month_name} {seo_year} | Satta King Live"
+    seo_description = f"Check {game_name} Satta King result chart for {seo_month_name} {seo_year}. View daily results, winning numbers, and complete record chart. Updated live with latest {game_name} results."
+    seo_keywords = f"{game_name}, {game_name} result, {game_name} chart, {game_name} {seo_month_name} {seo_year}, satta king {game_name}, {game_name} record, {game_name} live result"
+    canonical_url = f"https://sattaking.replit.app/chart?game={game_slug}"
+    
+    schema_data = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": seo_title,
+        "description": seo_description,
+        "url": canonical_url,
+        "dateModified": datetime.now().isoformat(),
+        "mainEntity": {
+            "@type": "Dataset",
+            "name": f"{game_name} Results - {seo_month_name} {seo_year}",
+            "description": f"Daily result chart for {game_name} game showing all winning numbers for {seo_month_name} {seo_year}",
+            "temporalCoverage": f"{seo_year}-{seo_month:02d}"
+        },
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://sattaking.replit.app/"},
+                {"@type": "ListItem", "position": 2, "name": "Record Chart", "item": "https://sattaking.replit.app/chart"},
+                {"@type": "ListItem", "position": 3, "name": game_name, "item": canonical_url}
+            ]
+        }
+    }
+else:
+    seo_title = "Satta King Record Chart | View All Game Results"
+    seo_description = "View complete Satta King record charts for all games. Check daily results, winning numbers, and historical data. Select any game to see monthly result chart."
+    seo_keywords = "satta king, satta king chart, satta king result, record chart, satta result, game results"
+    canonical_url = "https://sattaking.replit.app/chart"
+    schema_data = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": seo_title,
+        "description": seo_description,
+        "url": canonical_url
+    }
+
+seo_html = f"""
+<title>{seo_title}</title>
+<meta name="description" content="{seo_description}">
+<meta name="keywords" content="{seo_keywords}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{canonical_url}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{canonical_url}">
+<meta property="og:title" content="{seo_title}">
+<meta property="og:description" content="{seo_description}">
+<meta property="og:site_name" content="Satta King">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{canonical_url}">
+<meta name="twitter:title" content="{seo_title}">
+<meta name="twitter:description" content="{seo_description}">
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{json.dumps(schema_data, indent=2)}
+</script>
+"""
+
+st.markdown(seo_html, unsafe_allow_html=True)
 
 st.markdown("""
 <style>
@@ -232,12 +319,10 @@ with col1:
 with col2:
     months = ["January", "February", "March", "April", "May", "June", 
               "July", "August", "September", "October", "November", "December"]
-    current_month = datetime.now().month
     selected_month = st.selectbox("Select Month", months, index=current_month - 1)
     month_num = months.index(selected_month) + 1
 
 with col3:
-    current_year = datetime.now().year
     years = list(range(current_year, current_year - 5, -1))
     selected_year = st.selectbox("Select Year", years)
 

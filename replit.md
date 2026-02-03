@@ -68,3 +68,59 @@ Preferred communication style: Simple, everyday language.
 
 ### Environment Variables Required
 - `DATABASE_URL`: PostgreSQL connection string (required for database functionality)
+
+## SEO Implementation
+
+### URL Structure (SEO-Friendly Slugs)
+- Homepage: `/`
+- Chart Page: `/chart?game={game-slug}`
+- Example: `/chart?game=gali-disawar-mix` (instead of `GALI%20DISAWAR%20MIX`)
+
+### Monthly Title Format for Google Indexing
+
+Each game's chart page is optimized for search engines with dynamic titles:
+
+**Title Format:**
+```
+{GAME NAME} Result Chart {Month} {Year} | Satta King Live
+```
+
+**Example Titles by Month (for GALI DISAWAR MIX):**
+
+| Month | Year | SEO Title |
+|-------|------|-----------|
+| January | 2026 | GALI DISAWAR MIX Result Chart January 2026 \| Satta King Live |
+| February | 2026 | GALI DISAWAR MIX Result Chart February 2026 \| Satta King Live |
+| March | 2026 | GALI DISAWAR MIX Result Chart March 2026 \| Satta King Live |
+| April | 2026 | GALI DISAWAR MIX Result Chart April 2026 \| Satta King Live |
+| May | 2026 | GALI DISAWAR MIX Result Chart May 2026 \| Satta King Live |
+| June | 2026 | GALI DISAWAR MIX Result Chart June 2026 \| Satta King Live |
+| July | 2026 | GALI DISAWAR MIX Result Chart July 2026 \| Satta King Live |
+| August | 2026 | GALI DISAWAR MIX Result Chart August 2026 \| Satta King Live |
+| September | 2026 | GALI DISAWAR MIX Result Chart September 2026 \| Satta King Live |
+| October | 2026 | GALI DISAWAR MIX Result Chart October 2026 \| Satta King Live |
+| November | 2026 | GALI DISAWAR MIX Result Chart November 2026 \| Satta King Live |
+| December | 2026 | GALI DISAWAR MIX Result Chart December 2026 \| Satta King Live |
+
+### SEO Elements Implemented
+
+1. **Dynamic Title Tags** - Game name + Month + Year
+2. **Meta Description** - Detailed description with target keywords
+3. **Meta Keywords** - Game name variations and related terms
+4. **Canonical URLs** - Prevents duplicate content issues
+5. **Open Graph Tags** - For Facebook/social sharing
+6. **Twitter Cards** - For Twitter sharing
+7. **Schema.org JSON-LD** - Structured data for rich snippets:
+   - WebPage schema
+   - Dataset schema (for result data)
+   - BreadcrumbList schema (navigation path)
+
+### Target Keywords Per Game
+For each game, the following keyword patterns are targeted:
+- `{game name}`
+- `{game name} result`
+- `{game name} chart`
+- `{game name} {month} {year}`
+- `satta king {game name}`
+- `{game name} record`
+- `{game name} live result`
