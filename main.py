@@ -1197,8 +1197,15 @@ def api_get_manual_post(id):
 def api_create_manual_post():
     try:
         data = request.json
+        if not data.get('title') or not data.get('slug'):
+            return jsonify({'success': False, 'error': 'Title and slug are required'}), 400
         conn = get_db_connection()
         cur = conn.cursor()
+        cur.execute("SELECT id FROM manual_posts WHERE slug = %s", (data.get('slug'),))
+        if cur.fetchone():
+            cur.close()
+            conn.close()
+            return jsonify({'success': False, 'error': 'A post with this slug already exists'}), 400
         cur.execute("""
             INSERT INTO manual_posts (slug, title, content, meta_title, meta_description, meta_keywords,
                                       og_title, og_description, canonical_url, schema_type, is_published, publish_date)
