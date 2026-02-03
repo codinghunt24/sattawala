@@ -262,6 +262,154 @@
         font-size: 12px;
     }
     
+    .game-info-section {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+    }
+    
+    .info-title {
+        color: #333;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    
+    .info-text {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+    
+    .stats-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .stat-box {
+        flex: 1;
+        min-width: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        color: #fff;
+    }
+    
+    .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-top: 5px;
+    }
+    
+    .table-title {
+        color: #333;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    .content-section {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+    }
+    
+    .section-heading {
+        color: #333;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    
+    .content-text {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+    
+    .faq-section {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+    }
+    
+    .faq-item {
+        border-bottom: 1px solid #eee;
+        padding: 20px 0;
+    }
+    
+    .faq-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .faq-item:first-of-type {
+        padding-top: 0;
+    }
+    
+    .faq-question {
+        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .faq-answer {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+    
+    .related-section {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+    }
+    
+    .related-games {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .related-game-link {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .related-game-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
     @media (max-width: 768px) {
         .selectors-row {
             gap: 8px;
@@ -335,6 +483,28 @@
 </form>
 
     {% if game_name %}
+    
+    <div class="game-info-section">
+        <h2 class="info-title">About {{ game_name }}</h2>
+        <p class="info-text">{{ game_name }} is a popular Satta King game with daily results. This page shows the complete result chart for {{ month_name }} {{ selected_year }}. Check the table below for all winning numbers declared during this month. Our website provides accurate and timely updates for {{ game_name }} results.</p>
+        
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-number">{{ total_results }}</div>
+                <div class="stat-label">Results Declared</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ days_in_month }}</div>
+                <div class="stat-label">Days in Month</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ days_in_month - total_results }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+    </div>
+    
+    <h2 class="table-title">{{ game_name }} Result Chart - {{ month_name }} {{ selected_year }}</h2>
     <table class="results-table">
         <thead>
             <tr>
@@ -354,6 +524,36 @@
             {% endfor %}
         </tbody>
     </table>
+    
+    <div class="content-section">
+        <h2 class="section-heading">{{ game_name }} {{ month_name }} {{ selected_year }} Summary</h2>
+        <p class="content-text">This chart displays all {{ game_name }} Satta King results for {{ month_name }} {{ selected_year }}. A total of {{ total_results }} results have been declared so far this month. Players can use this chart to track winning numbers and analyze patterns. We update this page regularly to ensure you have access to the latest {{ game_name }} results.</p>
+        <p class="content-text">{{ game_name }} is known for its consistent timing and reliable result declaration. Whether you're looking for today's result or historical data, our record chart provides comprehensive information for {{ month_name }} {{ selected_year }}.</p>
+    </div>
+    
+    {% if faqs %}
+    <div class="faq-section">
+        <h2 class="section-heading">Frequently Asked Questions</h2>
+        {% for faq in faqs %}
+        <div class="faq-item">
+            <h3 class="faq-question">{{ faq.question }}</h3>
+            <p class="faq-answer">{{ faq.answer }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if related_games %}
+    <div class="related-section">
+        <h2 class="section-heading">Other Popular Games</h2>
+        <div class="related-games">
+            {% for game in related_games %}
+            <a href="/chart?game={{ game.slug }}" class="related-game-link">{{ game.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
     {% else %}
     <div class="no-results">Please select a game to view results</div>
     {% endif %}

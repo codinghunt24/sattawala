@@ -240,6 +240,49 @@ def chart():
     
     games_with_slug = [{'name': g, 'slug': create_slug(g)} for g in games_list]
     
+    total_results = len([r for r in results.values() if r != '--'])
+    results_list = [int(r) for r in results.values() if r != '--' and r.isdigit()]
+    avg_result = round(sum(results_list) / len(results_list)) if results_list else 0
+    
+    related_games = [g for g in games_with_slug if g['name'] != game_name][:5]
+    
+    faqs = []
+    if game_name:
+        faqs = [
+            {
+                "question": f"What is {game_name} Satta King?",
+                "answer": f"{game_name} is one of the most popular Satta King games. Results are declared daily and players can check the winning numbers on our website. We provide live updates and complete monthly charts for {game_name}."
+            },
+            {
+                "question": f"What time does {game_name} result come?",
+                "answer": f"{game_name} results are updated daily on our website. Check the homepage for the exact timing of result declaration. We update results in real-time as soon as they are announced."
+            },
+            {
+                "question": f"How to check {game_name} result chart?",
+                "answer": f"You can view the complete {game_name} result chart by selecting the game, month, and year from the dropdown menus above. Our chart shows all daily results for the selected period."
+            },
+            {
+                "question": f"Is {game_name} result chart accurate?",
+                "answer": f"Yes, our {game_name} result chart is updated with accurate information. We source our data from reliable sources and update results in real-time."
+            }
+        ]
+        
+        faq_schema = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": faq["question"],
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": faq["answer"]
+                    }
+                } for faq in faqs
+            ]
+        }
+        schema_data["hasPart"] = faq_schema
+    
     return render_template('chart.html',
         game_name=game_name,
         game_slug=game_slug,
@@ -255,7 +298,11 @@ def chart():
         seo_description=seo_description,
         seo_keywords=seo_keywords,
         canonical_url=canonical_url,
-        schema_data=json.dumps(schema_data, indent=2)
+        schema_data=json.dumps(schema_data, indent=2),
+        total_results=total_results,
+        avg_result=avg_result,
+        related_games=related_games,
+        faqs=faqs
     )
 
 @app.route('/admin')
