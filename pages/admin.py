@@ -648,210 +648,98 @@ if st.session_state.admin_page == 'dashboard':
             st.rerun()
 
 elif st.session_state.admin_page == 'game':
-    tab1, tab2, tab3 = st.tabs(["📋 All Games", "➕ Add Game", "🔄 Scrape & Auto"])
+    settings = get_scrape_settings()
     
-    with tab1:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT id, name, game_time, yesterday_result, today_result, is_active FROM games ORDER BY id DESC")
-        games = cur.fetchall()
-        cur.close()
-        conn.close()
-        
-        if games:
-            st.markdown(f"**Total: {len(games)} games**")
-            
-            st.markdown("""
-            <div class="game-table-header">
-                <div style="display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr; gap: 10px;">
-                    <span>Game Name</span>
-                    <span>Time</span>
-                    <span>Yesterday</span>
-                    <span>Today</span>
-                    <span>Status</span>
-                    <span>Actions</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            for game in games:
-                col1, col2, col3, col4, col5, col6 = st.columns([2, 1.5, 1, 1, 0.5, 1.5])
-                with col1:
-                    st.write(f"**{game[1]}**")
-                with col2:
-                    st.write(game[2] or '--')
-                with col3:
-                    st.write(game[3] or '--')
-                with col4:
-                    st.write(game[4] or '--')
-                with col5:
-                    st.write("✅" if game[5] else "❌")
-                with col6:
-                    c1, c2 = st.columns(2)
-                    with c1:
-                        if st.button("✏️", key=f"eg_{game[0]}", type="secondary"):
-                            st.session_state.edit_id = game[0]
-                            st.rerun()
-                    with c2:
-                        if st.button("🗑️", key=f"dg_{game[0]}", type="secondary"):
-                            conn = get_db_connection()
-                            cur = conn.cursor()
-                            cur.execute("DELETE FROM games WHERE id = %s", (game[0],))
-                            conn.commit()
-                            cur.close()
-                            conn.close()
-                            st.rerun()
-                st.markdown("---")
-        else:
-            st.info("No games found. Use Scrape tab to fetch games!")
-        
-        if st.session_state.edit_id:
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM games WHERE id = %s", (st.session_state.edit_id,))
-            g = cur.fetchone()
-            cur.close()
-            conn.close()
-            if g:
-                st.markdown("### ✏️ Edit Game")
-                with st.form("edit_game"):
-                    name = st.text_input("Game Name", value=g[1])
-                    game_time = st.text_input("Time", value=g[2] or "")
-                    yesterday = st.text_input("Yesterday Result", value=g[3] or "")
-                    today = st.text_input("Today Result", value=g[4] or "")
-                    active = st.checkbox("Active", value=g[5])
-                    c1, c2 = st.columns(2)
-                    with c1:
-                        if st.form_submit_button("💾 Save", type="primary"):
-                            conn = get_db_connection()
-                            cur = conn.cursor()
-                            cur.execute("""UPDATE games SET name=%s, game_time=%s, yesterday_result=%s, 
-                                          today_result=%s, is_active=%s, updated_at=%s WHERE id=%s""",
-                                       (name, game_time, yesterday, today, active, datetime.now(), st.session_state.edit_id))
-                            conn.commit()
-                            cur.close()
-                            conn.close()
-                            st.session_state.edit_id = None
-                            st.rerun()
-                    with c2:
-                        if st.form_submit_button("❌ Cancel"):
-                            st.session_state.edit_id = None
-                            st.rerun()
+    st.markdown("### 🔄 Scrape Settings")
     
-    with tab2:
-        st.markdown("### Add New Game")
-        with st.form("add_game"):
-            name = st.text_input("Game Name *")
-            game_time = st.text_input("Time (e.g., at 03:00 PM)")
-            yesterday = st.text_input("Yesterday Result")
-            today = st.text_input("Today Result")
-            active = st.checkbox("Active", value=True)
-            if st.form_submit_button("➕ Add Game", type="primary"):
-                if name:
-                    conn = get_db_connection()
-                    cur = conn.cursor()
-                    cur.execute("""INSERT INTO games (name, game_time, yesterday_result, today_result, is_active) 
-                                  VALUES (%s, %s, %s, %s, %s)""",
-                               (name, game_time, yesterday, today, active))
-                    conn.commit()
-                    cur.close()
-                    conn.close()
-                    st.success("Game added!")
-                    st.rerun()
+    st.markdown("""
+    <div class="scrape-info">
+        <strong>Cloudflare Bypass Enabled</strong><br>
+        <small>Using rotating user agents and browser headers to bypass protection</small>
+    </div>
+    """, unsafe_allow_html=True)
     
-    with tab3:
-        settings = get_scrape_settings()
-        
-        st.markdown("### 🔄 Scrape Settings")
-        
-        st.markdown("""
-        <div class="scrape-info">
-            <strong>Cloudflare Bypass Enabled</strong><br>
-            <small>Using rotating user agents and browser headers to bypass protection</small>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        scrape_url = st.text_input("Scrape URL", value=settings['scrape_url'], 
-                                   placeholder="https://satta-king-fast.com/")
-        
-        st.markdown("### ⏰ Auto Scrape Schedule")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            auto_scrape = st.checkbox("Enable Auto Scrape", value=settings['auto_scrape'])
-        with col2:
-            interval = st.selectbox("Interval (minutes)", 
-                                   options=[1, 2, 5, 10, 15, 30, 60],
-                                   index=[1, 2, 5, 10, 15, 30, 60].index(settings['interval_minutes']) 
-                                         if settings['interval_minutes'] in [1, 2, 5, 10, 15, 30, 60] else 2)
-        
-        if settings['last_scrape']:
-            st.info(f"Last scrape: {settings['last_scrape'].strftime('%d-%m-%Y %H:%M:%S')}")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("💾 Save Settings", type="primary", use_container_width=True):
-                if save_scrape_settings(scrape_url, auto_scrape, interval):
-                    st.success("Settings saved!")
-                else:
-                    st.error("Failed to save settings")
-        
-        with col2:
-            if st.button("🔄 Scrape Now", type="secondary", use_container_width=True):
-                with st.spinner("Scraping with Cloudflare bypass..."):
-                    games_data, error = scrape_satta_games(scrape_url)
-                    if error:
-                        st.error(f"Error: {error}")
-                    elif games_data:
-                        saved, updated, save_error = save_scraped_games(games_data)
-                        if save_error:
-                            st.error(f"Save error: {save_error}")
-                        else:
-                            st.success(f"✅ Found {len(games_data)} games | New: {saved} | Updated: {updated}")
-                            save_scrape_settings(scrape_url, auto_scrape, interval)
-                    else:
-                        st.warning("No games found on the page")
-        
-        st.markdown("---")
-        st.markdown("### 🗑️ Clear All Data")
-        
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            st.warning("This will delete ALL games from the database!")
-        with col2:
-            if st.button("🗑️ Clear All", type="secondary", use_container_width=True):
-                success, error = clear_all_games()
-                if success:
-                    st.success("All games cleared!")
-                    st.rerun()
-                else:
+    scrape_url = st.text_input("Scrape URL", value=settings['scrape_url'], 
+                               placeholder="https://satta-king-fast.com/")
+    
+    st.markdown("### ⏰ Auto Scrape Schedule")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        auto_scrape = st.checkbox("Enable Auto Scrape", value=settings['auto_scrape'])
+    with col2:
+        interval = st.selectbox("Interval (minutes)", 
+                               options=[1, 2, 5, 10, 15, 30, 60],
+                               index=[1, 2, 5, 10, 15, 30, 60].index(settings['interval_minutes']) 
+                                     if settings['interval_minutes'] in [1, 2, 5, 10, 15, 30, 60] else 2)
+    
+    if settings['last_scrape']:
+        st.info(f"Last scrape: {settings['last_scrape'].strftime('%d-%m-%Y %H:%M:%S')}")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("💾 Save Settings", type="primary", use_container_width=True):
+            if save_scrape_settings(scrape_url, auto_scrape, interval):
+                st.success("Settings saved!")
+            else:
+                st.error("Failed to save settings")
+    
+    with col2:
+        if st.button("🔄 Scrape Now", type="secondary", use_container_width=True):
+            with st.spinner("Scraping with Cloudflare bypass..."):
+                games_data, error = scrape_satta_games(scrape_url)
+                if error:
                     st.error(f"Error: {error}")
+                elif games_data:
+                    saved, updated, save_error = save_scraped_games(games_data)
+                    if save_error:
+                        st.error(f"Save error: {save_error}")
+                    else:
+                        st.success(f"✅ Found {len(games_data)} games | New: {saved} | Updated: {updated}")
+                        save_scrape_settings(scrape_url, auto_scrape, interval)
+                else:
+                    st.warning("No games found on the page")
+    
+    st.markdown("---")
+    st.markdown("### 🗑️ Clear All Data")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.warning("This will delete ALL games from the database!")
+    with col2:
+        if st.button("🗑️ Clear All", type="secondary", use_container_width=True):
+            success, error = clear_all_games()
+            if success:
+                st.success("All games cleared!")
+                st.rerun()
+            else:
+                st.error(f"Error: {error}")
+    
+    if auto_scrape:
+        st.markdown("---")
+        st.info(f"⏰ Auto scrape is active! Games will be scraped every {interval} minutes.")
         
-        if auto_scrape:
-            st.markdown("---")
-            st.info(f"⏰ Auto scrape is active! Games will be scraped every {interval} minutes.")
+        if st.button("▶️ Start Auto Scrape Session", type="primary", use_container_width=True):
+            st.info("Auto scraping started. Keep this page open for continuous scraping.")
             
-            if st.button("▶️ Start Auto Scrape Session", type="primary", use_container_width=True):
-                st.info("Auto scraping started. Keep this page open for continuous scraping.")
-                
-                progress_placeholder = st.empty()
-                status_placeholder = st.empty()
-                
-                for i in range(3):
-                    with st.spinner(f"Auto scraping... (Run {i+1})"):
-                        games_data, error = scrape_satta_games(scrape_url)
-                        if games_data:
-                            saved, updated, _ = save_scraped_games(games_data)
-                            status_placeholder.success(f"Run {i+1}: Found {len(games_data)} | New: {saved} | Updated: {updated}")
-                        else:
-                            status_placeholder.warning(f"Run {i+1}: No data - {error if error else 'Unknown error'}")
-                        
-                        if i < 2:
-                            for sec in range(interval * 60, 0, -1):
-                                progress_placeholder.info(f"Next scrape in {sec} seconds...")
-                                time.sleep(1)
-                
-                st.success("Auto scrape session completed (3 runs). Refresh to run again.")
+            progress_placeholder = st.empty()
+            status_placeholder = st.empty()
+            
+            for i in range(3):
+                with st.spinner(f"Auto scraping... (Run {i+1})"):
+                    games_data, error = scrape_satta_games(scrape_url)
+                    if games_data:
+                        saved, updated, _ = save_scraped_games(games_data)
+                        status_placeholder.success(f"Run {i+1}: Found {len(games_data)} | New: {saved} | Updated: {updated}")
+                    else:
+                        status_placeholder.warning(f"Run {i+1}: No data - {error if error else 'Unknown error'}")
+                    
+                    if i < 2:
+                        for sec in range(interval * 60, 0, -1):
+                            progress_placeholder.info(f"Next scrape in {sec} seconds...")
+                            time.sleep(1)
+            
+            st.success("Auto scrape session completed (3 runs). Refresh to run again.")
 
 elif st.session_state.admin_page == 'post':
     tab1, tab2 = st.tabs(["📋 All Posts", "➕ Add Post"])
