@@ -165,6 +165,13 @@
         color: #764ba2;
     }
     
+    .game-time-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+    }
+    
     .game-time {
         color: #a0a0b0;
         font-size: 13px;
@@ -305,9 +312,11 @@
             {% for game in games %}
             <tr>
                 <td>
-                    <span class="game-name">{{ game.name }}</span><br>
-                    <span class="game-time">{{ game.time }}</span>
-                    <a href="/chart?game={{ game.slug }}" class="record-chart-link">Record Chart</a>
+                    <span class="game-name">{{ game.name }}</span>
+                    <div class="game-time-row">
+                        <span class="game-time">{{ game.time }}</span>
+                        <a href="/chart?game={{ game.slug }}" class="record-chart-link">Record Chart</a>
+                    </div>
                 </td>
                 <td>
                     <span class="{{ 'result-pending' if game.yesterday == '--' else 'result-yesterday' }}">{{ game.yesterday }}</span>
