@@ -173,6 +173,19 @@ st.markdown("""
     [data-testid="stSidebarCollapseButton"] {display: none !important;}
     [data-testid="collapsedControl"] {display: none !important;}
     
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        min-width: 260px !important;
+        max-width: 260px !important;
+        margin-left: 0 !important;
+        transform: none !important;
+    }
+    
+    section[data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
     .main .block-container {
         padding: 20px 30px !important;
         max-width: 100% !important;
@@ -473,11 +486,14 @@ if st.session_state.admin_page == 'dashboard':
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) FROM games")
-    total_games = cur.fetchone()[0]
+    result = cur.fetchone()
+    total_games = result[0] if result else 0
     cur.execute("SELECT COUNT(*) FROM posts")
-    total_posts = cur.fetchone()[0]
+    result = cur.fetchone()
+    total_posts = result[0] if result else 0
     cur.execute("SELECT COUNT(*) FROM games WHERE is_active = true")
-    active_games = cur.fetchone()[0]
+    result = cur.fetchone()
+    active_games = result[0] if result else 0
     cur.close()
     conn.close()
     
