@@ -274,15 +274,16 @@ st.markdown("""
         }
         
         .nav-menu {
-            flex-direction: column;
-            gap: 5px;
+            flex-direction: row;
+            gap: 3px;
             padding: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         
         .nav-item {
-            width: 100%;
-            text-align: center;
-            padding: 12px;
+            padding: 8px 10px;
+            font-size: 12px;
         }
         
         .header-section {
