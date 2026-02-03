@@ -213,6 +213,14 @@ def index():
     daily_posts = get_daily_posts_for_display()
     return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, daily_posts=daily_posts)
 
+@app.route('/daily-update')
+def daily_update_page():
+    now = get_ist_now()
+    today_date = now.strftime("%B %d, %Y")
+    daily_posts = get_daily_posts_for_display()
+    site_settings = get_site_settings()
+    return render_template('daily_update.html', daily_posts=daily_posts, today_date=today_date, site_settings=site_settings)
+
 @app.route('/chart')
 def chart():
     import calendar
