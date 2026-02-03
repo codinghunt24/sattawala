@@ -16,6 +16,30 @@
 
 {% block styles %}
 <style>
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 15%;
+    }
+    
+    @media (max-width: 1200px) {
+        .main-container {
+            padding: 0 10%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 0 3%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-container {
+            padding: 0 2%;
+        }
+    }
+    
     .header-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 25px 0;
@@ -80,9 +104,7 @@
     }
     
     .games-section {
-        padding: 30px 20px;
-        max-width: 1200px;
-        margin: 0 auto;
+        padding: 30px 0;
     }
     
     .section-title {
@@ -279,24 +301,25 @@
 {% endblock %}
 
 {% block content %}
-<div class="header-section">
-    <div class="site-title">Satta King</div>
-    <div class="site-subtitle">Live Results & Updates</div>
-</div>
-
-<div class="nav-section">
-    <div class="nav-menu">
-        <a href="/" class="nav-item active">Home</a>
-        <a href="/chart" class="nav-item">Chart</a>
-        <a href="/admin" class="nav-item">Admin</a>
+<div class="main-container">
+    <div class="header-section">
+        <div class="site-title">Satta King</div>
+        <div class="site-subtitle">Live Results & Updates</div>
     </div>
-</div>
 
-<div class="date-banner">
-    <span class="date-text">{{ current_date }}</span>
-</div>
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item active">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/admin" class="nav-item">Admin</a>
+        </div>
+    </div>
 
-<div class="games-section">
+    <div class="date-banner">
+        <span class="date-text">{{ current_date }}</span>
+    </div>
+
+    <div class="games-section">
     <div class="section-title">Today's Results</div>
     
     {% if games %}
@@ -335,6 +358,7 @@
         <p style="font-size: 14px; color: #6a6a7a;">Games will appear here once added from admin panel</p>
     </div>
     {% endif %}
+    </div>
 </div>
 
 <div class="footer-section">
