@@ -191,20 +191,19 @@ st.markdown("""
     .game-name {
         color: #00d4ff;
         font-weight: 600;
-        font-size: 15px;
+        font-size: 18px;
     }
     
     .record-chart-link {
         color: #667eea;
         font-size: 12px;
-        text-decoration: none;
+        text-decoration: none !important;
         margin-left: 10px;
         font-weight: 500;
     }
     
     .record-chart-link:hover {
         color: #764ba2;
-        text-decoration: underline;
     }
     
     .game-time {
