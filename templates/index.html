@@ -42,9 +42,21 @@
     
     .header-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 25px 0;
+        padding: 25px 15%;
         text-align: center;
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    @media (max-width: 1200px) {
+        .header-section { padding: 25px 10%; }
+    }
+    
+    @media (max-width: 768px) {
+        .header-section { padding: 25px 3%; }
+    }
+    
+    @media (max-width: 480px) {
+        .header-section { padding: 25px 2%; }
     }
     
     .site-title {
@@ -63,9 +75,21 @@
     
     .nav-section {
         background: #fff;
-        padding: 12px 0;
+        padding: 12px 15%;
         border-bottom: 1px solid #e0e0e0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    @media (max-width: 1200px) {
+        .nav-section { padding: 12px 10%; }
+    }
+    
+    @media (max-width: 768px) {
+        .nav-section { padding: 12px 3%; }
+    }
+    
+    @media (max-width: 480px) {
+        .nav-section { padding: 12px 2%; }
     }
     
     .nav-menu {
@@ -313,7 +337,6 @@
         <div class="nav-menu">
             <a href="/" class="nav-item active">Home</a>
             <a href="/chart" class="nav-item">Chart</a>
-            <a href="/admin" class="nav-item">Admin</a>
         </div>
     </div>
 
@@ -365,12 +388,6 @@
 </div>
 
 <div class="footer-section">
-    <div class="footer-links">
-        <span class="footer-link">Privacy Policy</span>
-        <span class="footer-link">About Us</span>
-        <span class="footer-link">Contact</span>
-        <span class="footer-link">Disclaimer</span>
-    </div>
     <div class="copyright">© 2026 Satta King. All rights reserved.</div>
 </div>
 {% endblock %}
