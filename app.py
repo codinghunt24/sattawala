@@ -49,8 +49,15 @@ st.markdown("""
     .stMainBlockContainer {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
-        padding-left: 10% !important;
-        padding-right: 10% !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+    
+    @media (min-width: 768px) {
+        .stMainBlockContainer {
+            padding-left: 10% !important;
+            padding-right: 10% !important;
+        }
     }
     
     @media (min-width: 1200px) {
