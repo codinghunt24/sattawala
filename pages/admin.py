@@ -59,6 +59,18 @@ st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Hide page navigation in sidebar */
+    [data-testid="stSidebarNav"] {display: none;}
+    
+    /* Keep sidebar always visible */
+    [data-testid="stSidebar"] {
+        min-width: 250px !important;
+        width: 250px !important;
+    }
+    
+    [data-testid="stSidebarCollapseButton"] {display: none;}
     
     .admin-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
