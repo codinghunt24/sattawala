@@ -1,0 +1,18 @@
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sudo systemctl restart nginx
+(venv) root@mail:/home/digitalcash24/jj-communication.com# grep -r "jj-communication" /etc/nginx/
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    server_name ~^(.*)\.jj-communication\.com$;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    server_name ~^(.*)\.jj-communication\.com$;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    ssl_certificate /var/zesle/ssl/letsencrypt/jj-communication.com/fullchain.pem;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    ssl_certificate_key /var/zesle/ssl/letsencrypt/jj-communication.com/privkey.pem;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    server_name webmail.jj-communication.com zeslecp.jj-communication.com www.jj-communication.com jj-communication.com;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    server_name webmail.jj-communication.com zeslecp.jj-communication.com www.jj-communication.com jj-communication.com;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    ssl_certificate /var/zesle/ssl/letsencrypt/jj-communication.com/fullchain.pem;
+/etc/nginx/conf.d/domains/004-jj-communication.com.conf:    ssl_certificate_key /var/zesle/ssl/letsencrypt/jj-communication.com/privkey.pem;
+/etc/nginx/conf.d/domains/005-jj-communication.com.conf:    server_name www.jj-communication.com jj-communication.com;
+/etc/nginx/conf.d/domains/005-jj-communication.com.conf:    server_name www.jj-communication.com jj-communication.com;
+/etc/nginx/conf.d/domains/005-jj-communication.com.conf:    ssl_certificate /var/zesle/ssl/letsencrypt/jj-communication.com/fullchain.pem;
+/etc/nginx/conf.d/domains/005-jj-communication.com.conf:    ssl_certificate_key /var/zesle/ssl/letsencrypt/jj-communication.com/privkey.pem;
+/etc/nginx/conf.d/domains/005-jj-communication.com.conf:        alias /home/digitalcash24/jj-communication.com/static/;
+/etc/nginx/sites-available/jj-communication.comy:    server_name jj-communication.com www.jj-communication.com;
+/etc/nginx/sites-available/jj-communication.com:    server_name jj-communication.com www.jj-communication.com;
+(venv) root@mail:/home/digitalcash24/jj-communication.com# 
