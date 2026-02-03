@@ -356,26 +356,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Header Section
-st.markdown("""
-<div class="header-section">
-    <div class="responsive-container">
-        <div class="header-title">Welcome to Our Website</div>
-        <div class="header-subtitle">
-            This is a beautiful responsive website built with Python. 
-            Explore our services and discover what we can do for you.
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
 # Content Area (Blank)
 st.markdown("""
 <div class="content-section">
     <div class="responsive-container">
-        <div class="content-placeholder">
-            Content Area - Ready for future content
-        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
