@@ -142,19 +142,37 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("## ⚙️ Admin Panel")
-    st.divider()
+    st.markdown("""
+    <style>
+        .nav-box {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-box:hover {
+            background: #f0f0f0;
+            border-color: #3498db;
+        }
+        .nav-box.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+    </style>
+    """, unsafe_allow_html=True)
     
-    st.markdown("### 🎮 Game Section")
-    if st.button("📋 Manage Games", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
+    if st.button("Game", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
         st.session_state.current_page = 'games'
         st.session_state.edit_game_id = None
         st.rerun()
     
-    st.divider()
-    
-    st.markdown("### 📝 Post Section")
-    if st.button("📋 Manage Posts", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
+    if st.button("Post", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
         st.session_state.current_page = 'posts'
         st.session_state.edit_post_id = None
         st.rerun()
