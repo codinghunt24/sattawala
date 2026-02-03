@@ -141,110 +141,118 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Hide page navigation in sidebar */
     [data-testid="stSidebarNav"] {display: none;}
     
-    /* Keep sidebar always visible and permanent */
     [data-testid="stSidebar"] {
-        min-width: 280px !important;
-        width: 280px !important;
-        transform: none !important;
-        visibility: visible !important;
+        min-width: 220px !important;
+        max-width: 220px !important;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%) !important;
     }
     
     [data-testid="stSidebar"] > div {
-        width: 280px !important;
+        background: transparent !important;
+        padding-top: 20px;
     }
     
     [data-testid="stSidebarCollapseButton"] {display: none !important;}
     [data-testid="collapsedControl"] {display: none !important;}
     
-    .sidebar-section {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 15px;
+    .main .block-container {
+        padding: 20px 30px;
+        max-width: 100%;
     }
     
-    .sidebar-section-title {
-        font-weight: bold;
-        color: #2c3e50;
-        margin-bottom: 10px;
-        font-size: 14px;
-        text-transform: uppercase;
-    }
-    
-    .admin-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+    .sidebar-logo {
         text-align: center;
+        padding: 20px 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 20px;
     }
     
-    .admin-title {
-        color: white;
-        font-size: 28px;
-        font-weight: bold;
+    .sidebar-logo h2 {
+        color: #fff;
+        font-size: 18px;
         margin: 0;
+        font-weight: 600;
     }
     
-    .card {
-        background: white;
-        padding: 20px;
+    .content-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .data-row {
+        background: #f8f9fc;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-left: 3px solid #667eea;
+    }
+    
+    .stButton > button {
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: #f8f9fc;
+        padding: 8px;
         border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 15px;
     }
     
-    .success-msg {
-        background: #d4edda;
-        color: #155724;
-        padding: 10px 15px;
-        border-radius: 5px;
-        margin: 10px 0;
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
     }
     
-    .error-msg {
-        background: #f8d7da;
-        color: #721c24;
-        padding: 10px 15px;
-        border-radius: 5px;
-        margin: 10px 0;
+    .stTabs [aria-selected="true"] {
+        background: #667eea !important;
+        color: white !important;
+    }
+    
+    @media (max-width: 768px) {
+        [data-testid="stSidebar"] {
+            min-width: 180px !important;
+            max-width: 180px !important;
+        }
+        .main .block-container {
+            padding: 15px;
+        }
+        .content-card {
+            padding: 15px;
+        }
+        .page-title {
+            font-size: 20px;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<div class="admin-header">
-    <h1 class="admin-title">⚙️ Admin Panel</h1>
-</div>
-""", unsafe_allow_html=True)
-
 with st.sidebar:
     st.markdown("""
-    <style>
-        .nav-box {
-            background: white;
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            cursor: pointer;
-            text-align: center;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .nav-box:hover {
-            background: #f0f0f0;
-            border-color: #3498db;
-        }
-        .nav-box.active {
-            background: #3498db;
-            color: white;
-            border-color: #3498db;
-        }
-    </style>
+    <div class="sidebar-logo">
+        <h2>Admin Panel</h2>
+    </div>
     """, unsafe_allow_html=True)
     
     if st.button("Game", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
@@ -258,9 +266,9 @@ with st.sidebar:
         st.rerun()
 
 if st.session_state.current_page == 'games':
-    st.subheader("🎮 Game Management")
+    st.markdown('<div class="page-title">Game Management</div>', unsafe_allow_html=True)
     
-    tab1, tab2, tab3 = st.tabs(["📋 All Games", "➕ Add New Game", "🔄 Scrape"])
+    tab1, tab2, tab3 = st.tabs(["All Games", "Add Game", "Scrape"])
     
     with tab1:
         conn = get_db_connection()
@@ -303,7 +311,7 @@ if st.session_state.current_page == 'games':
             st.info("No games found. Add your first game!")
         
         if st.session_state.edit_game_id:
-            st.subheader("✏️ Edit Game")
+            st.markdown("**Edit Game**")
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT id, name, result, result_time, is_active FROM games WHERE id = %s", (st.session_state.edit_game_id,))
@@ -398,9 +406,9 @@ if st.session_state.current_page == 'games':
                 st.rerun()
 
 elif st.session_state.current_page == 'posts':
-    st.subheader("📝 Post Management")
+    st.markdown('<div class="page-title">Post Management</div>', unsafe_allow_html=True)
     
-    tab1, tab2 = st.tabs(["📋 All Posts", "➕ Add New Post"])
+    tab1, tab2 = st.tabs(["All Posts", "Add Post"])
     
     with tab1:
         conn = get_db_connection()
@@ -441,7 +449,7 @@ elif st.session_state.current_page == 'posts':
             st.info("No posts found. Add your first post!")
         
         if st.session_state.edit_post_id:
-            st.subheader("✏️ Edit Post")
+            st.markdown("**Edit Post**")
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT id, title, content, is_published FROM posts WHERE id = %s", (st.session_state.edit_post_id,))
