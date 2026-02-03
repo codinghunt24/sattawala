@@ -252,10 +252,6 @@ with st.sidebar:
         st.session_state.edit_game_id = None
         st.rerun()
     
-    if st.button("Scrape", use_container_width=True, type="primary" if st.session_state.current_page == 'scrape' else "secondary"):
-        st.session_state.current_page = 'scrape'
-        st.rerun()
-    
     if st.button("Post", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
         st.session_state.current_page = 'posts'
         st.session_state.edit_post_id = None
@@ -264,7 +260,7 @@ with st.sidebar:
 if st.session_state.current_page == 'games':
     st.subheader("🎮 Game Management")
     
-    tab1, tab2 = st.tabs(["📋 All Games", "➕ Add New Game"])
+    tab1, tab2, tab3 = st.tabs(["📋 All Games", "➕ Add New Game", "🔄 Scrape"])
     
     with tab1:
         conn = get_db_connection()
@@ -364,6 +360,42 @@ if st.session_state.current_page == 'games':
                     st.rerun()
                 else:
                     st.error("Please enter game name!")
+    
+    with tab3:
+        st.info("Scrape realtime game results from satta-king-fast.com")
+        
+        col1, col2 = st.columns([1, 1])
+        
+        with col1:
+            if st.button("🔄 Scrape Now", use_container_width=True, type="primary", key="scrape_btn"):
+                with st.spinner("Scraping data from website..."):
+                    games_data, error = scrape_satta_games()
+                    
+                    if error:
+                        st.error(f"Scraping failed: {error}")
+                    elif games_data:
+                        st.success(f"Found {len(games_data)} games!")
+                        
+                        saved, updated, save_error = save_scraped_games(games_data)
+                        
+                        if save_error:
+                            st.error(f"Error saving: {save_error}")
+                        else:
+                            st.success(f"New games added: {saved}")
+                            st.success(f"Games updated: {updated}")
+                    else:
+                        st.warning("No games found on the website.")
+        
+        with col2:
+            if st.button("🗑️ Delete All Games", use_container_width=True, type="secondary", key="delete_all_btn"):
+                conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute("DELETE FROM games")
+                conn.commit()
+                cur.close()
+                conn.close()
+                st.success("All games deleted!")
+                st.rerun()
 
 elif st.session_state.current_page == 'posts':
     st.subheader("📝 Post Management")
@@ -464,66 +496,3 @@ elif st.session_state.current_page == 'posts':
                     st.rerun()
                 else:
                     st.error("Please enter post title!")
-
-elif st.session_state.current_page == 'scrape':
-    st.subheader("🔄 Scrape Games")
-    
-    st.info("Scrape realtime game results from satta-king-fast.com")
-    
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        if st.button("🔄 Scrape Now", use_container_width=True, type="primary"):
-            with st.spinner("Scraping data from website..."):
-                games_data, error = scrape_satta_games()
-                
-                if error:
-                    st.error(f"Scraping failed: {error}")
-                elif games_data:
-                    st.success(f"Found {len(games_data)} games!")
-                    
-                    saved, updated, save_error = save_scraped_games(games_data)
-                    
-                    if save_error:
-                        st.error(f"Error saving: {save_error}")
-                    else:
-                        st.success(f"✅ New games added: {saved}")
-                        st.success(f"✅ Games updated: {updated}")
-                else:
-                    st.warning("No games found on the website.")
-    
-    with col2:
-        if st.button("🗑️ Delete All Games", use_container_width=True, type="secondary"):
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute("DELETE FROM games")
-            conn.commit()
-            cur.close()
-            conn.close()
-            st.success("All games deleted!")
-            st.rerun()
-    
-    st.divider()
-    st.subheader("📋 Current Games in Database")
-    
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT id, name, result, result_time FROM games ORDER BY name ASC")
-    all_games = cur.fetchall()
-    cur.close()
-    conn.close()
-    
-    if all_games:
-        st.write(f"Total games: **{len(all_games)}**")
-        
-        for game in all_games:
-            col1, col2, col3 = st.columns([3, 2, 2])
-            with col1:
-                st.write(f"**{game[1]}**")
-            with col2:
-                st.write(f"Result: {game[2] or '--'}")
-            with col3:
-                st.write(f"Time: {game[3] or '--'}")
-        st.divider()
-    else:
-        st.info("No games in database. Click 'Scrape Now' to fetch games.")
