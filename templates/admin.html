@@ -840,6 +840,39 @@
                         </div>
                     </div>
                 </div>
+                
+                <div style="border-top: 1px solid #3a3a5a; margin: 30px 0; padding-top: 25px;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📝</div>
+                        <div>
+                            <div style="font-weight: 700; color: #fff; font-size: 18px;">Generate Posts from Historical Data</div>
+                            <div style="font-size: 12px; color: #6a6a8a;">Creates Daily Update posts from imported game_results</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">ℹ️ यह क्या करेगा:</div>
+                        <ul style="color: #a0a0c0; font-size: 13px; line-height: 1.8; padding-left: 20px;">
+                            <li>Historical Import से imported results को Daily Posts में convert करेगा</li>
+                            <li>हर game के लिए हर date की SEO-optimized post बनेगी</li>
+                            <li>Duplicate posts skip हो जाएंगी</li>
+                            <li>Posts Daily Update page पर दिखेंगी</li>
+                        </ul>
+                    </div>
+                    
+                    <div id="postGenProgress" style="display: none; margin-bottom: 15px;">
+                        <div style="background: #2a2a4a; border-radius: 10px; height: 25px; overflow: hidden;">
+                            <div id="postGenProgressBar" style="width: 0%; height: 100%; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); transition: width 0.3s;"></div>
+                        </div>
+                        <div id="postGenProgressText" style="text-align: center; margin-top: 8px; font-size: 13px; color: #a0a0c0;">0%</div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn btn-primary" onclick="startPostGeneration()" id="startPostGenBtn" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);">Generate Posts</button>
+                    </div>
+                    
+                    <div id="postGenStatus" style="margin-top: 15px;"></div>
+                </div>
             </div>
         </div>
         
@@ -1630,6 +1663,64 @@
             }
             
             importNextGame();
+        }
+        
+        async function startPostGeneration() {
+            const btn = document.getElementById('startPostGenBtn');
+            const statusEl = document.getElementById('postGenStatus');
+            const progressEl = document.getElementById('postGenProgress');
+            
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            progressEl.style.display = 'block';
+            statusEl.innerHTML = '<span style="color: #2ecc71;">Starting post generation...</span>';
+            
+            let gameIndex = 0;
+            let totalCreated = 0;
+            let totalSkipped = 0;
+            let totalGames = 1;
+            
+            async function generateNextGame() {
+                try {
+                    const res = await fetch('/api/create-historical-posts', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ game_index: gameIndex })
+                    });
+                    const result = await res.json();
+                    
+                    if (result.success) {
+                        if (result.done) {
+                            document.getElementById('postGenProgressBar').style.width = '100%';
+                            document.getElementById('postGenProgressText').textContent = '100%';
+                            statusEl.innerHTML = `<span style="color: #2ecc71;">✅ Post generation completed! ${totalCreated} posts created, ${totalSkipped} duplicates skipped.</span>`;
+                            btn.disabled = false;
+                            btn.textContent = 'Generate Posts';
+                        } else {
+                            totalGames = result.total_games;
+                            totalCreated += result.created;
+                            totalSkipped += result.skipped;
+                            
+                            const progress = Math.round(((gameIndex + 1) / totalGames) * 100);
+                            document.getElementById('postGenProgressBar').style.width = progress + '%';
+                            document.getElementById('postGenProgressText').textContent = `${progress}% - ${result.game_name} (${result.created} posts)`;
+                            
+                            gameIndex++;
+                            setTimeout(generateNextGame, 50);
+                        }
+                    } else {
+                        statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Error: ${result.error}</span>`;
+                        btn.disabled = false;
+                        btn.textContent = 'Generate Posts';
+                    }
+                } catch (e) {
+                    statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Failed: ${e.message}</span>`;
+                    btn.disabled = false;
+                    btn.textContent = 'Generate Posts';
+                }
+            }
+            
+            generateNextGame();
         }
         
         async function checkImportStats() {

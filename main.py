@@ -978,6 +978,47 @@ def update_daily_posts_results():
         print(f"Error updating daily posts: {e}")
         return False
 
+def create_posts_from_historical(game_name, limit=100):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("""
+            SELECT game_name, result_date, result FROM game_results 
+            WHERE game_name = %s
+            ORDER BY result_date DESC
+            LIMIT %s
+        """, (game_name, limit))
+        results = cur.fetchall()
+        
+        created = 0
+        skipped = 0
+        
+        for row in results:
+            g_name, result_date, result = row
+            if result and result != '--' and result != 'XX':
+                post_data = generate_seo_post_content(g_name, result, result_date)
+                
+                cur.execute("""
+                    INSERT INTO daily_posts (game_name, slug, title, content, result, post_date, meta_description, meta_keywords)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (game_name, post_date) DO NOTHING
+                """, (g_name, post_data['slug'], post_data['title'], post_data['content'], 
+                      post_data['result'], result_date, post_data['meta_description'], post_data['meta_keywords']))
+                
+                if cur.rowcount > 0:
+                    created += 1
+                else:
+                    skipped += 1
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        return {'created': created, 'skipped': skipped}
+    except Exception as e:
+        print(f"Error creating posts from historical: {e}")
+        return {'created': 0, 'skipped': 0, 'error': str(e)}
+
 def setup_daily_post_scheduler():
     settings = get_daily_update_settings()
     try:
@@ -1136,6 +1177,37 @@ def api_create_daily_posts():
         return jsonify({'message': 'Daily posts created successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/create-historical-posts', methods=['POST'])
+def api_create_historical_posts():
+    try:
+        data = request.json
+        game_index = data.get('game_index', 0)
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT DISTINCT game_name FROM game_results ORDER BY game_name")
+        all_games = [row[0] for row in cur.fetchall()]
+        cur.close()
+        conn.close()
+        
+        if game_index >= len(all_games):
+            return jsonify({'done': True, 'total_created': 0, 'message': 'All games processed'})
+        
+        game_name = all_games[game_index]
+        result = create_posts_from_historical(game_name, limit=500)
+        
+        return jsonify({
+            'done': game_index + 1 >= len(all_games),
+            'game_index': game_index,
+            'game_name': game_name,
+            'created': result.get('created', 0),
+            'skipped': result.get('skipped', 0),
+            'total_games': len(all_games),
+            'success': True
+        })
+    except Exception as e:
+        return jsonify({'error': str(e), 'success': False}), 500
 
 @app.route('/<slug>')
 def view_post(slug):
