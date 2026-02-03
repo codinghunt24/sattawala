@@ -739,7 +739,7 @@ def get_daily_update_settings():
         return {'enabled': False, 'post_time': '10:00', 'last_post_date': None}
 
 def generate_seo_post_content(game_name, result, post_date):
-    date_str = post_date.strftime("%B %d, %Y")
+    date_str = post_date.strftime("%d %B %Y")
     date_short = post_date.strftime("%d-%m-%Y")
     
     result_display = result if result and result != '--' else 'Waiting...'
@@ -747,7 +747,7 @@ def generate_seo_post_content(game_name, result, post_date):
     
     slug = f"{create_slug(game_name)}-result-{post_date.strftime('%d-%m-%Y')}"
     
-    title = f"{game_name} Result Today {date_str} | Live Satta King Result"
+    title = f"{game_name} Satta Result {date_str}"
     
     meta_description = f"Check {game_name} Satta King result for {date_str}. Get live {game_name} result, chart, and record. Fast update with accurate {game_name} winning number."
     
