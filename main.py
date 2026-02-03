@@ -257,10 +257,23 @@ def index():
 def daily_update_page():
     now = get_ist_now()
     today_date = now.strftime("%B %d, %Y")
-    daily_posts = get_daily_posts_for_display()
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 30
+    
+    result = get_daily_posts_paginated(page, per_page)
+    
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
-    return render_template('daily_update.html', daily_posts=daily_posts, today_date=today_date, site_settings=site_settings, ad_settings=ad_settings)
+    return render_template('daily_update.html', 
+        daily_posts=result['posts'], 
+        today_date=today_date, 
+        site_settings=site_settings, 
+        ad_settings=ad_settings,
+        current_page=result['current_page'],
+        total_pages=result['total_pages'],
+        total_posts=result['total_posts']
+    )
 
 @app.route('/chart')
 def chart():
@@ -1062,6 +1075,51 @@ def get_daily_posts_for_display():
         return posts
     except Exception as e:
         return []
+
+def get_daily_posts_paginated(page=1, per_page=30):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT COUNT(*) FROM daily_posts WHERE is_published = true")
+        total_posts = cur.fetchone()[0]
+        
+        total_pages = max(1, (total_posts + per_page - 1) // per_page)
+        page = max(1, min(page, total_pages))
+        offset = (page - 1) * per_page
+        
+        cur.execute("""
+            SELECT id, game_name, slug, title, result, post_date, created_at, meta_description 
+            FROM daily_posts 
+            WHERE is_published = true
+            ORDER BY post_date DESC, created_at DESC
+            LIMIT %s OFFSET %s
+        """, (per_page, offset))
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        posts = []
+        for row in rows:
+            posts.append({
+                'id': row[0],
+                'game_name': row[1],
+                'slug': row[2],
+                'title': row[3],
+                'result': row[4],
+                'post_date': str(row[5]),
+                'created_at': str(row[6]),
+                'description': row[7][:120] + '...' if row[7] and len(row[7]) > 120 else (row[7] or '')
+            })
+        
+        return {
+            'posts': posts,
+            'current_page': page,
+            'total_pages': total_pages,
+            'total_posts': total_posts
+        }
+    except Exception as e:
+        return {'posts': [], 'current_page': 1, 'total_pages': 1, 'total_posts': 0}
 
 @app.route('/api/daily-posts', methods=['GET'])
 def api_get_daily_posts():
