@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
+from werkzeug.utils import secure_filename
 import psycopg2
 import os
 from datetime import datetime, timedelta
@@ -12,6 +13,7 @@ import random
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import atexit
+import base64
 
 IST = pytz.timezone('Asia/Kolkata')
 
@@ -149,6 +151,14 @@ def init_database():
                 last_scrape TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            
+            CREATE TABLE IF NOT EXISTS site_settings (
+                id SERIAL PRIMARY KEY,
+                logo_data TEXT,
+                favicon_data TEXT,
+                site_title VARCHAR(255) DEFAULT 'Satta King',
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
         """)
         conn.commit()
         cur.close()
@@ -175,7 +185,8 @@ def index():
             'today': game[3] or '--',
             'slug': create_slug(game[0])
         })
-    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date)
+    site_settings = get_site_settings()
+    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings)
 
 @app.route('/chart')
 def chart():
@@ -286,6 +297,7 @@ def chart():
         }
         schema_data["hasPart"] = faq_schema
     
+    site_settings = get_site_settings()
     return render_template('chart.html',
         game_name=game_name,
         game_slug=game_slug,
@@ -305,7 +317,8 @@ def chart():
         total_results=total_results,
         avg_result=avg_result,
         related_games=related_games,
-        faqs=faqs
+        faqs=faqs,
+        site_settings=site_settings
     )
 
 @app.route('/admin')
@@ -680,6 +693,81 @@ def api_update_scrape_settings():
         return jsonify({'error': str(e)}), 500
 
 setup_auto_scrape()
+
+def get_site_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, logo_data, favicon_data, site_title FROM site_settings LIMIT 1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {
+                'id': row[0],
+                'logo_data': row[1],
+                'favicon_data': row[2],
+                'site_title': row[3]
+            }
+        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King'}
+    except:
+        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King'}
+
+@app.route('/api/site-settings', methods=['GET'])
+def api_get_site_settings():
+    return jsonify(get_site_settings())
+
+@app.route('/api/site-settings', methods=['POST'])
+def api_update_site_settings():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT id FROM site_settings LIMIT 1")
+        existing = cur.fetchone()
+        
+        if existing:
+            updates = []
+            values = []
+            if 'logo_data' in data:
+                updates.append("logo_data = %s")
+                values.append(data['logo_data'])
+            if 'favicon_data' in data:
+                updates.append("favicon_data = %s")
+                values.append(data['favicon_data'])
+            if 'site_title' in data:
+                updates.append("site_title = %s")
+                values.append(data['site_title'])
+            updates.append("updated_at = %s")
+            values.append(get_ist_now())
+            values.append(existing[0])
+            
+            cur.execute(f"UPDATE site_settings SET {', '.join(updates)} WHERE id = %s", values)
+        else:
+            cur.execute("""
+                INSERT INTO site_settings (logo_data, favicon_data, site_title, updated_at)
+                VALUES (%s, %s, %s, %s)
+            """, (data.get('logo_data'), data.get('favicon_data'), data.get('site_title', 'Satta King'), get_ist_now()))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'Settings saved successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/favicon.ico')
+def favicon():
+    settings = get_site_settings()
+    if settings.get('favicon_data'):
+        import io
+        favicon_data = settings['favicon_data']
+        if ',' in favicon_data:
+            favicon_data = favicon_data.split(',')[1]
+        image_data = base64.b64decode(favicon_data)
+        return image_data, 200, {'Content-Type': 'image/x-icon'}
+    return '', 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

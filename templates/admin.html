@@ -486,6 +486,45 @@
                 <div id="autoScrapeStatus" style="margin-top: 15px;"></div>
                 <div id="lastScrapeInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
             </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">Site Settings</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Upload logo and favicon for your website</p>
+                
+                <div class="form-group">
+                    <label>Header Logo</label>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 8px;">
+                        <div id="logoPreview" style="width: 120px; height: 60px; background: #2a2a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <span style="color: #6a6a7a; font-size: 12px;">No Logo</span>
+                        </div>
+                        <div>
+                            <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="previewLogo(this)">
+                            <button class="btn btn-primary" onclick="document.getElementById('logoInput').click()">Upload Logo</button>
+                            <button class="btn" style="background: #e74c3c; margin-left: 5px;" onclick="removeLogo()">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Favicon (Site Icon)</label>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 8px;">
+                        <div id="faviconPreview" style="width: 48px; height: 48px; background: #2a2a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <span style="color: #6a6a7a; font-size: 10px;">No Icon</span>
+                        </div>
+                        <div>
+                            <input type="file" id="faviconInput" accept="image/*,.ico" style="display: none;" onchange="previewFavicon(this)">
+                            <button class="btn btn-primary" onclick="document.getElementById('faviconInput').click()">Upload Favicon</button>
+                            <button class="btn" style="background: #e74c3c; margin-left: 5px;" onclick="removeFavicon()">Remove</button>
+                        </div>
+                    </div>
+                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Recommended: 32x32 or 64x64 pixels</p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="saveSiteSettings()">Save Site Settings</button>
+                </div>
+                <div id="siteSettingsStatus" style="margin-top: 15px;"></div>
+            </div>
         </div>
     </div>
     </div>
@@ -769,8 +808,87 @@
             }
         }
         
+        let currentLogoData = null;
+        let currentFaviconData = null;
+        
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentLogoData = e.target.result;
+                    document.getElementById('logoPreview').innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function previewFavicon(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentFaviconData = e.target.result;
+                    document.getElementById('faviconPreview').innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function removeLogo() {
+            currentLogoData = '';
+            document.getElementById('logoPreview').innerHTML = '<span style="color: #6a6a7a; font-size: 12px;">No Logo</span>';
+            document.getElementById('logoInput').value = '';
+        }
+        
+        function removeFavicon() {
+            currentFaviconData = '';
+            document.getElementById('faviconPreview').innerHTML = '<span style="color: #6a6a7a; font-size: 10px;">No Icon</span>';
+            document.getElementById('faviconInput').value = '';
+        }
+        
+        async function loadSiteSettings() {
+            try {
+                const res = await fetch('/api/site-settings');
+                const settings = await res.json();
+                
+                if (settings.logo_data) {
+                    currentLogoData = settings.logo_data;
+                    document.getElementById('logoPreview').innerHTML = `<img src="${settings.logo_data}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                }
+                if (settings.favicon_data) {
+                    currentFaviconData = settings.favicon_data;
+                    document.getElementById('faviconPreview').innerHTML = `<img src="${settings.favicon_data}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                }
+            } catch (e) {
+                console.error('Error loading site settings:', e);
+            }
+        }
+        
+        async function saveSiteSettings() {
+            const statusEl = document.getElementById('siteSettingsStatus');
+            try {
+                const data = {};
+                if (currentLogoData !== null) data.logo_data = currentLogoData;
+                if (currentFaviconData !== null) data.favicon_data = currentFaviconData;
+                
+                const res = await fetch('/api/site-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    statusEl.innerHTML = '<span style="color: #2ecc71;">Settings saved successfully!</span>';
+                } else {
+                    statusEl.innerHTML = '<span style="color: #e74c3c;">' + (result.error || 'Error saving') + '</span>';
+                }
+            } catch (e) {
+                statusEl.innerHTML = '<span style="color: #e74c3c;">Error saving settings</span>';
+            }
+        }
+        
         loadGames();
         loadScrapeSettings();
+        loadSiteSettings();
     </script>
     
     <div class="footer-section">

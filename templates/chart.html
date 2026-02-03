@@ -468,8 +468,12 @@
 {% block content %}
 <div class="main-container">
     <div class="header-section">
+        {% if site_settings and site_settings.logo_data %}
+        <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 80px; max-width: 300px;">
+        {% else %}
         <div class="site-title">Satta King</div>
         <div class="site-subtitle">Live Results & Updates</div>
+        {% endif %}
     </div>
 
     <div class="nav-section">
