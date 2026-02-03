@@ -127,7 +127,7 @@ st.markdown("""
     /* Header section */
     .header-section {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        padding: 60px 0;
+        padding: 30px 0;
         text-align: center;
     }
     
@@ -286,7 +286,7 @@ st.markdown("""
         }
         
         .header-section {
-            padding: 40px 0;
+            padding: 20px 0;
         }
         
         .header-title {
