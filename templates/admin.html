@@ -685,8 +685,58 @@
                             <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
                                 <span style="color: #667eea;">📝</span> Content
                             </label>
-                            <textarea id="postContent" rows="12" placeholder="Write your post content here... You can use HTML tags for formatting." style="font-size: 14px; line-height: 1.6;"></textarea>
-                            <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Supports HTML formatting: &lt;b&gt;, &lt;i&gt;, &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;li&gt;, etc.</div>
+                            
+                            <div style="background: #1a1a2e; border-radius: 10px; overflow: hidden; border: 1px solid rgba(102,126,234,0.3);">
+                                <div id="editorToolbar" style="display: flex; flex-wrap: wrap; gap: 3px; padding: 10px; background: #0f0f1a; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <div style="display: flex; gap: 3px; padding-right: 10px; border-right: 1px solid rgba(255,255,255,0.1);">
+                                        <button type="button" onclick="formatText('bold')" title="Bold (Ctrl+B)" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer;">B</button>
+                                        <button type="button" onclick="formatText('italic')" title="Italic (Ctrl+I)" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-style: italic; cursor: pointer;">I</button>
+                                        <button type="button" onclick="formatText('underline')" title="Underline (Ctrl+U)" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; text-decoration: underline; cursor: pointer;">U</button>
+                                        <button type="button" onclick="formatText('strikeThrough')" title="Strike" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; text-decoration: line-through; cursor: pointer;">S</button>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
+                                        <button type="button" onclick="insertHeading('h1')" title="Heading 1" style="padding: 0 8px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-size: 14px; font-weight: bold; cursor: pointer;">H1</button>
+                                        <button type="button" onclick="insertHeading('h2')" title="Heading 2" style="padding: 0 8px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer;">H2</button>
+                                        <button type="button" onclick="insertHeading('h3')" title="Heading 3" style="padding: 0 8px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-size: 12px; font-weight: bold; cursor: pointer;">H3</button>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
+                                        <button type="button" onclick="formatText('insertUnorderedList')" title="Bullet List" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">•</button>
+                                        <button type="button" onclick="formatText('insertOrderedList')" title="Numbered List" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">1.</button>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
+                                        <button type="button" onclick="formatText('justifyLeft')" title="Align Left" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">⬅</button>
+                                        <button type="button" onclick="formatText('justifyCenter')" title="Align Center" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">⬌</button>
+                                        <button type="button" onclick="formatText('justifyRight')" title="Align Right" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">➡</button>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
+                                        <button type="button" onclick="insertLink()" title="Insert Link" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #667eea; cursor: pointer;">🔗</button>
+                                        <button type="button" onclick="insertImage()" title="Insert Image" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #27ae60; cursor: pointer;">🖼️</button>
+                                        <button type="button" onclick="insertVideo()" title="Insert YouTube Video" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #e74c3c; cursor: pointer;">▶️</button>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 3px; padding-left: 10px;">
+                                        <button type="button" onclick="insertTable()" title="Insert Table" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #f39c12; cursor: pointer;">📊</button>
+                                        <button type="button" onclick="insertHR()" title="Horizontal Line" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">—</button>
+                                        <button type="button" onclick="formatText('removeFormat')" title="Clear Formatting" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #e74c3c; cursor: pointer;">✕</button>
+                                    </div>
+                                    
+                                    <div style="margin-left: auto; display: flex; gap: 3px;">
+                                        <button type="button" onclick="toggleHtmlView()" id="htmlViewBtn" title="Toggle HTML View" style="padding: 0 10px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #667eea; cursor: pointer; font-size: 11px;">&lt;/&gt; HTML</button>
+                                    </div>
+                                </div>
+                                
+                                <div id="contentEditor" contenteditable="true" style="min-height: 300px; padding: 20px; color: #e0e0e0; font-size: 14px; line-height: 1.8; outline: none; background: #1a1a2e;" onpaste="handlePaste(event)"></div>
+                                <textarea id="postContent" style="display: none; width: 100%; min-height: 300px; padding: 20px; background: #1a1a2e; border: none; color: #e0e0e0; font-family: monospace; font-size: 13px; line-height: 1.6; resize: vertical;"></textarea>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                                <div style="font-size: 11px; color: #6a6a8a;">Use toolbar or keyboard shortcuts: Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline)</div>
+                                <div id="wordCount" style="font-size: 11px; color: #667eea;">Words: 0</div>
+                            </div>
                         </div>
                     </div>
                     
@@ -1229,6 +1279,129 @@
             });
         }
         
+        // Rich Text Editor Functions
+        let isHtmlView = false;
+        
+        function formatText(command) {
+            document.getElementById('contentEditor').focus();
+            document.execCommand(command, false, null);
+            updateWordCount();
+        }
+        
+        function insertHeading(tag) {
+            document.getElementById('contentEditor').focus();
+            document.execCommand('formatBlock', false, tag);
+            updateWordCount();
+        }
+        
+        function insertLink() {
+            const url = prompt('Enter URL:', 'https://');
+            if (url) {
+                const text = document.getSelection().toString() || prompt('Enter link text:', 'Click here');
+                if (text) {
+                    document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank" style="color: #667eea;">' + text + '</a>');
+                }
+            }
+            updateWordCount();
+        }
+        
+        function insertImage() {
+            const url = prompt('Enter Image URL:', 'https://');
+            if (url) {
+                const alt = prompt('Enter alt text (for SEO):', 'Image');
+                document.execCommand('insertHTML', false, '<img src="' + url + '" alt="' + alt + '" style="max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0;">');
+            }
+            updateWordCount();
+        }
+        
+        function insertVideo() {
+            const url = prompt('Enter YouTube Video URL:', 'https://www.youtube.com/watch?v=');
+            if (url) {
+                let videoId = '';
+                if (url.includes('youtube.com/watch?v=')) {
+                    videoId = url.split('v=')[1].split('&')[0];
+                } else if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                }
+                if (videoId) {
+                    const embed = '<div style="position: relative; padding-bottom: 56.25%; height: 0; margin: 15px 0;"><iframe src="https://www.youtube.com/embed/' + videoId + '" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;" allowfullscreen></iframe></div>';
+                    document.execCommand('insertHTML', false, embed);
+                } else {
+                    alert('Invalid YouTube URL');
+                }
+            }
+        }
+        
+        function insertTable() {
+            const rows = prompt('Number of rows:', '3');
+            const cols = prompt('Number of columns:', '3');
+            if (rows && cols) {
+                let table = '<table style="width: 100%; border-collapse: collapse; margin: 15px 0;">';
+                for (let i = 0; i < parseInt(rows); i++) {
+                    table += '<tr>';
+                    for (let j = 0; j < parseInt(cols); j++) {
+                        if (i === 0) {
+                            table += '<th style="border: 1px solid #444; padding: 10px; background: #2a2a4a;">Header</th>';
+                        } else {
+                            table += '<td style="border: 1px solid #444; padding: 10px;">Cell</td>';
+                        }
+                    }
+                    table += '</tr>';
+                }
+                table += '</table>';
+                document.execCommand('insertHTML', false, table);
+            }
+        }
+        
+        function insertHR() {
+            document.execCommand('insertHTML', false, '<hr style="border: none; border-top: 2px solid #667eea; margin: 20px 0;">');
+        }
+        
+        function toggleHtmlView() {
+            const editor = document.getElementById('contentEditor');
+            const textarea = document.getElementById('postContent');
+            const btn = document.getElementById('htmlViewBtn');
+            
+            if (isHtmlView) {
+                editor.innerHTML = textarea.value;
+                editor.style.display = 'block';
+                textarea.style.display = 'none';
+                btn.style.background = '#2a2a4a';
+                btn.style.color = '#667eea';
+            } else {
+                textarea.value = editor.innerHTML;
+                editor.style.display = 'none';
+                textarea.style.display = 'block';
+                btn.style.background = '#667eea';
+                btn.style.color = '#fff';
+            }
+            isHtmlView = !isHtmlView;
+        }
+        
+        function handlePaste(e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text/html') || (e.clipboardData || window.clipboardData).getData('text');
+            document.execCommand('insertHTML', false, text);
+            updateWordCount();
+        }
+        
+        function updateWordCount() {
+            const editor = document.getElementById('contentEditor');
+            const text = editor.innerText || editor.textContent;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            document.getElementById('wordCount').textContent = 'Words: ' + words;
+        }
+        
+        function syncEditorContent() {
+            const editor = document.getElementById('contentEditor');
+            document.getElementById('postContent').value = editor.innerHTML;
+        }
+        
+        document.getElementById('contentEditor').addEventListener('input', function() {
+            syncEditorContent();
+            updateWordCount();
+        });
+        
         function updateGooglePreview() {
             const title = document.getElementById('postMetaTitle').value || document.getElementById('postTitle').value || 'Post Title Preview';
             const desc = document.getElementById('postMetaDesc').value || 'Meta description will appear here. Write a compelling description to improve click-through rate from search results.';
@@ -1251,6 +1424,7 @@
             document.getElementById('postTitle').value = '';
             document.getElementById('postSlug').value = '';
             document.getElementById('postContent').value = '';
+            document.getElementById('contentEditor').innerHTML = '';
             document.getElementById('postMetaTitle').value = '';
             document.getElementById('postMetaDesc').value = '';
             document.getElementById('postMetaKeywords').value = '';
@@ -1262,6 +1436,8 @@
             document.getElementById('slugPreview').textContent = 'your-slug';
             document.getElementById('metaTitleCount').textContent = '0/70';
             document.getElementById('metaDescCount').textContent = '0/160';
+            document.getElementById('wordCount').textContent = 'Words: 0';
+            if (isHtmlView) toggleHtmlView();
             showPostTab('basic');
             updateGooglePreview();
             document.getElementById('postModal').style.display = 'flex';
@@ -1302,6 +1478,7 @@
                 document.getElementById('postTitle').value = post.title || '';
                 document.getElementById('postSlug').value = post.slug || '';
                 document.getElementById('postContent').value = post.content || '';
+                document.getElementById('contentEditor').innerHTML = post.content || '';
                 document.getElementById('postMetaTitle').value = post.meta_title || '';
                 document.getElementById('postMetaDesc').value = post.meta_description || '';
                 document.getElementById('postMetaKeywords').value = post.meta_keywords || '';
@@ -1313,6 +1490,8 @@
                 document.getElementById('slugPreview').textContent = post.slug || 'your-slug';
                 updateCharCount(document.getElementById('postMetaTitle'), 'metaTitleCount', 70);
                 updateCharCount(document.getElementById('postMetaDesc'), 'metaDescCount', 160);
+                updateWordCount();
+                if (isHtmlView) toggleHtmlView();
                 showPostTab('basic');
                 updateGooglePreview();
                 document.getElementById('postModal').style.display = 'flex';
@@ -1323,6 +1502,7 @@
         
         async function savePost(e) {
             e.preventDefault();
+            syncEditorContent();
             const id = document.getElementById('postId').value;
             const data = {
                 title: document.getElementById('postTitle').value,
