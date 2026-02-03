@@ -310,14 +310,15 @@ st.markdown("""
         
         .footer-nav {
             flex-direction: row;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: center;
-            gap: 5px;
+            gap: 3px;
         }
         
         .footer-nav-item {
-            padding: 8px 10px;
-            font-size: 12px;
+            padding: 5px 6px;
+            font-size: 10px;
+            white-space: nowrap;
         }
         
         .footer-section {
