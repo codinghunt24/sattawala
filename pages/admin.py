@@ -173,10 +173,18 @@ st.markdown("""
     [data-testid="stSidebarCollapseButton"] {display: none !important;}
     [data-testid="collapsedControl"] {display: none !important;}
     
-    .main .block-container {
+    .stApp > .main {
         margin-left: 220px !important;
-        padding: 20px 30px;
-        max-width: 100%;
+    }
+    
+    .main .block-container {
+        padding: 20px 30px !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+    }
+    
+    section[data-testid="stSidebar"] + section.main {
+        margin-left: 220px !important;
     }
     
     .sidebar-logo {
@@ -258,9 +266,14 @@ st.markdown("""
         [data-testid="stSidebar"] > div {
             width: 180px !important;
         }
-        .main .block-container {
+        .stApp > .main {
             margin-left: 180px !important;
-            padding: 15px;
+        }
+        section[data-testid="stSidebar"] + section.main {
+            margin-left: 180px !important;
+        }
+        .main .block-container {
+            padding: 15px !important;
         }
         .content-card {
             padding: 15px;
