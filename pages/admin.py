@@ -135,229 +135,237 @@ def init_session_state():
 
 init_session_state()
 
-st.markdown("""
+current_time = datetime.now().strftime("%H:%M:%S")
+
+st.markdown(f"""
 <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
     
-    [data-testid="stSidebarNav"] {display: none;}
+    [data-testid="stSidebarNav"] {{display: none;}}
     
-    [data-testid="stSidebar"] {
+    .stApp {{
+        background: #2d3436 !important;
+    }}
+    
+    [data-testid="stSidebar"] {{
         min-width: 240px !important;
         max-width: 240px !important;
         width: 240px !important;
         background: #1e272e !important;
-    }
+    }}
     
-    [data-testid="stSidebar"] > div:first-child {
+    [data-testid="stSidebar"] > div:first-child {{
         background: #1e272e !important;
         padding-top: 0 !important;
-    }
+    }}
     
-    [data-testid="stSidebarCollapseButton"] {display: none !important;}
-    [data-testid="collapsedControl"] {display: none !important;}
+    [data-testid="stSidebarCollapseButton"] {{display: none !important;}}
+    [data-testid="collapsedControl"] {{display: none !important;}}
     
-    .main .block-container {
+    .main .block-container {{
         padding: 0 !important;
         max-width: 100% !important;
-        background: #f5f5f5;
-    }
+        background: #2d3436 !important;
+    }}
     
-    .stApp {
-        background: #f5f5f5;
-    }
+    .main {{
+        background: #2d3436 !important;
+    }}
     
-    .sidebar-header {
+    [data-testid="stHeader"] {{
+        background: transparent !important;
+    }}
+    
+    .content-header {{
+        background: #2d3436;
+        padding: 20px 30px;
+        border-bottom: 1px solid #3d4f5f;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }}
+    
+    .content-title {{
+        font-size: 24px;
+        font-weight: 600;
+        color: #fff;
+        margin: 0;
+    }}
+    
+    .admin-badge {{
+        color: #b2bec3;
+        font-size: 14px;
+    }}
+    
+    .content-card {{
+        background: #3d4f5f;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }}
+    
+    h1, h2, h3, h4, h5, h6, p, span, label, .stMarkdown {{
+        color: #fff !important;
+    }}
+    
+    .stTextInput > div > div > input {{
+        background: #2d3436 !important;
+        color: #fff !important;
+        border: 1px solid #4a6572 !important;
+        border-radius: 6px !important;
+    }}
+    
+    .stTextArea > div > div > textarea {{
+        background: #2d3436 !important;
+        color: #fff !important;
+        border: 1px solid #4a6572 !important;
+        border-radius: 6px !important;
+    }}
+    
+    .stCheckbox label {{
+        color: #fff !important;
+    }}
+    
+    .stButton > button {{
+        border-radius: 6px;
+        font-weight: 500;
+        padding: 8px 20px;
+    }}
+    
+    .stButton > button[kind="primary"] {{
+        background: #00b894 !important;
+        border-color: #00b894 !important;
+        color: #fff !important;
+    }}
+    
+    .stButton > button[kind="primary"]:hover {{
+        background: #00a884 !important;
+    }}
+    
+    .stButton > button[kind="secondary"] {{
+        background: #4a6572 !important;
+        border-color: #4a6572 !important;
+        color: #fff !important;
+    }}
+    
+    .stTabs [data-baseweb="tab-list"] {{
+        gap: 0;
+        background: transparent;
+        border-bottom: 2px solid #4a6572;
+    }}
+    
+    .stTabs [data-baseweb="tab"] {{
+        padding: 12px 24px;
+        font-weight: 500;
+        color: #b2bec3 !important;
+        border-radius: 0;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        background: transparent !important;
+    }}
+    
+    .stTabs [aria-selected="true"] {{
+        color: #00b894 !important;
+        border-bottom: 2px solid #00b894 !important;
+        background: transparent !important;
+    }}
+    
+    hr {{
+        border-color: #4a6572 !important;
+    }}
+    
+    .stAlert {{
+        background: #3d4f5f !important;
+        color: #fff !important;
+    }}
+    
+    [data-testid="stForm"] {{
+        background: #3d4f5f !important;
+        border: 1px solid #4a6572 !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+    }}
+    
+    .sidebar-header {{
         background: #1e272e;
-        padding: 20px 15px;
+        padding: 25px 20px;
         text-align: center;
         border-bottom: 1px solid #2d3436;
-    }
+    }}
     
-    .sidebar-logo {
+    .sidebar-logo {{
         color: #00d2d3;
-        font-size: 22px;
+        font-size: 20px;
         font-weight: bold;
-        margin-bottom: 5px;
-    }
+    }}
     
-    .sidebar-time {
+    .sidebar-time {{
         background: #2d3436;
         color: #00d2d3;
         padding: 8px 15px;
         border-radius: 5px;
         font-family: monospace;
-        font-size: 14px;
+        font-size: 13px;
         display: inline-block;
-    }
+        margin-top: 10px;
+    }}
     
-    .menu-item {
-        display: flex;
-        align-items: center;
-        padding: 12px 20px;
-        color: #b2bec3;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.3s;
-        border-left: 3px solid transparent;
-        margin: 2px 0;
-    }
-    
-    .menu-item:hover {
-        background: #2d3436;
-        color: #fff;
-    }
-    
-    .menu-item.active {
-        background: #00b894;
-        color: #fff;
-        border-left: 3px solid #00d2d3;
-    }
-    
-    .menu-icon {
-        margin-right: 12px;
-        font-size: 18px;
-    }
-    
-    .content-header {
-        background: #fff;
-        padding: 15px 25px;
-        border-bottom: 1px solid #e0e0e0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .content-title {
-        font-size: 22px;
-        font-weight: 600;
-        color: #2d3436;
-        margin: 0;
-    }
-    
-    .admin-badge {
-        color: #636e72;
-        font-size: 14px;
-    }
-    
-    .content-body {
-        padding: 25px;
-    }
-    
-    .content-card {
-        background: #fff;
-        border-radius: 8px;
-        padding: 25px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    
-    .stButton > button {
-        border-radius: 5px;
-        font-weight: 500;
-    }
-    
-    .stButton > button[kind="primary"] {
-        background: #00b894 !important;
-        border-color: #00b894 !important;
-    }
-    
-    .stButton > button[kind="primary"]:hover {
-        background: #00a884 !important;
-    }
-    
-    div[data-testid="stVerticalBlock"] > div {
-        background: transparent;
-    }
-    
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 0;
-        background: transparent;
-        border-bottom: 2px solid #e0e0e0;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        padding: 12px 24px;
-        font-weight: 500;
-        color: #636e72;
-        border-radius: 0;
-        border-bottom: 2px solid transparent;
-        margin-bottom: -2px;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        color: #00b894 !important;
-        border-bottom: 2px solid #00b894 !important;
-        background: transparent !important;
-    }
-    
-    .game-row {
-        background: #f8f9fa;
-        padding: 12px 15px;
-        border-radius: 6px;
-        margin-bottom: 8px;
-        border-left: 3px solid #00b894;
-    }
-    
-    @media (max-width: 768px) {
-        [data-testid="stSidebar"] {
+    @media (max-width: 768px) {{
+        [data-testid="stSidebar"] {{
             min-width: 200px !important;
             max-width: 200px !important;
             width: 200px !important;
-        }
-    }
+        }}
+    }}
 </style>
 """, unsafe_allow_html=True)
-
-current_time = datetime.now().strftime("%H:%M:%S")
 
 with st.sidebar:
     st.markdown(f"""
     <div class="sidebar-header">
         <div class="sidebar-logo">Satta King</div>
-        <div class="sidebar-logo" style="font-size: 14px; color: #b2bec3;">Admin</div>
-        <div style="margin-top: 10px;">
-            <span class="sidebar-time">Server: {current_time}</span>
-        </div>
+        <div style="color: #b2bec3; font-size: 13px;">Admin Panel</div>
+        <div class="sidebar-time">Server: {current_time}</div>
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("<div style='height: 20px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 30px'></div>", unsafe_allow_html=True)
     
-    game_active = "primary" if st.session_state.current_page == 'games' else "secondary"
-    post_active = "primary" if st.session_state.current_page == 'posts' else "secondary"
+    game_type = "primary" if st.session_state.current_page == 'games' else "secondary"
+    post_type = "primary" if st.session_state.current_page == 'posts' else "secondary"
     
-    if st.button("🎮  Game", use_container_width=True, type=game_active):
+    if st.button("🎮  Game", use_container_width=True, type=game_type, key="nav_game"):
         st.session_state.current_page = 'games'
         st.session_state.edit_game_id = None
         st.rerun()
     
-    if st.button("📝  Post", use_container_width=True, type=post_active):
+    if st.button("📝  Post", use_container_width=True, type=post_type, key="nav_post"):
         st.session_state.current_page = 'posts'
         st.session_state.edit_post_id = None
         st.rerun()
     
-    st.markdown("<div style='height: 200px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 250px'></div>", unsafe_allow_html=True)
     
     st.markdown("---")
     
-    if st.button("🏠  Back to Site", use_container_width=True, type="secondary"):
+    if st.button("←  Back to Site", use_container_width=True, type="secondary", key="nav_back"):
         st.switch_page("app.py")
 
-col_header = st.columns([6, 1])
-with col_header[0]:
-    if st.session_state.current_page == 'games':
-        st.markdown('<p class="content-title">Game Management</p>', unsafe_allow_html=True)
-    else:
-        st.markdown('<p class="content-title">Post Management</p>', unsafe_allow_html=True)
-with col_header[1]:
-    st.markdown('<p class="admin-badge">Administrator</p>', unsafe_allow_html=True)
+st.markdown("""
+<div class="content-header">
+    <span class="content-title">{}</span>
+    <span class="admin-badge">Administrator</span>
+</div>
+""".format("Game Management" if st.session_state.current_page == 'games' else "Post Management"), unsafe_allow_html=True)
 
-st.markdown("---")
+st.markdown("<div class='content-card'>", unsafe_allow_html=True)
 
 if st.session_state.current_page == 'games':
     
-    tab1, tab2, tab3 = st.tabs(["All Games", "Add Game", "Scrape"])
+    tab1, tab2, tab3 = st.tabs(["📋 All Games", "➕ Add Game", "🔄 Scrape"])
     
     with tab1:
         conn = get_db_connection()
@@ -368,7 +376,7 @@ if st.session_state.current_page == 'games':
         conn.close()
         
         if games:
-            st.write(f"**Total Games: {len(games)}**")
+            st.markdown(f"**Total Games: {len(games)}**")
             st.markdown("")
             
             for game in games:
@@ -401,7 +409,7 @@ if st.session_state.current_page == 'games':
             st.info("No games found. Add your first game!")
         
         if st.session_state.edit_game_id:
-            st.markdown("### Edit Game")
+            st.markdown("### ✏️ Edit Game")
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT id, name, result, result_time, is_active FROM games WHERE id = %s", (st.session_state.edit_game_id,))
@@ -465,7 +473,7 @@ if st.session_state.current_page == 'games':
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            if st.button("Scrape Now", use_container_width=True, type="primary"):
+            if st.button("🔄 Scrape Now", use_container_width=True, type="primary"):
                 with st.spinner("Scraping..."):
                     games_data, error = scrape_satta_games()
                     
@@ -484,7 +492,7 @@ if st.session_state.current_page == 'games':
                         st.warning("No games found.")
         
         with col2:
-            if st.button("Delete All", use_container_width=True, type="secondary"):
+            if st.button("🗑️ Delete All", use_container_width=True, type="secondary"):
                 conn = get_db_connection()
                 cur = conn.cursor()
                 cur.execute("DELETE FROM games")
@@ -496,7 +504,7 @@ if st.session_state.current_page == 'games':
 
 elif st.session_state.current_page == 'posts':
     
-    tab1, tab2 = st.tabs(["All Posts", "Add Post"])
+    tab1, tab2 = st.tabs(["📋 All Posts", "➕ Add Post"])
     
     with tab1:
         conn = get_db_connection()
@@ -507,7 +515,7 @@ elif st.session_state.current_page == 'posts':
         conn.close()
         
         if posts:
-            st.write(f"**Total Posts: {len(posts)}**")
+            st.markdown(f"**Total Posts: {len(posts)}**")
             st.markdown("")
             
             for post in posts:
@@ -538,7 +546,7 @@ elif st.session_state.current_page == 'posts':
             st.info("No posts found. Add your first post!")
         
         if st.session_state.edit_post_id:
-            st.markdown("### Edit Post")
+            st.markdown("### ✏️ Edit Post")
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT id, title, content, is_published FROM posts WHERE id = %s", (st.session_state.edit_post_id,))
@@ -593,3 +601,5 @@ elif st.session_state.current_page == 'posts':
                     st.rerun()
                 else:
                     st.error("Please enter title!")
+
+st.markdown("</div>", unsafe_allow_html=True)
