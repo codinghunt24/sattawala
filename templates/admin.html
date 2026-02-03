@@ -1577,29 +1577,59 @@
             progressEl.style.display = 'block';
             statusEl.innerHTML = '<span style="color: #667eea;">Starting import process...</span>';
             
-            try {
-                const res = await fetch('/api/import-historical', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({start_year: parseInt(startYear), start_month: parseInt(startMonth)})
-                });
-                const result = await res.json();
-                
-                if (result.success) {
-                    document.getElementById('importProgressBar').style.width = '100%';
-                    document.getElementById('importProgressText').textContent = '100%';
-                    document.getElementById('importCurrentGame').textContent = 'Complete!';
-                    statusEl.innerHTML = `<span style="color: #2ecc71;">✅ Import completed! ${result.total_imported} results imported, ${result.skipped} duplicates skipped.</span>`;
-                    checkImportStats();
-                } else {
-                    statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Error: ${result.error}</span>`;
+            let gameIndex = 0;
+            let totalImported = 0;
+            let totalSkipped = 0;
+            let totalGames = 87;
+            
+            async function importNextGame() {
+                try {
+                    const res = await fetch('/api/import-historical', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            start_year: parseInt(startYear), 
+                            start_month: parseInt(startMonth),
+                            game_index: gameIndex
+                        })
+                    });
+                    const result = await res.json();
+                    
+                    if (result.success) {
+                        if (result.done) {
+                            document.getElementById('importProgressBar').style.width = '100%';
+                            document.getElementById('importProgressText').textContent = '100%';
+                            document.getElementById('importCurrentGame').textContent = 'Complete!';
+                            statusEl.innerHTML = `<span style="color: #2ecc71;">✅ Import completed! ${totalImported} results imported, ${totalSkipped} duplicates skipped.</span>`;
+                            checkImportStats();
+                            btn.disabled = false;
+                            btn.textContent = 'Start Import';
+                        } else {
+                            totalGames = result.total_games;
+                            totalImported += result.imported;
+                            totalSkipped += result.skipped;
+                            
+                            const progress = Math.round(((gameIndex + 1) / totalGames) * 100);
+                            document.getElementById('importProgressBar').style.width = progress + '%';
+                            document.getElementById('importProgressText').textContent = progress + '%';
+                            document.getElementById('importCurrentGame').textContent = `Importing: ${result.game_name} (${gameIndex + 1}/${totalGames}) - ${totalImported} imported`;
+                            
+                            gameIndex++;
+                            setTimeout(importNextGame, 100);
+                        }
+                    } else {
+                        statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Error: ${result.error}</span>`;
+                        btn.disabled = false;
+                        btn.textContent = 'Start Import';
+                    }
+                } catch (e) {
+                    statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Import failed: ${e.message}</span>`;
+                    btn.disabled = false;
+                    btn.textContent = 'Start Import';
                 }
-            } catch (e) {
-                statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Import failed: ${e.message}</span>`;
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Start Import';
             }
+            
+            importNextGame();
         }
         
         async function checkImportStats() {

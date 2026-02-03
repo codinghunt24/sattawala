@@ -7,6 +7,7 @@ import pytz
 import re
 import json
 import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 import time
 import random
@@ -1617,103 +1618,112 @@ def import_stats():
         pass
     return jsonify(stats)
 
+GAMES_LIST = [
+    {'name': 'GALI', 'slug': 'gl'},
+    {'name': 'DESAWAR', 'slug': 'ds'},
+    {'name': 'GHAZIABAD', 'slug': 'gb'},
+    {'name': 'FARIDABAD', 'slug': 'fb'},
+    {'name': 'SHRI GANESH', 'slug': 'sg'},
+    {'name': 'DELHI BAZAR', 'slug': 'db'},
+    {'name': 'DELHI CITY', 'slug': 'dc'},
+    {'name': 'RAM BAZAR', 'slug': 'rb'},
+    {'name': 'BIKANER SUPER', 'slug': 'bs'},
+    {'name': 'NEW PUNJAB', 'slug': 'np'},
+    {'name': 'ROYAL BAZAR', 'slug': 'ro'},
+    {'name': 'SURAT CITY', 'slug': 'sc'},
+    {'name': 'GURU MANGAL', 'slug': 'gm'},
+    {'name': 'SUPER KING', 'slug': 'su'},
+    {'name': 'MATKA SONE KA', 'slug': 'mo'},
+    {'name': 'U.P KING', 'slug': 'ui'},
+    {'name': 'RAJDHANI JAIPUR', 'slug': 'rj'},
+    {'name': 'AGRA BAZAR', 'slug': 'az'},
+    {'name': 'BIHAR KING', 'slug': 'bk'},
+    {'name': 'JANTA CITY', 'slug': 'jc'},
+    {'name': 'BURJ KHALIFA - BK', 'slug': 'bj'},
+    {'name': 'SHREE GANGA NAGAR', 'slug': 'eg'},
+    {'name': 'JAIPUR KING', 'slug': 'jr'},
+    {'name': 'MATKA KING', 'slug': 'mt'},
+    {'name': 'SUPER TAJ', 'slug': 'st'},
+    {'name': 'KALKA BAZAR', 'slug': 'kb'},
+    {'name': 'SAVERA', 'slug': 'sv'},
+    {'name': 'SUPER DELHI', 'slug': 'sp'},
+    {'name': 'DELHI DREAM', 'slug': 'dz'},
+    {'name': 'CHENNAI', 'slug': 'cn'},
+    {'name': 'MOHALI', 'slug': 'mh'},
+    {'name': 'MEERUT CITY', 'slug': 'mc'},
+    {'name': 'MANGAL BAZAR', 'slug': 'mr'},
+    {'name': 'ROYAL CHALLENGE', 'slug': 'rc'},
+    {'name': 'TAJ', 'slug': 'tj'},
+    {'name': 'BADLAPUR', 'slug': 'bl'},
+    {'name': 'MAA BHAGWATI', 'slug': 'mb'},
+    {'name': 'ANARKALI', 'slug': 'ak'},
+    {'name': 'DUBAI DELHI', 'slug': 'da'},
+    {'name': 'CHAND TARA', 'slug': 'ct'},
+    {'name': 'SHIV SHAKTI', 'slug': 'ss'},
+    {'name': 'MEWAT', 'slug': 'mw'},
+    {'name': 'GHAZIABAD DIN', 'slug': 'gd'},
+    {'name': 'AHMEDABAD', 'slug': 'am'},
+    {'name': 'HINDUSTAN', 'slug': 'hi'},
+    {'name': 'MAHARAJ', 'slug': 'mj'},
+    {'name': 'UTTARAKHAND - UK', 'slug': 'uk'},
+    {'name': 'RAJDHANI', 'slug': 'ra'},
+    {'name': 'DELHI DAY', 'slug': 'dd'},
+    {'name': 'GOA KING', 'slug': 'go'},
+    {'name': 'OLD CITY', 'slug': 'oc'},
+    {'name': 'NEELKANTH', 'slug': 'nl'},
+    {'name': 'SUPER MAX', 'slug': 'sx'},
+    {'name': 'SHRI LAXMI', 'slug': 'sl'},
+    {'name': 'UTTAM NAGAR', 'slug': 'un'},
+    {'name': 'DUBAI BAZAR', 'slug': 'di'},
+    {'name': 'PARAS', 'slug': 'ps'},
+    {'name': 'FARIDA BAZAR', 'slug': 'fr'},
+    {'name': 'VEERA', 'slug': 'vr'},
+    {'name': 'DELHI GOLDEN', 'slug': 'dg'},
+    {'name': 'DELHI STAR', 'slug': 'es'},
+    {'name': 'LUCK', 'slug': 'lk'},
+    {'name': 'DHAN KUBER', 'slug': 'ku'},
+    {'name': 'TODAY BAZAAR', 'slug': 'tb'},
+    {'name': 'ROYAL DELHI', 'slug': 'ry'},
+    {'name': 'NEW SAHIBABAD', 'slug': 'ns'},
+    {'name': 'SAWARIYA SETH', 'slug': 'sw'},
+    {'name': 'SHRI JI', 'slug': 'sj'},
+    {'name': 'SHIV SHANKAR', 'slug': 'sk'},
+    {'name': 'GALI DISAWAR MIX', 'slug': 'gr'},
+    {'name': 'WHITE GOLD', 'slug': 'wg'},
+    {'name': 'UP BAZAR', 'slug': 'ub'},
+    {'name': 'PATHANKOT', 'slug': 'pk'},
+    {'name': 'BOMBAY SUPER', 'slug': 'bo'},
+    {'name': 'NEW DELHI DARBAR', 'slug': 'br'},
+    {'name': 'GHAZIABAD NIGHT', 'slug': 'gz'},
+    {'name': 'NEW HYDERABAD', 'slug': 'nh'},
+    {'name': 'ROZANA', 'slug': 'rz'},
+    {'name': 'BRIJ RANI', 'slug': 'bi'},
+    {'name': 'SHRI VISHNU', 'slug': 'vs'},
+    {'name': 'MUMBAI STAR', 'slug': 'mm'},
+    {'name': 'NEW GHAZIABAD', 'slug': 'ng'},
+    {'name': 'BALA JI DADRI', 'slug': 'bd'},
+    {'name': 'JAISALMER', 'slug': 'jm'},
+    {'name': 'CHOTI GALI', 'slug': 'cg'},
+    {'name': 'NEW GALI', 'slug': 'nw'},
+    {'name': 'DELHI EVENING', 'slug': 'de'},
+]
+
+@app.route('/api/import-games-list')
+def import_games_list():
+    return jsonify({'games': GAMES_LIST, 'total': len(GAMES_LIST)})
+
 @app.route('/api/import-historical', methods=['POST'])
 def import_historical():
     try:
         data = request.get_json() or {}
         start_year = data.get('start_year', 2024)
         start_month = data.get('start_month', 1)
+        game_index = data.get('game_index', 0)
         
-        games_list = [
-            {'name': 'GALI', 'slug': 'gl'},
-            {'name': 'DESAWAR', 'slug': 'ds'},
-            {'name': 'GHAZIABAD', 'slug': 'gb'},
-            {'name': 'FARIDABAD', 'slug': 'fb'},
-            {'name': 'SHRI GANESH', 'slug': 'sg'},
-            {'name': 'DELHI BAZAR', 'slug': 'db'},
-            {'name': 'DELHI CITY', 'slug': 'dc'},
-            {'name': 'RAM BAZAR', 'slug': 'rb'},
-            {'name': 'BIKANER SUPER', 'slug': 'bs'},
-            {'name': 'NEW PUNJAB', 'slug': 'np'},
-            {'name': 'ROYAL BAZAR', 'slug': 'ro'},
-            {'name': 'SURAT CITY', 'slug': 'sc'},
-            {'name': 'GURU MANGAL', 'slug': 'gm'},
-            {'name': 'SUPER KING', 'slug': 'su'},
-            {'name': 'MATKA SONE KA', 'slug': 'mo'},
-            {'name': 'U.P KING', 'slug': 'ui'},
-            {'name': 'RAJDHANI JAIPUR', 'slug': 'rj'},
-            {'name': 'AGRA BAZAR', 'slug': 'az'},
-            {'name': 'BIHAR KING', 'slug': 'bk'},
-            {'name': 'JANTA CITY', 'slug': 'jc'},
-            {'name': 'BURJ KHALIFA - BK', 'slug': 'bj'},
-            {'name': 'SHREE GANGA NAGAR', 'slug': 'eg'},
-            {'name': 'JAIPUR KING', 'slug': 'jr'},
-            {'name': 'MATKA KING', 'slug': 'mt'},
-            {'name': 'SUPER TAJ', 'slug': 'st'},
-            {'name': 'KALKA BAZAR', 'slug': 'kb'},
-            {'name': 'SAVERA', 'slug': 'sv'},
-            {'name': 'SUPER DELHI', 'slug': 'sp'},
-            {'name': 'DELHI DREAM', 'slug': 'dz'},
-            {'name': 'CHENNAI', 'slug': 'cn'},
-            {'name': 'MOHALI', 'slug': 'mh'},
-            {'name': 'MEERUT CITY', 'slug': 'mc'},
-            {'name': 'MANGAL BAZAR', 'slug': 'mr'},
-            {'name': 'ROYAL CHALLENGE', 'slug': 'rc'},
-            {'name': 'TAJ', 'slug': 'tj'},
-            {'name': 'BADLAPUR', 'slug': 'bl'},
-            {'name': 'MAA BHAGWATI', 'slug': 'mb'},
-            {'name': 'ANARKALI', 'slug': 'ak'},
-            {'name': 'DUBAI DELHI', 'slug': 'da'},
-            {'name': 'CHAND TARA', 'slug': 'ct'},
-            {'name': 'SHIV SHAKTI', 'slug': 'ss'},
-            {'name': 'MEWAT', 'slug': 'mw'},
-            {'name': 'GHAZIABAD DIN', 'slug': 'gd'},
-            {'name': 'AHMEDABAD', 'slug': 'am'},
-            {'name': 'HINDUSTAN', 'slug': 'hi'},
-            {'name': 'MAHARAJ', 'slug': 'mj'},
-            {'name': 'UTTARAKHAND - UK', 'slug': 'uk'},
-            {'name': 'RAJDHANI', 'slug': 'ra'},
-            {'name': 'DELHI DAY', 'slug': 'dd'},
-            {'name': 'GOA KING', 'slug': 'go'},
-            {'name': 'OLD CITY', 'slug': 'oc'},
-            {'name': 'NEELKANTH', 'slug': 'nl'},
-            {'name': 'SUPER MAX', 'slug': 'sx'},
-            {'name': 'SHRI LAXMI', 'slug': 'sl'},
-            {'name': 'UTTAM NAGAR', 'slug': 'un'},
-            {'name': 'DUBAI BAZAR', 'slug': 'di'},
-            {'name': 'PARAS', 'slug': 'ps'},
-            {'name': 'FARIDA BAZAR', 'slug': 'fr'},
-            {'name': 'VEERA', 'slug': 'vr'},
-            {'name': 'DELHI GOLDEN', 'slug': 'dg'},
-            {'name': 'DELHI STAR', 'slug': 'es'},
-            {'name': 'LUCK', 'slug': 'lk'},
-            {'name': 'DHAN KUBER', 'slug': 'ku'},
-            {'name': 'TODAY BAZAAR', 'slug': 'tb'},
-            {'name': 'ROYAL DELHI', 'slug': 'ry'},
-            {'name': 'NEW SAHIBABAD', 'slug': 'ns'},
-            {'name': 'SAWARIYA SETH', 'slug': 'sw'},
-            {'name': 'SHRI JI', 'slug': 'sj'},
-            {'name': 'SHIV SHANKAR', 'slug': 'sk'},
-            {'name': 'GALI DISAWAR MIX', 'slug': 'gr'},
-            {'name': 'WHITE GOLD', 'slug': 'wg'},
-            {'name': 'UP BAZAR', 'slug': 'ub'},
-            {'name': 'PATHANKOT', 'slug': 'pk'},
-            {'name': 'BOMBAY SUPER', 'slug': 'bo'},
-            {'name': 'NEW DELHI DARBAR', 'slug': 'br'},
-            {'name': 'GHAZIABAD NIGHT', 'slug': 'gz'},
-            {'name': 'NEW HYDERABAD', 'slug': 'nh'},
-            {'name': 'ROZANA', 'slug': 'rz'},
-            {'name': 'BRIJ RANI', 'slug': 'bi'},
-            {'name': 'SHRI VISHNU', 'slug': 'vs'},
-            {'name': 'MUMBAI STAR', 'slug': 'mm'},
-            {'name': 'NEW GHAZIABAD', 'slug': 'ng'},
-            {'name': 'BALA JI DADRI', 'slug': 'bd'},
-            {'name': 'JAISALMER', 'slug': 'jm'},
-            {'name': 'CHOTI GALI', 'slug': 'cg'},
-            {'name': 'NEW GALI', 'slug': 'nw'},
-            {'name': 'DELHI EVENING', 'slug': 'de'},
-        ]
+        if game_index >= len(GAMES_LIST):
+            return jsonify({'success': True, 'done': True, 'message': 'All games imported'})
         
+        game = GAMES_LIST[game_index]
         now = get_ist_now()
         end_year = now.year
         end_month = now.month
@@ -1724,65 +1734,66 @@ def import_historical():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Connection': 'keep-alive',
-        }
+        scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
         
-        for game in games_list:
-            year = start_year
-            month = start_month
-            
-            while year < end_year or (year == end_year and month <= end_month):
-                try:
-                    game_slug = game['name'].lower().replace(' ', '-').replace('.', '')
-                    url = f"https://satta-king-fast.com/{game_slug}/satta-result-chart/{game['slug']}/?month={month:02d}&year={year}"
-                    
-                    response = requests.get(url, headers=headers, timeout=10)
-                    if response.status_code == 200:
-                        soup = BeautifulSoup(response.text, 'html.parser')
-                        
-                        tables = soup.find_all('table')
-                        for table in tables:
-                            rows = table.find_all('tr')
-                            for row in rows:
-                                cells = row.find_all(['td', 'th'])
-                                if len(cells) >= 2:
-                                    first_cell = cells[0].get_text(strip=True)
-                                    if first_cell.isdigit():
-                                        day = int(first_cell)
-                                        if 1 <= day <= 31:
-                                            for idx, cell in enumerate(cells[1:], 1):
-                                                result = cell.get_text(strip=True)
-                                                if result and result != 'XX' and result != '--' and len(result) <= 3:
-                                                    try:
-                                                        result_date = f"{year}-{month:02d}-{day:02d}"
-                                                        cur.execute("""
-                                                            INSERT INTO game_results (game_name, result_date, result)
-                                                            VALUES (%s, %s, %s)
-                                                            ON CONFLICT (game_name, result_date) DO NOTHING
-                                                        """, (game['name'], result_date, result))
-                                                        if cur.rowcount > 0:
-                                                            total_imported += 1
-                                                        else:
-                                                            skipped += 1
-                                                    except:
-                                                        skipped += 1
-                except Exception as e:
-                    pass
+        year = start_year
+        month = start_month
+        
+        while year < end_year or (year == end_year and month <= end_month):
+            try:
+                game_slug = game['name'].lower().replace(' ', '-').replace('.', '').replace('- ', '')
+                url = f"https://satta-king-fast.com/{game_slug}/satta-result-chart/{game['slug']}/?month={month:02d}&year={year}"
                 
-                month += 1
-                if month > 12:
-                    month = 1
-                    year += 1
+                response = scraper.get(url, timeout=15)
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    
+                    tables = soup.find_all('table')
+                    for table in tables:
+                        rows = table.find_all('tr')
+                        for row in rows:
+                            cells = row.find_all(['td', 'th'])
+                            if len(cells) >= 2:
+                                first_cell = cells[0].get_text(strip=True)
+                                if first_cell.isdigit():
+                                    day = int(first_cell)
+                                    if 1 <= day <= 31:
+                                        result = cells[-1].get_text(strip=True)
+                                        if result and result != 'XX' and result != '--' and len(result) <= 3 and result.isdigit():
+                                            try:
+                                                result_date = f"{year}-{month:02d}-{day:02d}"
+                                                cur.execute("""
+                                                    INSERT INTO game_results (game_name, result_date, result)
+                                                    VALUES (%s, %s, %s)
+                                                    ON CONFLICT (game_name, result_date) DO NOTHING
+                                                """, (game['name'], result_date, result))
+                                                if cur.rowcount > 0:
+                                                    total_imported += 1
+                                                else:
+                                                    skipped += 1
+                                            except:
+                                                skipped += 1
+            except:
+                pass
+            
+            month += 1
+            if month > 12:
+                month = 1
+                year += 1
         
         conn.commit()
         cur.close()
         conn.close()
         
-        return jsonify({'success': True, 'total_imported': total_imported, 'skipped': skipped})
+        return jsonify({
+            'success': True,
+            'done': False,
+            'game_name': game['name'],
+            'game_index': game_index,
+            'total_games': len(GAMES_LIST),
+            'imported': total_imported,
+            'skipped': skipped
+        })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
