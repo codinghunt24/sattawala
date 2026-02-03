@@ -12,7 +12,78 @@
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
             color: #e0e0e0;
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15%;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container { padding: 0 10%; }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container { padding: 0 3%; }
+        }
+        
+        @media (max-width: 480px) {
+            .main-container { padding: 0 2%; }
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .site-title {
+            color: #fff;
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .site-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .nav-section {
+            background: #1e1e30;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-menu-top {
             display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-item {
+            color: #b0b0c0;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: calc(100vh - 120px);
         }
         
         .sidebar {
@@ -300,13 +371,29 @@
         }
         
         @media (max-width: 768px) {
-            body { flex-direction: column; }
+            .admin-wrapper { flex-direction: column; }
             .sidebar { width: 100%; min-height: auto; }
             .main-content { padding: 15px; }
         }
     </style>
 </head>
 <body>
+    <div class="main-container">
+        <div class="header-section">
+            <div class="site-title">Satta King</div>
+            <div class="site-subtitle">Live Results & Updates</div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-menu-top">
+                <a href="/" class="nav-item">Home</a>
+                <a href="/chart" class="nav-item">Chart</a>
+                <a href="/admin" class="nav-item active">Admin</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-wrapper">
     <div class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">Satta King</div>
@@ -350,6 +437,7 @@
                 <div id="scrapeStatus" style="margin-top: 15px;"></div>
             </div>
         </div>
+    </div>
     </div>
     
     <div class="modal" id="gameModal">

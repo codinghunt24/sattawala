@@ -25,28 +25,85 @@
 
 {% block styles %}
 <style>
-    .back-btn {
-        display: inline-block;
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 15%;
+    }
+    
+    @media (max-width: 1200px) {
+        .main-container {
+            padding: 0 10%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 0 3%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-container {
+            padding: 0 2%;
+        }
+    }
+    
+    .header-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 25px 0;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .site-title {
         color: #fff;
-        padding: 10px 20px;
-        border-radius: 8px;
-        margin: 20px;
-        font-weight: 600;
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .site-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    
+    .nav-section {
+        background: #1e1e30;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .nav-menu {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .nav-item {
+        color: #b0b0c0;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
         transition: all 0.3s;
     }
     
-    .back-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    .nav-item:hover, .nav-item.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
     }
     
     .chart-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #2d2d44 0%, #3d3d5c 100%);
         padding: 20px;
         border-radius: 15px;
         text-align: center;
-        margin: 0 20px 20px;
+        margin: 20px 0;
         box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     }
     
@@ -65,7 +122,7 @@
     .selectors-row {
         display: flex;
         gap: 10px;
-        padding: 0 20px;
+        padding: 0;
         margin-bottom: 20px;
         flex-wrap: nowrap;
     }
@@ -99,8 +156,7 @@
     }
     
     .results-table {
-        width: calc(100% - 40px);
-        margin: 0 20px;
+        width: 100%;
         border-collapse: separate;
         border-spacing: 0;
         border-radius: 12px;
@@ -193,15 +249,27 @@
 {% endblock %}
 
 {% block content %}
-<a href="/" class="back-btn">← Back to Home</a>
+<div class="main-container">
+    <div class="header-section">
+        <div class="site-title">Satta King</div>
+        <div class="site-subtitle">Live Results & Updates</div>
+    </div>
 
-<div class="chart-header">
-    <h1 class="chart-title">Record Chart</h1>
-    <div class="chart-subtitle">{{ game_name if game_name else "Select a game" }}</div>
-</div>
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item active">Chart</a>
+            <a href="/admin" class="nav-item">Admin</a>
+        </div>
+    </div>
 
-<form method="GET" action="/chart" id="chartForm">
-<div class="selectors-row">
+    <div class="chart-header">
+        <h1 class="chart-title">Record Chart</h1>
+        <div class="chart-subtitle">{{ game_name if game_name else "Select a game" }}</div>
+    </div>
+
+    <form method="GET" action="/chart" id="chartForm">
+    <div class="selectors-row">
     <div class="selector-group">
         <label for="game">Select Game</label>
         <select name="game" id="game" onchange="document.getElementById('chartForm').submit()">
@@ -231,27 +299,28 @@
 </div>
 </form>
 
-{% if game_name %}
-<table class="results-table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Result</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for day in range(1, days_in_month + 1) %}
-        {% set result = results.get(day, '--') %}
-        <tr>
-            <td class="date-cell">{{ '%02d' | format(day) }}-{{ '%02d' | format(selected_month) }}-{{ selected_year }}</td>
-            <td>
-                <span class="{{ 'result-pending' if result == '--' else 'result-cell' }}">{{ result }}</span>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<div class="no-results">Please select a game to view results</div>
-{% endif %}
+    {% if game_name %}
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for day in range(1, days_in_month + 1) %}
+            {% set result = results.get(day, '--') %}
+            <tr>
+                <td class="date-cell">{{ '%02d' | format(day) }}-{{ '%02d' | format(selected_month) }}-{{ selected_year }}</td>
+                <td>
+                    <span class="{{ 'result-pending' if result == '--' else 'result-cell' }}">{{ result }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-results">Please select a game to view results</div>
+    {% endif %}
+</div>
 {% endblock %}
