@@ -160,6 +160,20 @@ st.markdown("""
         background: transparent !important;
         padding-top: 20px;
         width: 220px !important;
+        overflow: visible !important;
+    }
+    
+    [data-testid="stSidebar"] > div > div {
+        overflow: visible !important;
+    }
+    
+    [data-testid="stSidebarContent"] {
+        overflow: visible !important;
+        padding: 10px !important;
+    }
+    
+    [data-testid="stSidebar"] .stButton {
+        margin-bottom: 10px !important;
     }
     
     [data-testid="stSidebar"][aria-expanded="false"] {
