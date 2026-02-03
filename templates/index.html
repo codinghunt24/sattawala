@@ -261,11 +261,22 @@
     }
     
     .footer-section {
-        background: #fff;
-        padding: 20px;
+        background: #1a1a2e;
+        padding: 25px 15%;
         text-align: center;
-        border-top: 1px solid #e0e0e0;
         margin-top: 40px;
+    }
+    
+    @media (max-width: 1200px) {
+        .footer-section { padding: 25px 10%; }
+    }
+    
+    @media (max-width: 768px) {
+        .footer-section { padding: 25px 3%; }
+    }
+    
+    @media (max-width: 480px) {
+        .footer-section { padding: 25px 2%; }
     }
     
     .footer-links {
@@ -277,17 +288,18 @@
     }
     
     .footer-link {
-        color: #666;
+        color: #a0a0b0;
         font-size: 13px;
         transition: color 0.3s;
+        cursor: pointer;
     }
     
     .footer-link:hover {
-        color: #667eea;
+        color: #fff;
     }
     
     .copyright {
-        color: #888;
+        color: #6a6a7a;
         font-size: 12px;
     }
     
@@ -388,6 +400,12 @@
 </div>
 
 <div class="footer-section">
+    <div class="footer-links">
+        <span class="footer-link">Privacy Policy</span>
+        <span class="footer-link">About Us</span>
+        <span class="footer-link">Contact</span>
+        <span class="footer-link">Disclaimer</span>
+    </div>
     <div class="copyright">© 2026 Satta King. All rights reserved.</div>
 </div>
 {% endblock %}
