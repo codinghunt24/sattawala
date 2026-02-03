@@ -1,23 +1,43 @@
 import streamlit as st
+import psycopg2
+import os
+from datetime import datetime
 
 st.set_page_config(
     page_title="Satta King",
-    page_icon="🌐",
+    page_icon="🎮",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
+def get_db_connection():
+    return psycopg2.connect(os.environ['DATABASE_URL'])
+
+def get_games():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT name, game_time, yesterday_result, today_result FROM games WHERE is_active = true ORDER BY id ASC")
+        games = cur.fetchall()
+        cur.close()
+        conn.close()
+        return games
+    except:
+        return []
+
+games = get_games()
+current_date = datetime.now().strftime("%d-%m-%Y")
+
 st.markdown("""
 <style>
-    /* Hide Streamlit default elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display: none;}
+    [data-testid="stSidebarNav"] {display: none;}
     
-    /* Remove all default padding and margins */
     .stApp {
-        background: white !important;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
     }
     
     .main .block-container {
@@ -31,360 +51,375 @@ st.markdown("""
         padding-bottom: 0 !important;
     }
     
-    .stApp > header {
-        display: none !important;
-    }
-    
     section[data-testid="stSidebar"] {
         display: none !important;
     }
     
-    div[data-testid="stAppViewBlockContainer"] {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    
-    /* Base responsive container */
-    .responsive-container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-left: 20px;
-        padding-right: 20px;
-        box-sizing: border-box;
-    }
-    
-    /* Logo section */
-    .logo-section {
+    .header-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 30px 0;
+        padding: 25px 0;
         text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     
-    .logo-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .site-title {
+        color: #fff;
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     
-    .logo {
-        width: 80px;
-        height: 80px;
-        background: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 40px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    .site-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 14px;
+        margin-top: 8px;
     }
     
-    .logo-text {
-        color: white;
-        font-size: 28px;
-        font-weight: bold;
-        margin-top: 15px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-    
-    /* Navigation Menu */
     .nav-section {
-        background: #2c3e50;
-        padding: 0;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
+        background: #1e1e30;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     
     .nav-menu {
         display: flex;
         justify-content: center;
-        align-items: center;
+        gap: 10px;
         flex-wrap: wrap;
-        gap: 5px;
-        padding: 8px 20px;
+        padding: 0 20px;
     }
     
     .nav-item {
-        color: white;
-        text-decoration: none;
-        padding: 6px 18px;
-        border-radius: 5px;
-        transition: all 0.3s ease;
+        color: #b0b0c0;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 14px;
         font-weight: 500;
         cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
     }
     
-    .nav-item:hover {
-        background: #3498db;
-        transform: translateY(-2px);
+    .nav-item:hover, .nav-item.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
     }
     
-    .nav-item.active {
-        background: #3498db;
+    .date-banner {
+        background: linear-gradient(135deg, #2d2d44 0%, #3d3d5c 100%);
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     
-    /* Header section */
-    .header-section {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        padding: 30px 0;
+    .date-text {
+        color: #00d4ff;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .games-section {
+        padding: 30px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .section-title {
+        color: #fff;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .games-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .games-table thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .games-table th {
+        color: #fff;
+        padding: 18px 15px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         text-align: center;
     }
     
-    .header-title {
-        font-size: 42px;
-        font-weight: bold;
-        color: #2c3e50;
+    .games-table tbody tr {
+        background: linear-gradient(135deg, #252540 0%, #2a2a50 100%);
+        transition: all 0.3s;
+    }
+    
+    .games-table tbody tr:nth-child(even) {
+        background: linear-gradient(135deg, #1e1e35 0%, #252545 100%);
+    }
+    
+    .games-table tbody tr:hover {
+        background: linear-gradient(135deg, #3a3a60 0%, #454580 100%);
+        transform: scale(1.01);
+    }
+    
+    .games-table td {
+        padding: 16px 15px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .game-name {
+        color: #00d4ff;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    
+    .game-time {
+        color: #a0a0b0;
+        font-size: 13px;
+    }
+    
+    .result-yesterday {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 18px;
+        display: inline-block;
+        min-width: 50px;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .result-today {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 18px;
+        display: inline-block;
+        min-width: 50px;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    .result-pending {
+        background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 18px;
+        display: inline-block;
+        min-width: 50px;
+    }
+    
+    .footer-section {
+        background: #1e1e30;
+        padding: 20px;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 40px;
+    }
+    
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
         margin-bottom: 15px;
     }
     
-    .header-subtitle {
-        font-size: 18px;
-        color: #7f8c8d;
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-    
-    /* Content area */
-    .content-section {
-        background: #ffffff;
-        padding: 80px 0;
-        min-height: 400px;
-    }
-    
-    .content-placeholder {
-        text-align: center;
-        color: #bdc3c7;
-        font-size: 18px;
-        padding: 100px 20px;
-        border: 2px dashed #ecf0f1;
-        border-radius: 10px;
-        background: #fafafa;
-    }
-    
-    /* Footer navigation */
-    .footer-nav-section {
-        background: #34495e;
-        padding: 15px 0;
-    }
-    
-    .footer-nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-    
-    .footer-nav-item {
-        color: #bdc3c7;
+    .footer-link {
+        color: #a0a0b0;
+        font-size: 13px;
         text-decoration: none;
-        padding: 10px 20px;
-        transition: color 0.3s ease;
-        cursor: pointer;
+        transition: color 0.3s;
     }
     
-    .footer-nav-item:hover {
-        color: white;
+    .footer-link:hover {
+        color: #667eea;
     }
     
-    /* Footer copyright */
-    .footer-section {
-        background: #2c3e50;
-        padding: 25px 0;
+    .copyright {
+        color: #6a6a7a;
+        font-size: 12px;
+    }
+    
+    .no-games {
         text-align: center;
+        padding: 60px 20px;
+        color: #a0a0b0;
+        font-size: 18px;
     }
     
-    .copyright-text {
-        color: #95a5a6;
-        font-size: 14px;
+    .refresh-note {
+        text-align: center;
+        color: #6a6a7a;
+        font-size: 12px;
+        margin-top: 20px;
     }
     
-    /* Responsive styles for tablets */
     @media (max-width: 768px) {
-        .responsive-container {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            font-size: 30px;
-        }
-        
-        .logo-text {
-            font-size: 22px;
-        }
-        
-        .nav-menu {
-            gap: 3px;
-            padding: 10px 15px;
+        .site-title {
+            font-size: 28px;
         }
         
         .nav-item {
-            padding: 10px 15px;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .games-table th, .games-table td {
+            padding: 12px 8px;
+            font-size: 12px;
+        }
+        
+        .game-name {
+            font-size: 13px;
+        }
+        
+        .result-yesterday, .result-today, .result-pending {
+            padding: 6px 10px;
             font-size: 14px;
+            min-width: 40px;
         }
         
-        .header-title {
-            font-size: 32px;
-        }
-        
-        .header-subtitle {
-            font-size: 16px;
-            padding: 0 15px;
-        }
-        
-        .content-section {
-            padding: 50px 0;
-            min-height: 300px;
-        }
-        
-        .footer-nav {
-            gap: 10px;
-        }
-        
-        .footer-nav-item {
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-    }
-    
-    /* Responsive styles for mobile */
-    @media (max-width: 480px) {
-        .responsive-container {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-        
-        .logo-section {
-            padding: 20px 0;
-        }
-        
-        .logo {
-            width: 50px;
-            height: 50px;
-            font-size: 25px;
-        }
-        
-        .logo-text {
+        .section-title {
             font-size: 18px;
         }
+    }
+    
+    @media (max-width: 480px) {
+        .site-title {
+            font-size: 24px;
+        }
         
         .nav-menu {
-            flex-direction: row;
-            gap: 3px;
-            padding: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 5px;
         }
         
         .nav-item {
-            padding: 8px 10px;
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+        
+        .games-table th, .games-table td {
+            padding: 10px 5px;
+            font-size: 11px;
+        }
+        
+        .game-name {
             font-size: 12px;
         }
         
-        .header-section {
-            padding: 20px 0;
-        }
-        
-        .header-title {
-            font-size: 26px;
-        }
-        
-        .header-subtitle {
-            font-size: 14px;
-        }
-        
-        .content-section {
-            padding: 40px 0;
-            min-height: 250px;
-        }
-        
-        .content-placeholder {
-            padding: 60px 15px;
-            font-size: 16px;
-        }
-        
-        .footer-nav {
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: center;
-            gap: 3px;
-        }
-        
-        .footer-nav-item {
-            padding: 5px 6px;
+        .game-time {
             font-size: 10px;
-            white-space: nowrap;
         }
         
-        .footer-section {
-            padding: 20px 0;
-        }
-        
-        .copyright-text {
+        .result-yesterday, .result-today, .result-pending {
+            padding: 5px 8px;
             font-size: 12px;
-            padding: 0 10px;
+            min-width: 35px;
         }
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Logo Section
 st.markdown("""
-<div class="logo-section">
-    <div class="responsive-container">
-        <div class="logo-text">Satta King</div>
-    </div>
+<div class="header-section">
+    <div class="site-title">🎮 Satta King</div>
+    <div class="site-subtitle">Live Results & Updates</div>
 </div>
 """, unsafe_allow_html=True)
 
-# Navigation Menu
 st.markdown("""
 <div class="nav-section">
-    <div class="responsive-container">
-        <div class="nav-menu">
-            <span class="nav-item active">Home</span>
-            <span class="nav-item">About</span>
-            <span class="nav-item">Services</span>
-            <span class="nav-item">Contact</span>
-        </div>
+    <div class="nav-menu">
+        <span class="nav-item active">Home</span>
+        <span class="nav-item">Results</span>
+        <span class="nav-item">Chart</span>
+        <span class="nav-item">About</span>
+        <span class="nav-item">Contact</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Content Area (Blank)
+st.markdown(f"""
+<div class="date-banner">
+    <span class="date-text">📅 {current_date}</span>
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("""
-<div class="content-section">
-    <div class="responsive-container">
-    </div>
-</div>
+<div class="games-section">
+    <div class="section-title">🎯 Today's Results</div>
 """, unsafe_allow_html=True)
 
-# Footer Navigation
-st.markdown("""
-<div class="footer-nav-section">
-    <div class="responsive-container">
-        <div class="footer-nav">
-            <span class="footer-nav-item">Privacy Policy</span>
-            <span class="footer-nav-item">About Us</span>
-            <span class="footer-nav-item">Contact Us</span>
-            <span class="footer-nav-item">Disclaimer</span>
-        </div>
+if games:
+    table_rows = ""
+    for game in games:
+        name = game[0]
+        time = game[1] or '--'
+        yesterday = game[2] or '--'
+        today = game[3] or '--'
+        
+        yesterday_class = "result-pending" if yesterday == '--' else "result-yesterday"
+        today_class = "result-pending" if today == '--' else "result-today"
+        
+        table_rows += f"""
+        <tr>
+            <td><span class="game-name">{name}</span></td>
+            <td><span class="game-time">{time}</span></td>
+            <td><span class="{yesterday_class}">{yesterday}</span></td>
+            <td><span class="{today_class}">{today}</span></td>
+        </tr>
+        """
+    
+    st.markdown(f"""
+    <table class="games-table">
+        <thead>
+            <tr>
+                <th>Game Name</th>
+                <th>Time</th>
+                <th>Yesterday</th>
+                <th>Today</th>
+            </tr>
+        </thead>
+        <tbody>
+            {table_rows}
+        </tbody>
+    </table>
+    <div class="refresh-note">Results are updated automatically</div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <div class="no-games">
+        <p>🎮 No games available</p>
+        <p style="font-size: 14px; color: #6a6a7a;">Games will appear here once added from admin panel</p>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# Footer Copyright
+st.markdown("</div>", unsafe_allow_html=True)
+
 st.markdown("""
 <div class="footer-section">
-    <div class="responsive-container">
-        <div class="copyright-text">
-            © 2026 Satta King. All rights reserved.
-        </div>
+    <div class="footer-links">
+        <span class="footer-link">Privacy Policy</span>
+        <span class="footer-link">About Us</span>
+        <span class="footer-link">Contact</span>
+        <span class="footer-link">Disclaimer</span>
     </div>
+    <div class="copyright">© 2026 Satta King. All rights reserved.</div>
 </div>
 """, unsafe_allow_html=True)
