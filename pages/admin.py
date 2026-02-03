@@ -144,180 +144,218 @@ st.markdown("""
     [data-testid="stSidebarNav"] {display: none;}
     
     [data-testid="stSidebar"] {
-        min-width: 220px !important;
-        max-width: 220px !important;
-        width: 220px !important;
-        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%) !important;
-        transform: none !important;
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        height: 100vh !important;
-        z-index: 999 !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
+        width: 240px !important;
+        background: #1e272e !important;
     }
     
-    [data-testid="stSidebar"] > div {
-        background: transparent !important;
-        padding-top: 20px;
-        width: 220px !important;
-        overflow: visible !important;
-    }
-    
-    [data-testid="stSidebar"] > div > div {
-        overflow: visible !important;
-    }
-    
-    [data-testid="stSidebarContent"] {
-        overflow: visible !important;
-        padding: 10px !important;
-    }
-    
-    [data-testid="stSidebar"] .stButton {
-        margin-bottom: 10px !important;
-    }
-    
-    [data-testid="stSidebar"][aria-expanded="false"] {
-        min-width: 220px !important;
-        max-width: 220px !important;
-        width: 220px !important;
-        margin-left: 0 !important;
-        transform: none !important;
+    [data-testid="stSidebar"] > div:first-child {
+        background: #1e272e !important;
+        padding-top: 0 !important;
     }
     
     [data-testid="stSidebarCollapseButton"] {display: none !important;}
     [data-testid="collapsedControl"] {display: none !important;}
     
-    .stApp > .main {
-        margin-left: 220px !important;
-    }
-    
     .main .block-container {
-        padding: 20px 30px !important;
+        padding: 0 !important;
         max-width: 100% !important;
-        margin-left: 0 !important;
+        background: #f5f5f5;
     }
     
-    section[data-testid="stSidebar"] + section.main {
-        margin-left: 220px !important;
+    .stApp {
+        background: #f5f5f5;
+    }
+    
+    .sidebar-header {
+        background: #1e272e;
+        padding: 20px 15px;
+        text-align: center;
+        border-bottom: 1px solid #2d3436;
     }
     
     .sidebar-logo {
-        text-align: center;
-        padding: 20px 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        margin-bottom: 20px;
+        color: #00d2d3;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 5px;
     }
     
-    .sidebar-logo h2 {
+    .sidebar-time {
+        background: #2d3436;
+        color: #00d2d3;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 14px;
+        display: inline-block;
+    }
+    
+    .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: #b2bec3;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+        margin: 2px 0;
+    }
+    
+    .menu-item:hover {
+        background: #2d3436;
         color: #fff;
+    }
+    
+    .menu-item.active {
+        background: #00b894;
+        color: #fff;
+        border-left: 3px solid #00d2d3;
+    }
+    
+    .menu-icon {
+        margin-right: 12px;
         font-size: 18px;
-        margin: 0;
+    }
+    
+    .content-header {
+        background: #fff;
+        padding: 15px 25px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .content-title {
+        font-size: 22px;
         font-weight: 600;
+        color: #2d3436;
+        margin: 0;
+    }
+    
+    .admin-badge {
+        color: #636e72;
+        font-size: 14px;
+    }
+    
+    .content-body {
+        padding: 25px;
     }
     
     .content-card {
         background: #fff;
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        margin-bottom: 20px;
-    }
-    
-    .page-title {
-        font-size: 24px;
-        font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f0f0f0;
-    }
-    
-    .data-row {
-        background: #f8f9fc;
         border-radius: 8px;
-        padding: 12px 15px;
-        margin-bottom: 10px;
-        border-left: 3px solid #667eea;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     
     .stButton > button {
-        border-radius: 8px;
+        border-radius: 5px;
         font-weight: 500;
-        transition: all 0.2s;
     }
     
-    .stButton > button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .stButton > button[kind="primary"] {
+        background: #00b894 !important;
+        border-color: #00b894 !important;
+    }
+    
+    .stButton > button[kind="primary"]:hover {
+        background: #00a884 !important;
+    }
+    
+    div[data-testid="stVerticalBlock"] > div {
+        background: transparent;
     }
     
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: #f8f9fc;
-        padding: 8px;
-        border-radius: 10px;
+        gap: 0;
+        background: transparent;
+        border-bottom: 2px solid #e0e0e0;
     }
     
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        padding: 10px 20px;
+        padding: 12px 24px;
         font-weight: 500;
+        color: #636e72;
+        border-radius: 0;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
     }
     
     .stTabs [aria-selected="true"] {
-        background: #667eea !important;
-        color: white !important;
+        color: #00b894 !important;
+        border-bottom: 2px solid #00b894 !important;
+        background: transparent !important;
+    }
+    
+    .game-row {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        border-left: 3px solid #00b894;
     }
     
     @media (max-width: 768px) {
         [data-testid="stSidebar"] {
-            min-width: 180px !important;
-            max-width: 180px !important;
-            width: 180px !important;
-            position: fixed !important;
-            transform: none !important;
-        }
-        [data-testid="stSidebar"] > div {
-            width: 180px !important;
-        }
-        .stApp > .main {
-            margin-left: 180px !important;
-        }
-        section[data-testid="stSidebar"] + section.main {
-            margin-left: 180px !important;
-        }
-        .main .block-container {
-            padding: 15px !important;
-        }
-        .content-card {
-            padding: 15px;
-        }
-        .page-title {
-            font-size: 20px;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            width: 200px !important;
         }
     }
 </style>
 """, unsafe_allow_html=True)
 
+current_time = datetime.now().strftime("%H:%M:%S")
+
 with st.sidebar:
-    st.markdown("""
-    <div class="sidebar-logo">
-        <h2>Admin Panel</h2>
+    st.markdown(f"""
+    <div class="sidebar-header">
+        <div class="sidebar-logo">Satta King</div>
+        <div class="sidebar-logo" style="font-size: 14px; color: #b2bec3;">Admin</div>
+        <div style="margin-top: 10px;">
+            <span class="sidebar-time">Server: {current_time}</span>
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button("Game", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
+    st.markdown("<div style='height: 20px'></div>", unsafe_allow_html=True)
+    
+    game_active = "primary" if st.session_state.current_page == 'games' else "secondary"
+    post_active = "primary" if st.session_state.current_page == 'posts' else "secondary"
+    
+    if st.button("🎮  Game", use_container_width=True, type=game_active):
         st.session_state.current_page = 'games'
         st.session_state.edit_game_id = None
         st.rerun()
     
-    if st.button("Post", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
+    if st.button("📝  Post", use_container_width=True, type=post_active):
         st.session_state.current_page = 'posts'
         st.session_state.edit_post_id = None
         st.rerun()
+    
+    st.markdown("<div style='height: 200px'></div>", unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    if st.button("🏠  Back to Site", use_container_width=True, type="secondary"):
+        st.switch_page("app.py")
+
+col_header = st.columns([6, 1])
+with col_header[0]:
+    if st.session_state.current_page == 'games':
+        st.markdown('<p class="content-title">Game Management</p>', unsafe_allow_html=True)
+    else:
+        st.markdown('<p class="content-title">Post Management</p>', unsafe_allow_html=True)
+with col_header[1]:
+    st.markdown('<p class="admin-badge">Administrator</p>', unsafe_allow_html=True)
+
+st.markdown("---")
 
 if st.session_state.current_page == 'games':
-    st.markdown('<div class="page-title">Game Management</div>', unsafe_allow_html=True)
     
     tab1, tab2, tab3 = st.tabs(["All Games", "Add Game", "Scrape"])
     
@@ -330,39 +368,40 @@ if st.session_state.current_page == 'games':
         conn.close()
         
         if games:
+            st.write(f"**Total Games: {len(games)}**")
+            st.markdown("")
+            
             for game in games:
-                with st.container():
-                    col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 1, 2])
-                    with col1:
-                        st.write(f"**{game[1]}**")
-                    with col2:
-                        st.write(f"Result: {game[2] or '-'}")
-                    with col3:
-                        st.write(f"Time: {game[3] or '-'}")
-                    with col4:
-                        status = "✅" if game[4] else "❌"
-                        st.write(status)
-                    with col5:
-                        col_edit, col_del = st.columns(2)
-                        with col_edit:
-                            if st.button("✏️", key=f"edit_game_{game[0]}"):
-                                st.session_state.edit_game_id = game[0]
-                                st.rerun()
-                        with col_del:
-                            if st.button("🗑️", key=f"del_game_{game[0]}"):
-                                conn = get_db_connection()
-                                cur = conn.cursor()
-                                cur.execute("DELETE FROM games WHERE id = %s", (game[0],))
-                                conn.commit()
-                                cur.close()
-                                conn.close()
-                                st.rerun()
-                    st.divider()
+                col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 1, 2])
+                with col1:
+                    st.write(f"**{game[1]}**")
+                with col2:
+                    st.write(f"{game[2] or '--'}")
+                with col3:
+                    st.write(f"{game[3] or '--'}")
+                with col4:
+                    st.write("✅" if game[4] else "❌")
+                with col5:
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        if st.button("Edit", key=f"edit_{game[0]}", type="secondary"):
+                            st.session_state.edit_game_id = game[0]
+                            st.rerun()
+                    with c2:
+                        if st.button("Del", key=f"del_{game[0]}", type="secondary"):
+                            conn = get_db_connection()
+                            cur = conn.cursor()
+                            cur.execute("DELETE FROM games WHERE id = %s", (game[0],))
+                            conn.commit()
+                            cur.close()
+                            conn.close()
+                            st.rerun()
+                st.markdown("---")
         else:
             st.info("No games found. Add your first game!")
         
         if st.session_state.edit_game_id:
-            st.markdown("**Edit Game**")
+            st.markdown("### Edit Game")
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT id, name, result, result_time, is_active FROM games WHERE id = %s", (st.session_state.edit_game_id,))
@@ -379,7 +418,7 @@ if st.session_state.current_page == 'games':
                     
                     col1, col2 = st.columns(2)
                     with col1:
-                        if st.form_submit_button("💾 Save Changes", use_container_width=True):
+                        if st.form_submit_button("Save", use_container_width=True, type="primary"):
                             conn = get_db_connection()
                             cur = conn.cursor()
                             cur.execute("""
@@ -393,7 +432,7 @@ if st.session_state.current_page == 'games':
                             st.session_state.edit_game_id = None
                             st.rerun()
                     with col2:
-                        if st.form_submit_button("❌ Cancel", use_container_width=True):
+                        if st.form_submit_button("Cancel", use_container_width=True):
                             st.session_state.edit_game_id = None
                             st.rerun()
     
@@ -404,7 +443,7 @@ if st.session_state.current_page == 'games':
             game_time = st.text_input("Result Time (e.g., 11:00 PM)")
             game_active = st.checkbox("Active", value=True)
             
-            if st.form_submit_button("➕ Add Game", use_container_width=True):
+            if st.form_submit_button("Add Game", use_container_width=True, type="primary"):
                 if game_name:
                     conn = get_db_connection()
                     cur = conn.cursor()
@@ -415,7 +454,7 @@ if st.session_state.current_page == 'games':
                     conn.commit()
                     cur.close()
                     conn.close()
-                    st.success(f"Game '{game_name}' added successfully!")
+                    st.success(f"Game '{game_name}' added!")
                     st.rerun()
                 else:
                     st.error("Please enter game name!")
@@ -426,27 +465,26 @@ if st.session_state.current_page == 'games':
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            if st.button("🔄 Scrape Now", use_container_width=True, type="primary", key="scrape_btn"):
-                with st.spinner("Scraping data from website..."):
+            if st.button("Scrape Now", use_container_width=True, type="primary"):
+                with st.spinner("Scraping..."):
                     games_data, error = scrape_satta_games()
                     
                     if error:
-                        st.error(f"Scraping failed: {error}")
+                        st.error(f"Failed: {error}")
                     elif games_data:
                         st.success(f"Found {len(games_data)} games!")
                         
                         saved, updated, save_error = save_scraped_games(games_data)
                         
                         if save_error:
-                            st.error(f"Error saving: {save_error}")
+                            st.error(f"Error: {save_error}")
                         else:
-                            st.success(f"New games added: {saved}")
-                            st.success(f"Games updated: {updated}")
+                            st.success(f"New: {saved} | Updated: {updated}")
                     else:
-                        st.warning("No games found on the website.")
+                        st.warning("No games found.")
         
         with col2:
-            if st.button("🗑️ Delete All Games", use_container_width=True, type="secondary", key="delete_all_btn"):
+            if st.button("Delete All", use_container_width=True, type="secondary"):
                 conn = get_db_connection()
                 cur = conn.cursor()
                 cur.execute("DELETE FROM games")
@@ -457,7 +495,6 @@ if st.session_state.current_page == 'games':
                 st.rerun()
 
 elif st.session_state.current_page == 'posts':
-    st.markdown('<div class="page-title">Post Management</div>', unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["All Posts", "Add Post"])
     
@@ -470,37 +507,38 @@ elif st.session_state.current_page == 'posts':
         conn.close()
         
         if posts:
+            st.write(f"**Total Posts: {len(posts)}**")
+            st.markdown("")
+            
             for post in posts:
-                with st.container():
-                    col1, col2, col3, col4 = st.columns([4, 2, 1, 2])
-                    with col1:
-                        st.write(f"**{post[1]}**")
-                    with col2:
-                        st.write(f"{post[4].strftime('%d-%m-%Y') if post[4] else '-'}")
-                    with col3:
-                        status = "✅" if post[3] else "📝"
-                        st.write(status)
-                    with col4:
-                        col_edit, col_del = st.columns(2)
-                        with col_edit:
-                            if st.button("✏️", key=f"edit_post_{post[0]}"):
-                                st.session_state.edit_post_id = post[0]
-                                st.rerun()
-                        with col_del:
-                            if st.button("🗑️", key=f"del_post_{post[0]}"):
-                                conn = get_db_connection()
-                                cur = conn.cursor()
-                                cur.execute("DELETE FROM posts WHERE id = %s", (post[0],))
-                                conn.commit()
-                                cur.close()
-                                conn.close()
-                                st.rerun()
-                    st.divider()
+                col1, col2, col3, col4 = st.columns([4, 2, 1, 2])
+                with col1:
+                    st.write(f"**{post[1]}**")
+                with col2:
+                    st.write(f"{post[4].strftime('%d-%m-%Y') if post[4] else '-'}")
+                with col3:
+                    st.write("✅" if post[3] else "📝")
+                with col4:
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        if st.button("Edit", key=f"edit_post_{post[0]}", type="secondary"):
+                            st.session_state.edit_post_id = post[0]
+                            st.rerun()
+                    with c2:
+                        if st.button("Del", key=f"del_post_{post[0]}", type="secondary"):
+                            conn = get_db_connection()
+                            cur = conn.cursor()
+                            cur.execute("DELETE FROM posts WHERE id = %s", (post[0],))
+                            conn.commit()
+                            cur.close()
+                            conn.close()
+                            st.rerun()
+                st.markdown("---")
         else:
             st.info("No posts found. Add your first post!")
         
         if st.session_state.edit_post_id:
-            st.markdown("**Edit Post**")
+            st.markdown("### Edit Post")
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT id, title, content, is_published FROM posts WHERE id = %s", (st.session_state.edit_post_id,))
@@ -510,13 +548,13 @@ elif st.session_state.current_page == 'posts':
             
             if post_data:
                 with st.form("edit_post_form"):
-                    edit_title = st.text_input("Post Title", value=post_data[1])
+                    edit_title = st.text_input("Title", value=post_data[1])
                     edit_content = st.text_area("Content", value=post_data[2] or "", height=200)
                     edit_published = st.checkbox("Published", value=post_data[3])
                     
                     col1, col2 = st.columns(2)
                     with col1:
-                        if st.form_submit_button("💾 Save Changes", use_container_width=True):
+                        if st.form_submit_button("Save", use_container_width=True, type="primary"):
                             conn = get_db_connection()
                             cur = conn.cursor()
                             cur.execute("""
@@ -530,17 +568,17 @@ elif st.session_state.current_page == 'posts':
                             st.session_state.edit_post_id = None
                             st.rerun()
                     with col2:
-                        if st.form_submit_button("❌ Cancel", use_container_width=True):
+                        if st.form_submit_button("Cancel", use_container_width=True):
                             st.session_state.edit_post_id = None
                             st.rerun()
     
     with tab2:
         with st.form("add_post_form"):
-            post_title = st.text_input("Post Title *")
+            post_title = st.text_input("Title *")
             post_content = st.text_area("Content", height=200)
             post_published = st.checkbox("Publish immediately", value=False)
             
-            if st.form_submit_button("➕ Add Post", use_container_width=True):
+            if st.form_submit_button("Add Post", use_container_width=True, type="primary"):
                 if post_title:
                     conn = get_db_connection()
                     cur = conn.cursor()
@@ -551,7 +589,7 @@ elif st.session_state.current_page == 'posts':
                     conn.commit()
                     cur.close()
                     conn.close()
-                    st.success(f"Post '{post_title}' added successfully!")
+                    st.success(f"Post '{post_title}' added!")
                     st.rerun()
                 else:
-                    st.error("Please enter post title!")
+                    st.error("Please enter title!")
