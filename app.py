@@ -309,12 +309,15 @@ st.markdown("""
         }
         
         .footer-nav {
-            flex-direction: column;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 5px;
         }
         
         .footer-nav-item {
-            padding: 10px;
+            padding: 8px 10px;
+            font-size: 12px;
         }
         
         .footer-section {
@@ -349,7 +352,6 @@ st.markdown("""
             <span class="nav-item active">Home</span>
             <span class="nav-item">About</span>
             <span class="nav-item">Services</span>
-            <span class="nav-item">Portfolio</span>
             <span class="nav-item">Contact</span>
         </div>
     </div>
@@ -386,10 +388,8 @@ st.markdown("""
     <div class="responsive-container">
         <div class="footer-nav">
             <span class="footer-nav-item">Home</span>
-            <span class="footer-nav-item">About Us</span>
+            <span class="footer-nav-item">About</span>
             <span class="footer-nav-item">Services</span>
-            <span class="footer-nav-item">Privacy Policy</span>
-            <span class="footer-nav-item">Terms of Service</span>
             <span class="footer-nav-item">Contact</span>
         </div>
     </div>
