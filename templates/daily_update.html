@@ -258,9 +258,6 @@
                 <div class="post-card-title">{{ post.title }}</div>
                 <div class="post-card-date">{{ post.post_date }}</div>
                 <div class="post-card-desc">{{ post.description }}</div>
-                {% if post.result != 'Waiting...' %}
-                <span class="post-card-result">{{ post.result }}</span>
-                {% endif %}
             </a>
             {% endfor %}
         {% else %}
