@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="My Website",
+    page_title="Satta King",
     page_icon="🌐",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -340,7 +340,7 @@ st.markdown("""
         <div class="logo-container">
             <div class="logo">🌐</div>
         </div>
-        <div class="logo-text">My Website</div>
+        <div class="logo-text">Satta King</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -402,7 +402,7 @@ st.markdown("""
 <div class="footer-section">
     <div class="responsive-container">
         <div class="copyright-text">
-            © 2026 My Website. All rights reserved. | Designed with ❤️ in Python
+            © 2026 Satta King. All rights reserved.
         </div>
     </div>
 </div>
