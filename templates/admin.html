@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Satta King</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 20px;
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .sidebar-logo {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .sidebar-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        .nav-menu { list-style: none; }
+        
+        .nav-menu li {
+            margin-bottom: 8px;
+        }
+        
+        .nav-menu a {
+            display: block;
+            padding: 12px 15px;
+            color: #a0a0b0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+        
+        .content-header {
+            background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #252540 0%, #2a2a50 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .card-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #2a2a45 0%, #353560 100%);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #a0a0b0;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            background: #1a1a2e;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .games-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .game-info {
+            flex: 1;
+        }
+        
+        .game-name {
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .game-time {
+            color: #6a6a7a;
+            font-size: 12px;
+        }
+        
+        .game-results {
+            display: flex;
+            gap: 10px;
+            margin-right: 15px;
+        }
+        
+        .result-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .result-yesterday {
+            background: #e74c3c;
+            color: #fff;
+        }
+        
+        .result-today {
+            background: #27ae60;
+            color: #fff;
+        }
+        
+        .game-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .status-msg {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .status-success {
+            background: rgba(39, 174, 96, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .loading {
+            color: #a0a0b0;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #a0a0b0;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; min-height: auto; }
+            .main-content { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">Satta King</div>
+            <div class="sidebar-subtitle">Admin Panel</div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a href="/" target="_blank">View Website</a></li>
+            <li><a href="#" class="active" onclick="showSection('games')">Games Management</a></li>
+            <li><a href="#" onclick="showSection('scrape')">Web Scraping</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="content-title">Admin Dashboard</h1>
+        </div>
+        
+        <div id="statusMsg"></div>
+        
+        <div id="gamesSection">
+            <div class="card">
+                <div class="card-title">Games Management</div>
+                <div style="margin-bottom: 15px;">
+                    <button class="btn btn-primary" onclick="openAddModal()">+ Add New Game</button>
+                </div>
+                <div class="games-list" id="gamesList">
+                    <div class="loading">Loading games...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="scrapeSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Web Scraping</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Scrape games data from satta-king-fast.com</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="scrapeGames()" id="scrapeBtn">Scrape Now</button>
+                    <button class="btn btn-danger" onclick="clearAllGames()">Clear All Games</button>
+                </div>
+                <div id="scrapeStatus" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Add Game</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="gameForm">
+                <input type="hidden" id="gameId">
+                <div class="form-group">
+                    <label>Game Name</label>
+                    <input type="text" id="gameName" required>
+                </div>
+                <div class="form-group">
+                    <label>Game Time</label>
+                    <input type="text" id="gameTime" placeholder="e.g., 05:00 AM">
+                </div>
+                <div class="form-group">
+                    <label>Yesterday Result</label>
+                    <input type="text" id="yesterdayResult" value="--">
+                </div>
+                <div class="form-group">
+                    <label>Today Result</label>
+                    <input type="text" id="todayResult" value="--">
+                </div>
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" id="displayOrder" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="isActive">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save Game</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function showStatus(msg, isError = false) {
+            const el = document.getElementById('statusMsg');
+            el.className = 'status-msg ' + (isError ? 'status-error' : 'status-success');
+            el.textContent = msg;
+            setTimeout(() => el.textContent = '', 5000);
+        }
+        
+        function showSection(section) {
+            document.getElementById('gamesSection').style.display = section === 'games' ? 'block' : 'none';
+            document.getElementById('scrapeSection').style.display = section === 'scrape' ? 'block' : 'none';
+            document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        async function loadGames() {
+            try {
+                const res = await fetch('/api/games');
+                const games = await res.json();
+                const list = document.getElementById('gamesList');
+                
+                if (games.length === 0) {
+                    list.innerHTML = '<div class="loading">No games found. Add or scrape games.</div>';
+                    return;
+                }
+                
+                list.innerHTML = games.map(g => `
+                    <div class="game-item">
+                        <div class="game-info">
+                            <div class="game-name">${g.name}</div>
+                            <div class="game-time">${g.game_time || '--'}</div>
+                        </div>
+                        <div class="game-results">
+                            <span class="result-badge result-yesterday">${g.yesterday_result || '--'}</span>
+                            <span class="result-badge result-today">${g.today_result || '--'}</span>
+                        </div>
+                        <div class="game-actions">
+                            <button class="btn btn-secondary btn-small" onclick='editGame(${JSON.stringify(g)})'>Edit</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteGame(${g.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                document.getElementById('gamesList').innerHTML = '<div class="loading">Error loading games</div>';
+            }
+        }
+        
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add Game';
+            document.getElementById('gameId').value = '';
+            document.getElementById('gameName').value = '';
+            document.getElementById('gameTime').value = '';
+            document.getElementById('yesterdayResult').value = '--';
+            document.getElementById('todayResult').value = '--';
+            document.getElementById('displayOrder').value = '0';
+            document.getElementById('isActive').value = 'true';
+            document.getElementById('gameModal').classList.add('active');
+        }
+        
+        function editGame(game) {
+            document.getElementById('modalTitle').textContent = 'Edit Game';
+            document.getElementById('gameId').value = game.id;
+            document.getElementById('gameName').value = game.name;
+            document.getElementById('gameTime').value = game.game_time || '';
+            document.getElementById('yesterdayResult').value = game.yesterday_result || '--';
+            document.getElementById('todayResult').value = game.today_result || '--';
+            document.getElementById('displayOrder').value = game.display_order || 0;
+            document.getElementById('isActive').value = game.is_active ? 'true' : 'false';
+            document.getElementById('gameModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('gameModal').classList.remove('active');
+        }
+        
+        document.getElementById('gameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('gameId').value;
+            const data = {
+                name: document.getElementById('gameName').value,
+                game_time: document.getElementById('gameTime').value,
+                yesterday_result: document.getElementById('yesterdayResult').value,
+                today_result: document.getElementById('todayResult').value,
+                display_order: parseInt(document.getElementById('displayOrder').value),
+                is_active: document.getElementById('isActive').value === 'true'
+            };
+            
+            try {
+                const url = id ? `/api/games/${id}` : '/api/games';
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if (res.ok) {
+                    showStatus(id ? 'Game updated!' : 'Game added!');
+                    closeModal();
+                    loadGames();
+                } else {
+                    showStatus(result.error || 'Error saving game', true);
+                }
+            } catch (e) {
+                showStatus('Error saving game', true);
+            }
+        });
+        
+        async function deleteGame(id) {
+            if (!confirm('Are you sure you want to delete this game?')) return;
+            
+            try {
+                const res = await fetch(`/api/games/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showStatus('Game deleted!');
+                    loadGames();
+                } else {
+                    showStatus('Error deleting game', true);
+                }
+            } catch (e) {
+                showStatus('Error deleting game', true);
+            }
+        }
+        
+        async function scrapeGames() {
+            const btn = document.getElementById('scrapeBtn');
+            const status = document.getElementById('scrapeStatus');
+            
+            btn.disabled = true;
+            btn.textContent = 'Scraping...';
+            status.innerHTML = '<div class="loading">Scraping data from source website...</div>';
+            
+            try {
+                const res = await fetch('/api/scrape', { method: 'POST' });
+                const result = await res.json();
+                
+                if (res.ok) {
+                    status.innerHTML = `<div class="status-msg status-success">Scraped ${result.total} games. New: ${result.saved}, Updated: ${result.updated}</div>`;
+                    loadGames();
+                } else {
+                    status.innerHTML = `<div class="status-msg status-error">${result.error || 'Scraping failed'}</div>`;
+                }
+            } catch (e) {
+                status.innerHTML = '<div class="status-msg status-error">Scraping failed</div>';
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Scrape Now';
+        }
+        
+        async function clearAllGames() {
+            if (!confirm('Are you sure you want to delete ALL games?')) return;
+            
+            try {
+                const res = await fetch('/api/clear-games', { method: 'POST' });
+                if (res.ok) {
+                    showStatus('All games cleared!');
+                    loadGames();
+                } else {
+                    showStatus('Error clearing games', true);
+                }
+            } catch (e) {
+                showStatus('Error clearing games', true);
+            }
+        }
+        
+        loadGames();
+    </script>
+</body>
+</html>

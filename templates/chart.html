@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ seo_title }}</title>
+<meta name="description" content="{{ seo_description }}">
+<meta name="keywords" content="{{ seo_keywords }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ canonical_url }}">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ seo_title }}">
+<meta property="og:description" content="{{ seo_description }}">
+<meta property="og:site_name" content="Satta King">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ canonical_url }}">
+<meta name="twitter:title" content="{{ seo_title }}">
+<meta name="twitter:description" content="{{ seo_description }}">
+
+<script type="application/ld+json">
+{{ schema_data | safe }}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .back-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin: 20px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .chart-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        margin: 0 20px 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .chart-title {
+        color: #fff;
+        font-size: 24px;
+        font-weight: 700;
+    }
+    
+    .chart-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 18px;
+        margin-top: 8px;
+    }
+    
+    .selectors-row {
+        display: flex;
+        gap: 10px;
+        padding: 0 20px;
+        margin-bottom: 20px;
+        flex-wrap: nowrap;
+    }
+    
+    .selector-group {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .selector-group label {
+        display: block;
+        color: #a0a0b0;
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+    
+    .selector-group select {
+        width: 100%;
+        padding: 10px;
+        background: #1a1a2e;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    
+    .selector-group select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .results-table {
+        width: calc(100% - 40px);
+        margin: 0 20px;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    
+    .results-table thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .results-table th {
+        color: #fff;
+        padding: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+    }
+    
+    .results-table tbody tr {
+        background: linear-gradient(135deg, #252540 0%, #2a2a50 100%);
+        transition: all 0.3s;
+    }
+    
+    .results-table tbody tr:nth-child(even) {
+        background: linear-gradient(135deg, #1e1e35 0%, #252545 100%);
+    }
+    
+    .results-table tbody tr:hover {
+        background: linear-gradient(135deg, #3a3a60 0%, #454580 100%);
+    }
+    
+    .results-table td {
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .date-cell {
+        color: #a0a0b0;
+        font-size: 14px;
+    }
+    
+    .result-cell {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+        display: inline-block;
+        min-width: 40px;
+    }
+    
+    .result-pending {
+        background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+        display: inline-block;
+        min-width: 40px;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #a0a0b0;
+        font-size: 16px;
+    }
+    
+    @media (max-width: 768px) {
+        .selectors-row {
+            gap: 8px;
+        }
+        
+        .selector-group select {
+            padding: 8px;
+            font-size: 11px;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+        }
+        
+        .chart-subtitle {
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="/" class="back-btn">← Back to Home</a>
+
+<div class="chart-header">
+    <h1 class="chart-title">Record Chart</h1>
+    <div class="chart-subtitle">{{ game_name if game_name else "Select a game" }}</div>
+</div>
+
+<form method="GET" action="/chart" id="chartForm">
+<div class="selectors-row">
+    <div class="selector-group">
+        <label for="game">Select Game</label>
+        <select name="game" id="game" onchange="document.getElementById('chartForm').submit()">
+            {% for game in games_list %}
+            <option value="{{ game.slug }}" {% if game.name == game_name %}selected{% endif %}>{{ game.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="selector-group">
+        <label for="month">Select Month</label>
+        <select name="month" id="month" onchange="document.getElementById('chartForm').submit()">
+            {% for i in range(12) %}
+            <option value="{{ i + 1 }}" {% if i + 1 == selected_month %}selected{% endif %}>{{ months[i] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="selector-group">
+        <label for="year">Select Year</label>
+        <select name="year" id="year" onchange="document.getElementById('chartForm').submit()">
+            {% for year in years %}
+            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+</form>
+
+{% if game_name %}
+<table class="results-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Result</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for day in range(1, days_in_month + 1) %}
+        {% set result = results.get(day, '--') %}
+        <tr>
+            <td class="date-cell">{{ '%02d' | format(day) }}-{{ '%02d' | format(selected_month) }}-{{ selected_year }}</td>
+            <td>
+                <span class="{{ 'result-pending' if result == '--' else 'result-cell' }}">{{ result }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="no-results">Please select a game to view results</div>
+{% endif %}
+{% endblock %}
