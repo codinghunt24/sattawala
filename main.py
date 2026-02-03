@@ -167,6 +167,7 @@ def init_database():
             CREATE TABLE IF NOT EXISTS ad_settings (
                 id SERIAL PRIMARY KEY,
                 adsense_publisher_id VARCHAR(50),
+                google_analytics_id VARCHAR(50),
                 auto_ads_enabled BOOLEAN DEFAULT false,
                 ad_header BOOLEAN DEFAULT false,
                 ad_after_header BOOLEAN DEFAULT false,
@@ -180,6 +181,12 @@ def init_database():
                 manual_ad_code_sidebar TEXT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            
+            DO $$ BEGIN
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='ad_settings' AND column_name='google_analytics_id') THEN
+                    ALTER TABLE ad_settings ADD COLUMN google_analytics_id VARCHAR(50);
+                END IF;
+            END $$;
             
             CREATE TABLE IF NOT EXISTS daily_update_settings (
                 id SERIAL PRIMARY KEY,
@@ -417,37 +424,45 @@ def admin():
 @app.route('/privacy-policy')
 def privacy_policy():
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     return render_template('static_page.html', 
         page_title="Privacy Policy",
         page_content=get_privacy_policy_content(),
-        site_settings=site_settings
+        site_settings=site_settings,
+        ad_settings=ad_settings
     )
 
 @app.route('/about')
 def about_page():
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     return render_template('static_page.html', 
         page_title="About Us",
         page_content=get_about_content(),
-        site_settings=site_settings
+        site_settings=site_settings,
+        ad_settings=ad_settings
     )
 
 @app.route('/contact')
 def contact_page():
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     return render_template('static_page.html', 
         page_title="Contact Us",
         page_content=get_contact_content(),
-        site_settings=site_settings
+        site_settings=site_settings,
+        ad_settings=ad_settings
     )
 
 @app.route('/disclaimer')
 def disclaimer_page():
     site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
     return render_template('static_page.html', 
         page_title="Disclaimer",
         page_content=get_disclaimer_content(),
-        site_settings=site_settings
+        site_settings=site_settings,
+        ad_settings=ad_settings
     )
 
 def get_privacy_policy_content():
@@ -1702,7 +1717,7 @@ def get_ad_settings():
         cur.execute("""SELECT adsense_publisher_id, auto_ads_enabled, ad_header, ad_after_header, 
                        ad_between_games, ad_before_footer, ad_sidebar, manual_ad_code_header,
                        manual_ad_code_after_header, manual_ad_code_between_games, 
-                       manual_ad_code_before_footer, manual_ad_code_sidebar FROM ad_settings LIMIT 1""")
+                       manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id FROM ad_settings LIMIT 1""")
         row = cur.fetchone()
         cur.close()
         conn.close()
@@ -1719,7 +1734,8 @@ def get_ad_settings():
                 'manual_ad_code_after_header': row[8],
                 'manual_ad_code_between_games': row[9],
                 'manual_ad_code_before_footer': row[10],
-                'manual_ad_code_sidebar': row[11]
+                'manual_ad_code_sidebar': row[11],
+                'google_analytics_id': row[12]
             }
         return {}
     except:
@@ -1746,27 +1762,27 @@ def api_save_ad_settings():
                 ad_before_footer = %s, ad_sidebar = %s,
                 manual_ad_code_header = %s, manual_ad_code_after_header = %s,
                 manual_ad_code_between_games = %s, manual_ad_code_before_footer = %s,
-                manual_ad_code_sidebar = %s, updated_at = %s WHERE id = %s""",
+                manual_ad_code_sidebar = %s, google_analytics_id = %s, updated_at = %s WHERE id = %s""",
                 (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
                  data.get('ad_header', False), data.get('ad_after_header', False),
                  data.get('ad_between_games', False), data.get('ad_before_footer', False),
                  data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
                  data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
                  data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
-                 get_ist_now(), existing[0]))
+                 data.get('google_analytics_id'), get_ist_now(), existing[0]))
         else:
             cur.execute("""INSERT INTO ad_settings (adsense_publisher_id, auto_ads_enabled,
                 ad_header, ad_after_header, ad_between_games, ad_before_footer, ad_sidebar,
                 manual_ad_code_header, manual_ad_code_after_header, manual_ad_code_between_games,
-                manual_ad_code_before_footer, manual_ad_code_sidebar, updated_at)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
                  data.get('ad_header', False), data.get('ad_after_header', False),
                  data.get('ad_between_games', False), data.get('ad_before_footer', False),
                  data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
                  data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
                  data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
-                 get_ist_now()))
+                 data.get('google_analytics_id'), get_ist_now()))
         
         conn.commit()
         cur.close()

@@ -562,6 +562,12 @@
                     </div>
                     
                     <div class="form-group">
+                        <label>Google Analytics ID</label>
+                        <input type="text" id="googleAnalyticsId" placeholder="G-XXXXXXXXXX">
+                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Your Google Analytics Measurement ID (starts with G-)</p>
+                    </div>
+                    
+                    <div class="form-group">
                         <label>AdSense Publisher ID</label>
                         <input type="text" id="adsensePublisherId" placeholder="ca-pub-XXXXXXXXXXXXXXXX">
                         <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Your AdSense publisher ID (starts with ca-pub-)</p>
@@ -1533,6 +1539,7 @@
                 const res = await fetch('/api/ad-settings');
                 const settings = await res.json();
                 
+                document.getElementById('googleAnalyticsId').value = settings.google_analytics_id || '';
                 document.getElementById('adsensePublisherId').value = settings.adsense_publisher_id || '';
                 document.getElementById('autoAdsEnabled').checked = settings.auto_ads_enabled || false;
                 document.getElementById('adHeader').checked = settings.ad_header || false;
@@ -1554,6 +1561,7 @@
             const statusEl = document.getElementById('adSettingsStatus');
             try {
                 const data = {
+                    google_analytics_id: document.getElementById('googleAnalyticsId').value.trim(),
                     adsense_publisher_id: document.getElementById('adsensePublisherId').value.trim(),
                     auto_ads_enabled: document.getElementById('autoAdsEnabled').checked,
                     ad_header: document.getElementById('adHeader').checked,

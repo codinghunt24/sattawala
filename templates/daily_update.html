@@ -241,8 +241,8 @@
 <div class="main-wrapper">
     <div class="header-section">
         <div class="logo-container">
-            {% if site_settings and site_settings.logo %}
-            <img src="data:image/png;base64,{{ site_settings.logo }}" alt="Satta King Logo">
+            {% if site_settings and site_settings.logo_data %}
+            <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 80px; max-width: 300px;">
             {% else %}
             <span class="site-title">Satta King</span>
             {% endif %}

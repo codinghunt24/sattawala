@@ -204,9 +204,9 @@
     <div class="header-section">
         <div class="logo-container">
             {% if site_settings and site_settings.logo_data %}
-            <img src="{{ site_settings.logo_data }}" alt="Satta King 786">
+            <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 80px; max-width: 300px;">
             {% else %}
-            <div class="site-title">Satta King 786</div>
+            <div class="site-title">Satta King</div>
             {% endif %}
         </div>
     </div>
@@ -220,6 +220,17 @@
         </div>
     </div>
 
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div class="ad-container" style="text-align: center; padding: 15px 0; background: #f8f9fa; margin: 10px 0;">
+        {% if ad_settings.manual_ad_code_after_header %}
+        {{ ad_settings.manual_ad_code_after_header|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <div class="main-content">
         <div class="page-container">
             <h1 class="page-title">{{ page_title }}</h1>
@@ -228,6 +239,17 @@
             </div>
         </div>
     </div>
+
+    {% if ad_settings and ad_settings.ad_before_footer %}
+    <div class="ad-container" style="text-align: center; padding: 15px 0; background: #f8f9fa; margin: 10px 0;">
+        {% if ad_settings.manual_ad_code_before_footer %}
+        {{ ad_settings.manual_ad_code_before_footer|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
 
     <div class="footer-section">
         <div class="footer-links">
