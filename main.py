@@ -764,7 +764,6 @@ def generate_seo_post_content(game_name, result, post_date):
     if is_waiting:
         content = f"""
 <div class="post-content">
-    <h2>{game_name} Result - {date_str}</h2>
     <div class="result-box waiting">
         <span class="result-label">Today's Result</span>
         <span class="result-value waiting-text">Waiting...</span>
@@ -786,7 +785,6 @@ def generate_seo_post_content(game_name, result, post_date):
     else:
         content = f"""
 <div class="post-content">
-    <h2>{game_name} Result - {date_str}</h2>
     <div class="result-box declared">
         <span class="result-label">Today's Result</span>
         <span class="result-value">{result_display}</span>
