@@ -3,11 +3,25 @@ import psycopg2
 import os
 from datetime import datetime
 import calendar
+import re
 
 st.set_page_config(page_title="Record Chart - Satta King", page_icon="📊", layout="wide")
 
 def get_db_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'))
+
+def create_slug(name):
+    slug = name.lower().strip()
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+    slug = re.sub(r'[\s_]+', '-', slug)
+    slug = re.sub(r'-+', '-', slug)
+    return slug.strip('-')
+
+def find_game_by_slug(slug, games_list):
+    for game in games_list:
+        if create_slug(game) == slug:
+            return game
+    return None
 
 def get_game_results(game_name, month, year):
     try:
@@ -41,8 +55,9 @@ def get_all_games():
         st.error(f"Error loading games: {e}")
         return []
 
-game_name = st.query_params.get("game", "")
+game_slug = st.query_params.get("game", "")
 games_list = get_all_games()
+game_name = find_game_by_slug(game_slug, games_list) if game_slug else ""
 
 st.markdown("""
 <style>
