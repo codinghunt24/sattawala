@@ -1,0 +1,269 @@
+<tr>
+    <td><span class="game-name">DELHI DAY</span></td>
+    <td><span class="game-time">at 06:30 PM</span></td>
+    <td><span class="result-yesterday">67</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">FARIDABAD</span></td>
+    <td><span class="game-time">at 06:00 PM</span></td>
+    <td><span class="result-yesterday">90</span></td>
+    <td><span class="result-today">08</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">RAJDHANI</span></td>
+    <td><span class="game-time">at 06:00 PM</span></td>
+    <td><span class="result-yesterday">12</span></td>
+    <td><span class="result-today">99</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">UTTARAKHAND - UK</span></td>
+    <td><span class="game-time">at 05:30 PM</span></td>
+    <td><span class="result-yesterday">12</span></td>
+    <td><span class="result-today">01</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">MAHARAJ</span></td>
+    <td><span class="game-time">at 05:15 PM</span></td>
+    <td><span class="result-yesterday">17</span></td>
+    <td><span class="result-today">91</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">HINDUSTAN</span></td>
+    <td><span class="game-time">at 05:10 PM</span></td>
+    <td><span class="result-yesterday">17</span></td>
+    <td><span class="result-today">01</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">AHMEDABAD</span></td>
+    <td><span class="game-time">at 05:00 PM</span></td>
+    <td><span class="result-yesterday">16</span></td>
+    <td><span class="result-today">36</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">GOA KING</span></td>
+    <td><span class="game-time">at 07:00 PM</span></td>
+    <td><span class="result-yesterday">77</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">OLD CITY</span></td>
+    <td><span class="game-time">at 07:15 PM</span></td>
+    <td><span class="result-yesterday">66</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">NEELKANTH</span></td>
+    <td><span class="game-time">at 07:20 PM</span></td>
+    <td><span class="result-yesterday">39</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">SUPER MAX</span></td>
+    <td><span class="game-time">at 07:30 PM</span></td>
+    <td><span class="result-yesterday">14</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">SHRI LAXMI</span></td>
+    <td><span class="game-time">at 07:30 PM</span></td>
+    <td><span class="result-yesterday">30</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">UTTAM NAGAR</span></td>
+    <td><span class="game-time">at 07:30 PM</span></td>
+    <td><span class="result-yesterday">10</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">DUBAI BAZAR</span></td>
+    <td><span class="game-time">at 07:30 PM</span></td>
+    <td><span class="result-yesterday">78</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">PARAS</span></td>
+    <td><span class="game-time">at 07:40 PM</span></td>
+    <td><span class="result-yesterday">14</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">FARIDA BAZAR</span></td>
+    <td><span class="game-time">at 07:40 PM</span></td>
+    <td><span class="result-yesterday">47</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">VEERA</span></td>
+    <td><span class="game-time">at 07:40 PM</span></td>
+    <td><span class="result-yesterday">41</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">DELHI GOLDEN</span></td>
+    <td><span class="game-time">at 07:45 PM</span></td>
+    <td><span class="result-yesterday">74</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">DELHI STAR</span></td>
+    <td><span class="game-time">at 07:45 PM</span></td>
+    <td><span class="result-yesterday">37</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">LUCK</span></td>
+    <td><span class="game-time">at 07:45 PM</span></td>
+    <td><span class="result-yesterday">88</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">DHAN KUBER</span></td>
+    <td><span class="game-time">at 07:55 PM</span></td>
+    <td><span class="result-yesterday">86</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">TODAY BAZAAR</span></td>
+    <td><span class="game-time">at 08:00 PM</span></td>
+    <td><span class="result-yesterday">08</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">ROYAL DELHI</span></td>
+    <td><span class="game-time">at 08:00 PM</span></td>
+    <td><span class="result-yesterday">94</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">NEW SAHIBABAD</span></td>
+    <td><span class="game-time">at 08:00 PM</span></td>
+    <td><span class="result-yesterday">91</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">SAWARIYA SETH</span></td>
+    <td><span class="game-time">at 08:00 PM</span></td>
+    <td><span class="result-yesterday">79</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">SHRI JI</span></td>
+    <td><span class="game-time">at 08:00 PM</span></td>
+    <td><span class="result-yesterday">44</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">SHIV SHANKAR</span></td>
+    <td><span class="game-time">at 08:00 PM</span></td>
+    <td><span class="result-yesterday">57</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">GALI DISAWAR MIX</span></td>
+    <td><span class="game-time">at 08:15 PM</span></td>
+    <td><span class="result-yesterday">14</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">WHITE GOLD</span></td>
+    <td><span class="game-time">at 08:15 PM</span></td>
+    <td><span class="result-yesterday">76</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">UP BAZAR</span></td>
+    <td><span class="game-time">at 08:15 PM</span></td>
+    <td><span class="result-yesterday">98</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">PATHANKOT</span></td>
+    <td><span class="game-time">at 08:15 PM</span></td>
+    <td><span class="result-yesterday">80</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">BOMBAY SUPER</span></td>
+    <td><span class="game-time">at 08:15 PM</span></td>
+    <td><span class="result-yesterday">09</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">NEW DELHI DARBAR</span></td>
+    <td><span class="game-time">at 08:30 PM</span></td>
+    <td><span class="result-yesterday">13</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">GHAZIABAD NIGHT</span></td>
+    <td><span class="game-time">at 08:30 PM</span></td>
+    <td><span class="result-yesterday">52</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">NEW HYDERABAD</span></td>
+    <td><span class="game-time">at 08:30 PM</span></td>
+    <td><span class="result-yesterday">11</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">ROZANA</span></td>
+    <td><span class="game-time">at 09:00 PM</span></td>
+    <td><span class="result-yesterday">07</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">BRIJ RANI</span></td>
+    <td><span class="game-time">at 09:00 PM</span></td>
+    <td><span class="result-yesterday">52</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">SHRI VISHNU</span></td>
+    <td><span class="game-time">at 09:15 PM</span></td>
+    <td><span class="result-yesterday">03</span></td>
+    <td><span class="result-pending">--</span></td>
+</tr>
+
+<tr>
+    <td><span class="game-name">GHAZIABAD</span></td>
+    <td><span class="game-time">at 09:25 PM<

@@ -367,41 +367,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 if games:
-    table_rows = ""
+    table_html = '<table class="games-table"><thead><tr><th>Game Name</th><th>Time</th><th>Yesterday</th><th>Today</th></tr></thead><tbody>'
+    
     for game in games:
-        name = game[0]
-        time = game[1] or '--'
+        name = game[0] or ''
+        time_val = game[1] or '--'
         yesterday = game[2] or '--'
         today = game[3] or '--'
         
         yesterday_class = "result-pending" if yesterday == '--' else "result-yesterday"
         today_class = "result-pending" if today == '--' else "result-today"
         
-        table_rows += f"""
-        <tr>
-            <td><span class="game-name">{name}</span></td>
-            <td><span class="game-time">{time}</span></td>
-            <td><span class="{yesterday_class}">{yesterday}</span></td>
-            <td><span class="{today_class}">{today}</span></td>
-        </tr>
-        """
+        table_html += f'<tr><td><span class="game-name">{name}</span></td><td><span class="game-time">{time_val}</span></td><td><span class="{yesterday_class}">{yesterday}</span></td><td><span class="{today_class}">{today}</span></td></tr>'
     
-    st.markdown(f"""
-    <table class="games-table">
-        <thead>
-            <tr>
-                <th>Game Name</th>
-                <th>Time</th>
-                <th>Yesterday</th>
-                <th>Today</th>
-            </tr>
-        </thead>
-        <tbody>
-            {table_rows}
-        </tbody>
-    </table>
-    <div class="refresh-note">Results are updated automatically</div>
-    """, unsafe_allow_html=True)
+    table_html += '</tbody></table><div class="refresh-note">Results are updated automatically</div>'
+    
+    st.markdown(table_html, unsafe_allow_html=True)
 else:
     st.markdown("""
     <div class="no-games">
