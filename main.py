@@ -248,6 +248,14 @@ def chart():
 def admin():
     return render_template('admin.html')
 
+@app.route('/_stcore/health')
+def stcore_health():
+    return jsonify({'status': 'ok'})
+
+@app.route('/_stcore/host-config')
+def stcore_host_config():
+    return jsonify({})
+
 @app.route('/api/games')
 def api_games():
     try:
