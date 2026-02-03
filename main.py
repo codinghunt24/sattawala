@@ -159,10 +159,21 @@ def init_database():
                 favicon_data TEXT,
                 site_title VARCHAR(255) DEFAULT 'Satta King',
                 ga_tracking_id VARCHAR(50),
+                redirect_404_enabled BOOLEAN DEFAULT true,
+                redirect_404_url VARCHAR(500) DEFAULT '/',
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             
             ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS ga_tracking_id VARCHAR(50);
+            
+            DO $$ BEGIN
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='site_settings' AND column_name='redirect_404_enabled') THEN
+                    ALTER TABLE site_settings ADD COLUMN redirect_404_enabled BOOLEAN DEFAULT true;
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='site_settings' AND column_name='redirect_404_url') THEN
+                    ALTER TABLE site_settings ADD COLUMN redirect_404_url VARCHAR(500) DEFAULT '/';
+                END IF;
+            END $$;
             
             CREATE TABLE IF NOT EXISTS ad_settings (
                 id SERIAL PRIMARY KEY,
@@ -1647,7 +1658,7 @@ def get_site_settings():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, logo_data, favicon_data, site_title, ga_tracking_id FROM site_settings LIMIT 1")
+        cur.execute("SELECT id, logo_data, favicon_data, site_title, ga_tracking_id, redirect_404_enabled, redirect_404_url FROM site_settings LIMIT 1")
         row = cur.fetchone()
         cur.close()
         conn.close()
@@ -1657,11 +1668,13 @@ def get_site_settings():
                 'logo_data': row[1],
                 'favicon_data': row[2],
                 'site_title': row[3],
-                'ga_tracking_id': row[4]
+                'ga_tracking_id': row[4],
+                'redirect_404_enabled': row[5] if row[5] is not None else True,
+                'redirect_404_url': row[6] if row[6] else '/'
             }
-        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King', 'ga_tracking_id': None}
+        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King', 'ga_tracking_id': None, 'redirect_404_enabled': True, 'redirect_404_url': '/'}
     except:
-        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King', 'ga_tracking_id': None}
+        return {'logo_data': None, 'favicon_data': None, 'site_title': 'Satta King', 'ga_tracking_id': None, 'redirect_404_enabled': True, 'redirect_404_url': '/'}
 
 @app.route('/api/site-settings', methods=['GET'])
 def api_get_site_settings():
@@ -2337,6 +2350,53 @@ def favicon():
         image_data = base64.b64decode(favicon_data)
         return image_data, 200, {'Content-Type': 'image/x-icon'}
     return '', 404
+
+@app.route('/api/redirect-settings', methods=['GET'])
+def api_get_redirect_settings():
+    settings = get_site_settings()
+    return jsonify({
+        'redirect_404_enabled': settings.get('redirect_404_enabled', True),
+        'redirect_404_url': settings.get('redirect_404_url', '/')
+    })
+
+@app.route('/api/redirect-settings', methods=['POST'])
+def api_save_redirect_settings():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT id FROM site_settings LIMIT 1")
+        existing = cur.fetchone()
+        
+        if existing:
+            cur.execute("""UPDATE site_settings SET 
+                redirect_404_enabled = %s, redirect_404_url = %s, updated_at = %s 
+                WHERE id = %s""",
+                (data.get('redirect_404_enabled', True), 
+                 data.get('redirect_404_url', '/'),
+                 get_ist_now(), existing[0]))
+        else:
+            cur.execute("""INSERT INTO site_settings (redirect_404_enabled, redirect_404_url, updated_at)
+                VALUES (%s, %s, %s)""",
+                (data.get('redirect_404_enabled', True), 
+                 data.get('redirect_404_url', '/'),
+                 get_ist_now()))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'Redirect settings saved successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.errorhandler(404)
+def page_not_found(e):
+    settings = get_site_settings()
+    if settings.get('redirect_404_enabled', True):
+        redirect_url = settings.get('redirect_404_url', '/')
+        return redirect(redirect_url)
+    return "Page Not Found", 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

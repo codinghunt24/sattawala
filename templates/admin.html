@@ -948,6 +948,30 @@
                 </div>
                 <div id="siteSettingsStatus" style="margin-top: 15px;"></div>
             </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">404 Redirect Settings</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Redirect broken/old URLs to prevent 404 errors</p>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="redirect404Enabled" style="width: 18px; height: 18px;" checked>
+                        <span>Enable 404 Redirect</span>
+                    </label>
+                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">When enabled, all not found pages will redirect to the URL below</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Redirect URL</label>
+                    <input type="text" id="redirect404Url" value="/" placeholder="/">
+                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Enter "/" for home page or any other URL like "/daily-update"</p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="saveRedirectSettings()">Save Redirect Settings</button>
+                </div>
+                <div id="redirectSettingsStatus" style="margin-top: 15px;"></div>
+            </div>
         </div>
     </div>
     </div>
@@ -1507,6 +1531,42 @@
                 }
             } catch (e) {
                 console.error('Error loading site settings:', e);
+            }
+        }
+        
+        async function loadRedirectSettings() {
+            try {
+                const res = await fetch('/api/redirect-settings');
+                const settings = await res.json();
+                
+                document.getElementById('redirect404Enabled').checked = settings.redirect_404_enabled !== false;
+                document.getElementById('redirect404Url').value = settings.redirect_404_url || '/';
+            } catch (e) {
+                console.error('Error loading redirect settings:', e);
+            }
+        }
+        
+        async function saveRedirectSettings() {
+            const statusEl = document.getElementById('redirectSettingsStatus');
+            try {
+                const data = {
+                    redirect_404_enabled: document.getElementById('redirect404Enabled').checked,
+                    redirect_404_url: document.getElementById('redirect404Url').value.trim() || '/'
+                };
+                
+                const res = await fetch('/api/redirect-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    statusEl.innerHTML = '<span style="color: #2ecc71;">Redirect settings saved successfully!</span>';
+                } else {
+                    statusEl.innerHTML = `<span style="color: #e74c3c;">Error: ${result.error}</span>`;
+                }
+            } catch (e) {
+                statusEl.innerHTML = `<span style="color: #e74c3c;">Error: ${e.message}</span>`;
             }
         }
         
@@ -2144,7 +2204,9 @@
         loadGames();
         loadScrapeSettings();
         loadSiteSettings();
+        loadRedirectSettings();
         loadDailyUpdateSettings();
+        loadAdSettings();
     </script>
     
 </body>
