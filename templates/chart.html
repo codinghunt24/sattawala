@@ -227,6 +227,38 @@
         font-size: 16px;
     }
     
+    .footer-section {
+        background: #1e1e30;
+        padding: 20px;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 40px;
+    }
+    
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+    
+    .footer-link {
+        color: #a0a0b0;
+        font-size: 13px;
+        transition: color 0.3s;
+        text-decoration: none;
+    }
+    
+    .footer-link:hover {
+        color: #667eea;
+    }
+    
+    .copyright {
+        color: #6a6a7a;
+        font-size: 12px;
+    }
+    
     @media (max-width: 768px) {
         .selectors-row {
             gap: 8px;
@@ -322,5 +354,15 @@
     {% else %}
     <div class="no-results">Please select a game to view results</div>
     {% endif %}
+</div>
+
+<div class="footer-section">
+    <div class="footer-links">
+        <span class="footer-link">Privacy Policy</span>
+        <span class="footer-link">About Us</span>
+        <span class="footer-link">Contact</span>
+        <span class="footer-link">Disclaimer</span>
+    </div>
+    <div class="copyright">© 2026 Satta King. All rights reserved.</div>
 </div>
 {% endblock %}
