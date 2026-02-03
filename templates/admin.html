@@ -425,6 +425,7 @@
             <li><a href="#" onclick="showSection('posts')">Posts</a></li>
             <li><a href="#" onclick="showSection('ads')">Ads Management</a></li>
             <li><a href="#" onclick="showSection('sitemap')">Sitemap</a></li>
+            <li><a href="#" onclick="showSection('history')">Historical Import</a></li>
             <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
         </ul>
     </div>
@@ -740,6 +741,104 @@
                 
                 <div style="margin-top: 20px;">
                     <button class="btn btn-primary" onclick="loadSitemapStats()">Refresh Stats</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="historySection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Historical Data Import</div>
+                <p style="color: #a0a0b0; margin-bottom: 20px;">Import all game results from 2024 to present from satta-king-fast.com</p>
+                
+                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3); margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📥</div>
+                        <div>
+                            <div style="font-weight: 700; color: #fff; font-size: 18px;">Bulk Historical Import</div>
+                            <div style="font-size: 12px; color: #6a6a8a;">Downloads results for all games from Jan 2024 to now</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">📋 What will be imported:</div>
+                        <ul style="color: #a0a0c0; font-size: 13px; line-height: 1.8; padding-left: 20px;">
+                            <li>All games from satta-king-fast.com (85+ games)</li>
+                            <li>Monthly results from January 2024 to February 2026</li>
+                            <li>Each day's result stored in your database</li>
+                            <li>Duplicate entries will be skipped automatically</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Start Year</label>
+                            <select id="importStartYear" class="form-control">
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Start Month</label>
+                            <select id="importStartMonth" class="form-control">
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="importProgress" style="display: none; background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="color: #667eea; font-weight: 600;">Import Progress</span>
+                            <span id="importProgressText" style="color: #2ecc71;">0%</span>
+                        </div>
+                        <div style="background: #2a2a4a; border-radius: 10px; height: 10px; overflow: hidden;">
+                            <div id="importProgressBar" style="background: linear-gradient(90deg, #667eea, #2ecc71); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                        <div id="importCurrentGame" style="color: #6a6a8a; font-size: 12px; margin-top: 10px;"></div>
+                    </div>
+                    
+                    <div style="background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+                        <div style="color: #e74c3c; font-weight: 600; margin-bottom: 5px;">⚠️ Important Note:</div>
+                        <div style="color: #a0a0c0; font-size: 12px;">This process may take 5-10 minutes depending on the date range. Do not close this page while importing.</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn btn-primary" onclick="startHistoricalImport()" id="startImportBtn">Start Import</button>
+                    <button class="btn" onclick="checkImportStats()" style="background: #2a2a4a;">Check Database Stats</button>
+                </div>
+                
+                <div id="importStatus" style="margin-top: 15px;"></div>
+                
+                <div id="dbStats" style="margin-top: 20px; display: none;">
+                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                        <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">📊 Database Statistics:</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                            <div style="text-align: center; padding: 15px; background: #1a1a2e; border-radius: 8px;">
+                                <div id="statTotalGames" style="font-size: 28px; font-weight: 700; color: #667eea;">-</div>
+                                <div style="font-size: 12px; color: #6a6a8a;">Unique Games</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #1a1a2e; border-radius: 8px;">
+                                <div id="statTotalResults" style="font-size: 28px; font-weight: 700; color: #2ecc71;">-</div>
+                                <div style="font-size: 12px; color: #6a6a8a;">Total Results</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #1a1a2e; border-radius: 8px;">
+                                <div id="statDateRange" style="font-size: 14px; font-weight: 700; color: #f39c12;">-</div>
+                                <div style="font-size: 12px; color: #6a6a8a;">Date Range</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1084,6 +1183,7 @@
             document.getElementById('postsSection').style.display = section === 'posts' ? 'block' : 'none';
             document.getElementById('adsSection').style.display = section === 'ads' ? 'block' : 'none';
             document.getElementById('sitemapSection').style.display = section === 'sitemap' ? 'block' : 'none';
+            document.getElementById('historySection').style.display = section === 'history' ? 'block' : 'none';
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
@@ -1462,6 +1562,58 @@
                 document.getElementById('statTotal').textContent = stats.total || 0;
             } catch (e) {
                 console.error('Error loading sitemap stats:', e);
+            }
+        }
+        
+        async function startHistoricalImport() {
+            const startYear = document.getElementById('importStartYear').value;
+            const startMonth = document.getElementById('importStartMonth').value;
+            const btn = document.getElementById('startImportBtn');
+            const statusEl = document.getElementById('importStatus');
+            const progressEl = document.getElementById('importProgress');
+            
+            btn.disabled = true;
+            btn.textContent = 'Importing...';
+            progressEl.style.display = 'block';
+            statusEl.innerHTML = '<span style="color: #667eea;">Starting import process...</span>';
+            
+            try {
+                const res = await fetch('/api/import-historical', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({start_year: parseInt(startYear), start_month: parseInt(startMonth)})
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    document.getElementById('importProgressBar').style.width = '100%';
+                    document.getElementById('importProgressText').textContent = '100%';
+                    document.getElementById('importCurrentGame').textContent = 'Complete!';
+                    statusEl.innerHTML = `<span style="color: #2ecc71;">✅ Import completed! ${result.total_imported} results imported, ${result.skipped} duplicates skipped.</span>`;
+                    checkImportStats();
+                } else {
+                    statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Error: ${result.error}</span>`;
+                }
+            } catch (e) {
+                statusEl.innerHTML = `<span style="color: #e74c3c;">❌ Import failed: ${e.message}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Start Import';
+            }
+        }
+        
+        async function checkImportStats() {
+            const dbStatsEl = document.getElementById('dbStats');
+            dbStatsEl.style.display = 'block';
+            
+            try {
+                const res = await fetch('/api/import-stats');
+                const stats = await res.json();
+                document.getElementById('statTotalGames').textContent = stats.unique_games || 0;
+                document.getElementById('statTotalResults').textContent = stats.total_results || 0;
+                document.getElementById('statDateRange').textContent = stats.date_range || '-';
+            } catch (e) {
+                console.error('Error loading import stats:', e);
             }
         }
         
