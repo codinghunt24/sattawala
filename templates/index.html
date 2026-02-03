@@ -365,45 +365,31 @@
     }
     
     .game-tag {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: transparent;
+        border: none;
         color: #fff;
-        padding: 8px 16px;
-        border-radius: 25px;
-        font-size: 13px;
+        padding: 5px 8px;
+        font-size: 14px;
         font-weight: 500;
-        transition: all 0.3s ease;
         cursor: default;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-    
-    .game-tag:hover {
-        background: rgba(102, 126, 234, 0.3);
-        border-color: rgba(102, 126, 234, 0.5);
-        transform: translateY(-2px);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
     
     .game-tag.featured {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
+        color: #ffd700;
         font-weight: 600;
-    }
-    
-    .game-tag.featured:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
     
     @media (max-width: 768px) {
         .hero-title { font-size: 18px; }
         .hero-subtitle { font-size: 12px; }
-        .game-tag { padding: 6px 12px; font-size: 11px; }
+        .game-tag { font-size: 12px; }
     }
     
     @media (max-width: 480px) {
         .hero-title { font-size: 16px; }
-        .game-tags-container { gap: 6px; }
-        .game-tag { padding: 5px 10px; font-size: 10px; }
+        .game-tags-container { gap: 4px; }
+        .game-tag { font-size: 11px; padding: 3px 5px; }
     }
     
     .no-games {
