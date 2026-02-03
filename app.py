@@ -166,7 +166,7 @@ st.markdown("""
     /* Footer navigation */
     .footer-nav-section {
         background: #34495e;
-        padding: 40px 0;
+        padding: 15px 0;
     }
     
     .footer-nav {
@@ -387,10 +387,10 @@ st.markdown("""
 <div class="footer-nav-section">
     <div class="responsive-container">
         <div class="footer-nav">
-            <span class="footer-nav-item">Home</span>
-            <span class="footer-nav-item">About</span>
-            <span class="footer-nav-item">Services</span>
-            <span class="footer-nav-item">Contact</span>
+            <span class="footer-nav-item">Privacy Policy</span>
+            <span class="footer-nav-item">About Us</span>
+            <span class="footer-nav-item">Contact Us</span>
+            <span class="footer-nav-item">Disclaimer</span>
         </div>
     </div>
 </div>
