@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, f
 import psycopg2
 import os
 from datetime import datetime, timedelta
+import pytz
 import re
 import json
 import requests
@@ -11,6 +12,11 @@ import random
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import atexit
+
+IST = pytz.timezone('Asia/Kolkata')
+
+def get_ist_now():
+    return datetime.now(IST)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'satta-king-secret-key')
@@ -155,7 +161,7 @@ init_database()
 @app.route('/')
 def index():
     games = get_games()
-    current_date = datetime.now().strftime("%d-%m-%Y")
+    current_date = get_ist_now().strftime("%d-%m-%Y")
     games_with_slug = []
     for game in games:
         games_with_slug.append({
@@ -175,8 +181,8 @@ def chart():
     month_param = request.args.get('month', '')
     year_param = request.args.get('year', '')
     
-    current_month = datetime.now().month
-    current_year = datetime.now().year
+    current_month = get_ist_now().month
+    current_year = get_ist_now().year
     
     games_list = get_all_games_list()
     game_name = find_game_by_slug(game_slug) if game_slug else (games_list[0] if games_list else '')
@@ -212,7 +218,7 @@ def chart():
         "name": seo_title,
         "description": seo_description,
         "url": canonical_url,
-        "dateModified": datetime.now().isoformat(),
+        "dateModified": get_ist_now().isoformat(),
         "mainEntity": {
             "@type": "Dataset",
             "name": f"{game_name} Results - {month_name} {selected_year}" if game_name else "Satta King Results",
@@ -314,7 +320,7 @@ def api_update_game(game_id):
             is_active=%s, display_order=%s, updated_at=%s WHERE id=%s
         """, (data['name'], data.get('game_time', ''), data.get('yesterday_result', '--'),
               data.get('today_result', '--'), data.get('is_active', True), 
-              data.get('display_order', 0), datetime.now(), game_id))
+              data.get('display_order', 0), get_ist_now(), game_id))
         conn.commit()
         cur.close()
         conn.close()
@@ -418,7 +424,7 @@ def api_scrape():
         
         saved = 0
         updated = 0
-        today = datetime.now().date()
+        today = get_ist_now().date()
         yesterday = today - timedelta(days=1)
         
         for index, game in enumerate(games_data):
@@ -433,7 +439,7 @@ def api_scrape():
                     UPDATE games SET game_time=%s, yesterday_result=%s, today_result=%s, 
                     display_order=%s, updated_at=%s WHERE name=%s
                 """, (game['game_time'], game['yesterday_result'], game['today_result'], 
-                      index, datetime.now(), game['name']))
+                      index, get_ist_now(), game['name']))
                 updated += 1
             else:
                 cur.execute("""
@@ -508,7 +514,7 @@ def update_last_scrape():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("UPDATE scrape_settings SET last_scrape = %s WHERE id = (SELECT id FROM scrape_settings LIMIT 1)", (datetime.now(),))
+        cur.execute("UPDATE scrape_settings SET last_scrape = %s WHERE id = (SELECT id FROM scrape_settings LIMIT 1)", (get_ist_now(),))
         conn.commit()
         cur.close()
         conn.close()
@@ -516,7 +522,7 @@ def update_last_scrape():
         print(f"Error updating last scrape: {e}")
 
 def auto_scrape_job():
-    print(f"[{datetime.now()}] Running auto-scrape job...")
+    print(f"[{get_ist_now()}] Running auto-scrape job...")
     try:
         games_data, error = scrape_satta_games()
         if error:
@@ -526,7 +532,7 @@ def auto_scrape_job():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        today = datetime.now().date()
+        today = get_ist_now().date()
         yesterday = today - timedelta(days=1)
         
         for index, game in enumerate(games_data):
@@ -541,7 +547,7 @@ def auto_scrape_job():
                     UPDATE games SET game_time=%s, yesterday_result=%s, today_result=%s, 
                     display_order=%s, updated_at=%s WHERE name=%s
                 """, (game['game_time'], game['yesterday_result'], game['today_result'], 
-                      index, datetime.now(), game['name']))
+                      index, get_ist_now(), game['name']))
             else:
                 cur.execute("""
                     INSERT INTO games (name, game_time, yesterday_result, today_result, is_active, display_order)
@@ -566,7 +572,7 @@ def auto_scrape_job():
         cur.close()
         conn.close()
         update_last_scrape()
-        print(f"[{datetime.now()}] Auto-scrape completed: {len(games_data)} games processed")
+        print(f"[{get_ist_now()}] Auto-scrape completed: {len(games_data)} games processed")
     except Exception as e:
         print(f"Auto-scrape job error: {e}")
 
