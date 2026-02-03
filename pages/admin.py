@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
+import time
+import random
 
 st.set_page_config(
     page_title="Admin Panel - Satta King",
@@ -23,8 +25,9 @@ def init_database():
             CREATE TABLE IF NOT EXISTS games (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
-                result VARCHAR(50),
-                result_time VARCHAR(50),
+                game_time VARCHAR(50),
+                yesterday_result VARCHAR(50),
+                today_result VARCHAR(50),
                 is_active BOOLEAN DEFAULT true,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -51,7 +54,7 @@ def init_database():
             CREATE TABLE IF NOT EXISTS pages (
                 id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
-                slug VARCHAR(255) UNIQUE,
+                slug VARCHAR(255),
                 content TEXT,
                 is_published BOOLEAN DEFAULT false,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -74,6 +77,15 @@ def init_database():
                 is_active BOOLEAN DEFAULT true,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            
+            CREATE TABLE IF NOT EXISTS scrape_settings (
+                id SERIAL PRIMARY KEY,
+                scrape_url VARCHAR(500),
+                auto_scrape BOOLEAN DEFAULT false,
+                interval_minutes INTEGER DEFAULT 5,
+                last_scrape TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
         """)
         conn.commit()
         cur.close()
@@ -83,34 +95,90 @@ def init_database():
 
 init_database()
 
-def scrape_satta_games():
-    try:
+def get_random_user_agent():
+    user_agents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
+    ]
+    return random.choice(user_agents)
+
+def scrape_satta_games(url=None):
+    if not url:
         url = "https://satta-king-fast.com/"
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-        response = requests.get(url, headers=headers, timeout=30)
+    
+    try:
+        session = requests.Session()
+        
+        headers = {
+            'User-Agent': get_random_user_agent(),
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
+            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }
+        
+        time.sleep(random.uniform(1, 3))
+        
+        response = session.get(url, headers=headers, timeout=30, allow_redirects=True)
         response.raise_for_status()
+        
         soup = BeautifulSoup(response.content, 'html.parser')
         games_data = []
+        
         game_rows = soup.find_all('tr', class_='game-result')
+        
         for row in game_rows:
             try:
                 game_name_elem = row.find('h3', class_='game-name')
                 game_time_elem = row.find('h3', class_='game-time')
-                today_result_elem = row.find('td', class_='today-number')
+                yesterday_elem = row.find('td', class_='yesterday-number')
+                today_elem = row.find('td', class_='today-number')
+                
                 if game_name_elem:
                     game_name = game_name_elem.get_text(strip=True)
-                    game_time = game_time_elem.get_text(strip=True).replace('at ', '') if game_time_elem else ''
+                    game_time = game_time_elem.get_text(strip=True) if game_time_elem else ''
+                    
+                    yesterday_result = '--'
+                    if yesterday_elem:
+                        result_h3 = yesterday_elem.find('h3')
+                        if result_h3:
+                            yesterday_result = result_h3.get_text(strip=True)
+                            if yesterday_result in ['XX', '--', '']:
+                                yesterday_result = '--'
+                    
                     today_result = '--'
-                    if today_result_elem:
-                        result_h3 = today_result_elem.find('h3')
+                    if today_elem:
+                        result_h3 = today_elem.find('h3')
                         if result_h3:
                             today_result = result_h3.get_text(strip=True)
                             if today_result in ['XX', '--', '']:
                                 today_result = '--'
-                    games_data.append({'name': game_name, 'result': today_result, 'result_time': game_time})
-            except:
+                    
+                    games_data.append({
+                        'name': game_name,
+                        'game_time': game_time,
+                        'yesterday_result': yesterday_result,
+                        'today_result': today_result
+                    })
+            except Exception:
                 continue
+        
         return games_data, None
+    except requests.exceptions.RequestException as e:
+        return [], f"Request failed: {str(e)}"
     except Exception as e:
         return [], str(e)
 
@@ -118,25 +186,92 @@ def save_scraped_games(games_data):
     try:
         conn = get_db_connection()
         cur = conn.cursor()
+        
         saved_count = 0
         updated_count = 0
+        
         for game in games_data:
             cur.execute("SELECT id FROM games WHERE name = %s", (game['name'],))
             existing = cur.fetchone()
+            
             if existing:
-                cur.execute("UPDATE games SET result = %s, result_time = %s, updated_at = %s WHERE name = %s",
-                           (game['result'], game['result_time'], datetime.now(), game['name']))
+                cur.execute("""
+                    UPDATE games 
+                    SET game_time = %s, yesterday_result = %s, today_result = %s, updated_at = %s
+                    WHERE name = %s
+                """, (game['game_time'], game['yesterday_result'], game['today_result'], datetime.now(), game['name']))
                 updated_count += 1
             else:
-                cur.execute("INSERT INTO games (name, result, result_time, is_active) VALUES (%s, %s, %s, %s)",
-                           (game['name'], game['result'], game['result_time'], True))
+                cur.execute("""
+                    INSERT INTO games (name, game_time, yesterday_result, today_result, is_active)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (game['name'], game['game_time'], game['yesterday_result'], game['today_result'], True))
                 saved_count += 1
+        
         conn.commit()
         cur.close()
         conn.close()
+        
         return saved_count, updated_count, None
     except Exception as e:
         return 0, 0, str(e)
+
+def clear_all_games():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM games")
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True, None
+    except Exception as e:
+        return False, str(e)
+
+def get_scrape_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT scrape_url, auto_scrape, interval_minutes, last_scrape FROM scrape_settings ORDER BY id DESC LIMIT 1")
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+        if result:
+            return {
+                'scrape_url': result[0] or 'https://satta-king-fast.com/',
+                'auto_scrape': result[1] or False,
+                'interval_minutes': result[2] or 5,
+                'last_scrape': result[3]
+            }
+        return {
+            'scrape_url': 'https://satta-king-fast.com/',
+            'auto_scrape': False,
+            'interval_minutes': 5,
+            'last_scrape': None
+        }
+    except:
+        return {
+            'scrape_url': 'https://satta-king-fast.com/',
+            'auto_scrape': False,
+            'interval_minutes': 5,
+            'last_scrape': None
+        }
+
+def save_scrape_settings(url, auto_scrape, interval):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM scrape_settings")
+        cur.execute("""
+            INSERT INTO scrape_settings (scrape_url, auto_scrape, interval_minutes, last_scrape)
+            VALUES (%s, %s, %s, %s)
+        """, (url, auto_scrape, interval, datetime.now()))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except:
+        return False
 
 if 'admin_page' not in st.session_state:
     st.session_state.admin_page = 'dashboard'
@@ -225,46 +360,6 @@ st.markdown("""
         backdrop-filter: blur(10px);
     }
     
-    .nav-item {
-        background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
-        margin: 8px 15px;
-        padding: 14px 18px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        color: #a0a0b0;
-    }
-    
-    .nav-item:hover {
-        background: linear-gradient(135deg, #2a2a45 0%, #353560 100%);
-        border-color: rgba(102, 126, 234, 0.3);
-        transform: translateX(5px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
-    }
-    
-    .nav-item.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #fff;
-        border-color: transparent;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    }
-    
-    .nav-icon {
-        font-size: 18px;
-        margin-right: 12px;
-        width: 24px;
-        text-align: center;
-    }
-    
-    .nav-text {
-        font-size: 14px;
-        font-weight: 500;
-    }
-    
     .content-header {
         background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
         padding: 20px 25px;
@@ -291,15 +386,6 @@ st.markdown("""
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
-    }
-    
-    .content-card {
-        background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
-        border-radius: 15px;
-        padding: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        margin-bottom: 20px;
     }
     
     .stat-card {
@@ -411,13 +497,26 @@ st.markdown("""
         border-radius: 10px !important;
     }
     
-    .logout-btn {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
-        margin: 8px 15px;
-        padding: 14px 18px;
+    .scrape-info {
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        padding: 15px 20px;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        margin-bottom: 15px;
+    }
+    
+    .game-table-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 12px;
+        border-radius: 8px 8px 0 0;
+        color: #fff;
+        font-weight: 600;
+    }
+    
+    .game-row {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     
     @media (max-width: 768px) {
@@ -451,7 +550,6 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     for icon, label, page_key in menu_items:
-        active_class = "active" if st.session_state.admin_page == page_key else ""
         if st.button(f"{icon}  {label}", key=f"nav_{page_key}", use_container_width=True, 
                     type="primary" if st.session_state.admin_page == page_key else "secondary"):
             st.session_state.admin_page = page_key
@@ -550,20 +648,34 @@ if st.session_state.admin_page == 'dashboard':
             st.rerun()
 
 elif st.session_state.admin_page == 'game':
-    tab1, tab2, tab3 = st.tabs(["📋 All Games", "➕ Add Game", "🔄 Scrape"])
+    tab1, tab2, tab3 = st.tabs(["📋 All Games", "➕ Add Game", "🔄 Scrape & Auto"])
     
     with tab1:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, name, result, result_time, is_active FROM games ORDER BY id DESC")
+        cur.execute("SELECT id, name, game_time, yesterday_result, today_result, is_active FROM games ORDER BY id DESC")
         games = cur.fetchall()
         cur.close()
         conn.close()
         
         if games:
             st.markdown(f"**Total: {len(games)} games**")
+            
+            st.markdown("""
+            <div class="game-table-header">
+                <div style="display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr; gap: 10px;">
+                    <span>Game Name</span>
+                    <span>Time</span>
+                    <span>Yesterday</span>
+                    <span>Today</span>
+                    <span>Status</span>
+                    <span>Actions</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
             for game in games:
-                col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 1, 2])
+                col1, col2, col3, col4, col5, col6 = st.columns([2, 1.5, 1, 1, 0.5, 1.5])
                 with col1:
                     st.write(f"**{game[1]}**")
                 with col2:
@@ -571,15 +683,17 @@ elif st.session_state.admin_page == 'game':
                 with col3:
                     st.write(game[3] or '--')
                 with col4:
-                    st.write("✅" if game[4] else "❌")
+                    st.write(game[4] or '--')
                 with col5:
+                    st.write("✅" if game[5] else "❌")
+                with col6:
                     c1, c2 = st.columns(2)
                     with c1:
-                        if st.button("Edit", key=f"eg_{game[0]}", type="secondary"):
+                        if st.button("✏️", key=f"eg_{game[0]}", type="secondary"):
                             st.session_state.edit_id = game[0]
                             st.rerun()
                     with c2:
-                        if st.button("Del", key=f"dg_{game[0]}", type="secondary"):
+                        if st.button("🗑️", key=f"dg_{game[0]}", type="secondary"):
                             conn = get_db_connection()
                             cur = conn.cursor()
                             cur.execute("DELETE FROM games WHERE id = %s", (game[0],))
@@ -589,7 +703,7 @@ elif st.session_state.admin_page == 'game':
                             st.rerun()
                 st.markdown("---")
         else:
-            st.info("No games found.")
+            st.info("No games found. Use Scrape tab to fetch games!")
         
         if st.session_state.edit_id:
             conn = get_db_connection()
@@ -599,41 +713,46 @@ elif st.session_state.admin_page == 'game':
             cur.close()
             conn.close()
             if g:
-                st.markdown("### Edit Game")
+                st.markdown("### ✏️ Edit Game")
                 with st.form("edit_game"):
-                    name = st.text_input("Name", value=g[1])
-                    result = st.text_input("Result", value=g[2] or "")
-                    time = st.text_input("Time", value=g[3] or "")
-                    active = st.checkbox("Active", value=g[4])
+                    name = st.text_input("Game Name", value=g[1])
+                    game_time = st.text_input("Time", value=g[2] or "")
+                    yesterday = st.text_input("Yesterday Result", value=g[3] or "")
+                    today = st.text_input("Today Result", value=g[4] or "")
+                    active = st.checkbox("Active", value=g[5])
                     c1, c2 = st.columns(2)
                     with c1:
-                        if st.form_submit_button("Save", type="primary"):
+                        if st.form_submit_button("💾 Save", type="primary"):
                             conn = get_db_connection()
                             cur = conn.cursor()
-                            cur.execute("UPDATE games SET name=%s, result=%s, result_time=%s, is_active=%s, updated_at=%s WHERE id=%s",
-                                       (name, result, time, active, datetime.now(), st.session_state.edit_id))
+                            cur.execute("""UPDATE games SET name=%s, game_time=%s, yesterday_result=%s, 
+                                          today_result=%s, is_active=%s, updated_at=%s WHERE id=%s""",
+                                       (name, game_time, yesterday, today, active, datetime.now(), st.session_state.edit_id))
                             conn.commit()
                             cur.close()
                             conn.close()
                             st.session_state.edit_id = None
                             st.rerun()
                     with c2:
-                        if st.form_submit_button("Cancel"):
+                        if st.form_submit_button("❌ Cancel"):
                             st.session_state.edit_id = None
                             st.rerun()
     
     with tab2:
+        st.markdown("### Add New Game")
         with st.form("add_game"):
             name = st.text_input("Game Name *")
-            result = st.text_input("Result")
-            time = st.text_input("Result Time")
+            game_time = st.text_input("Time (e.g., at 03:00 PM)")
+            yesterday = st.text_input("Yesterday Result")
+            today = st.text_input("Today Result")
             active = st.checkbox("Active", value=True)
-            if st.form_submit_button("Add Game", type="primary"):
+            if st.form_submit_button("➕ Add Game", type="primary"):
                 if name:
                     conn = get_db_connection()
                     cur = conn.cursor()
-                    cur.execute("INSERT INTO games (name, result, result_time, is_active) VALUES (%s, %s, %s, %s)",
-                               (name, result, time, active))
+                    cur.execute("""INSERT INTO games (name, game_time, yesterday_result, today_result, is_active) 
+                                  VALUES (%s, %s, %s, %s, %s)""",
+                               (name, game_time, yesterday, today, active))
                     conn.commit()
                     cur.close()
                     conn.close()
@@ -641,27 +760,98 @@ elif st.session_state.admin_page == 'game':
                     st.rerun()
     
     with tab3:
-        st.info("Scrape games from satta-king-fast.com")
-        c1, c2 = st.columns(2)
-        with c1:
-            if st.button("🔄 Scrape Now", type="primary", use_container_width=True):
-                with st.spinner("Scraping..."):
-                    games_data, error = scrape_satta_games()
+        settings = get_scrape_settings()
+        
+        st.markdown("### 🔄 Scrape Settings")
+        
+        st.markdown("""
+        <div class="scrape-info">
+            <strong>Cloudflare Bypass Enabled</strong><br>
+            <small>Using rotating user agents and browser headers to bypass protection</small>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        scrape_url = st.text_input("Scrape URL", value=settings['scrape_url'], 
+                                   placeholder="https://satta-king-fast.com/")
+        
+        st.markdown("### ⏰ Auto Scrape Schedule")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            auto_scrape = st.checkbox("Enable Auto Scrape", value=settings['auto_scrape'])
+        with col2:
+            interval = st.selectbox("Interval (minutes)", 
+                                   options=[1, 2, 5, 10, 15, 30, 60],
+                                   index=[1, 2, 5, 10, 15, 30, 60].index(settings['interval_minutes']) 
+                                         if settings['interval_minutes'] in [1, 2, 5, 10, 15, 30, 60] else 2)
+        
+        if settings['last_scrape']:
+            st.info(f"Last scrape: {settings['last_scrape'].strftime('%d-%m-%Y %H:%M:%S')}")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("💾 Save Settings", type="primary", use_container_width=True):
+                if save_scrape_settings(scrape_url, auto_scrape, interval):
+                    st.success("Settings saved!")
+                else:
+                    st.error("Failed to save settings")
+        
+        with col2:
+            if st.button("🔄 Scrape Now", type="secondary", use_container_width=True):
+                with st.spinner("Scraping with Cloudflare bypass..."):
+                    games_data, error = scrape_satta_games(scrape_url)
                     if error:
-                        st.error(error)
+                        st.error(f"Error: {error}")
                     elif games_data:
-                        saved, updated, _ = save_scraped_games(games_data)
-                        st.success(f"Found {len(games_data)} | New: {saved} | Updated: {updated}")
-        with c2:
-            if st.button("🗑️ Delete All", type="secondary", use_container_width=True):
-                conn = get_db_connection()
-                cur = conn.cursor()
-                cur.execute("DELETE FROM games")
-                conn.commit()
-                cur.close()
-                conn.close()
-                st.success("Deleted!")
-                st.rerun()
+                        saved, updated, save_error = save_scraped_games(games_data)
+                        if save_error:
+                            st.error(f"Save error: {save_error}")
+                        else:
+                            st.success(f"✅ Found {len(games_data)} games | New: {saved} | Updated: {updated}")
+                            save_scrape_settings(scrape_url, auto_scrape, interval)
+                    else:
+                        st.warning("No games found on the page")
+        
+        st.markdown("---")
+        st.markdown("### 🗑️ Clear All Data")
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.warning("This will delete ALL games from the database!")
+        with col2:
+            if st.button("🗑️ Clear All", type="secondary", use_container_width=True):
+                success, error = clear_all_games()
+                if success:
+                    st.success("All games cleared!")
+                    st.rerun()
+                else:
+                    st.error(f"Error: {error}")
+        
+        if auto_scrape:
+            st.markdown("---")
+            st.info(f"⏰ Auto scrape is active! Games will be scraped every {interval} minutes.")
+            
+            if st.button("▶️ Start Auto Scrape Session", type="primary", use_container_width=True):
+                st.info("Auto scraping started. Keep this page open for continuous scraping.")
+                
+                progress_placeholder = st.empty()
+                status_placeholder = st.empty()
+                
+                for i in range(3):
+                    with st.spinner(f"Auto scraping... (Run {i+1})"):
+                        games_data, error = scrape_satta_games(scrape_url)
+                        if games_data:
+                            saved, updated, _ = save_scraped_games(games_data)
+                            status_placeholder.success(f"Run {i+1}: Found {len(games_data)} | New: {saved} | Updated: {updated}")
+                        else:
+                            status_placeholder.warning(f"Run {i+1}: No data - {error if error else 'Unknown error'}")
+                        
+                        if i < 2:
+                            for sec in range(interval * 60, 0, -1):
+                                progress_placeholder.info(f"Next scrape in {sec} seconds...")
+                                time.sleep(1)
+                
+                st.success("Auto scrape session completed (3 runs). Refresh to run again.")
 
 elif st.session_state.admin_page == 'post':
     tab1, tab2 = st.tabs(["📋 All Posts", "➕ Add Post"])
@@ -686,11 +876,11 @@ elif st.session_state.admin_page == 'post':
                 with col4:
                     c1, c2 = st.columns(2)
                     with c1:
-                        if st.button("Edit", key=f"ep_{post[0]}", type="secondary"):
+                        if st.button("✏️", key=f"ep_{post[0]}", type="secondary"):
                             st.session_state.edit_id = post[0]
                             st.rerun()
                     with c2:
-                        if st.button("Del", key=f"dp_{post[0]}", type="secondary"):
+                        if st.button("🗑️", key=f"dp_{post[0]}", type="secondary"):
                             conn = get_db_connection()
                             cur = conn.cursor()
                             cur.execute("DELETE FROM posts WHERE id = %s", (post[0],))
@@ -710,14 +900,14 @@ elif st.session_state.admin_page == 'post':
             cur.close()
             conn.close()
             if p:
-                st.markdown("### Edit Post")
+                st.markdown("### ✏️ Edit Post")
                 with st.form("edit_post"):
                     title = st.text_input("Title", value=p[1])
                     content = st.text_area("Content", value=p[2] or "", height=200)
                     published = st.checkbox("Published", value=p[3])
                     c1, c2 = st.columns(2)
                     with c1:
-                        if st.form_submit_button("Save", type="primary"):
+                        if st.form_submit_button("💾 Save", type="primary"):
                             conn = get_db_connection()
                             cur = conn.cursor()
                             cur.execute("UPDATE posts SET title=%s, content=%s, is_published=%s, updated_at=%s WHERE id=%s",
@@ -728,7 +918,7 @@ elif st.session_state.admin_page == 'post':
                             st.session_state.edit_id = None
                             st.rerun()
                     with c2:
-                        if st.form_submit_button("Cancel"):
+                        if st.form_submit_button("❌ Cancel"):
                             st.session_state.edit_id = None
                             st.rerun()
     
@@ -737,7 +927,7 @@ elif st.session_state.admin_page == 'post':
             title = st.text_input("Title *")
             content = st.text_area("Content", height=200)
             published = st.checkbox("Publish", value=False)
-            if st.form_submit_button("Add Post", type="primary"):
+            if st.form_submit_button("➕ Add Post", type="primary"):
                 if title:
                     conn = get_db_connection()
                     cur = conn.cursor()
@@ -770,7 +960,7 @@ elif st.session_state.admin_page == 'daily_update':
                 with col3:
                     st.write("✅" if u[3] else "❌")
                 with col4:
-                    if st.button("Del", key=f"du_{u[0]}", type="secondary"):
+                    if st.button("🗑️", key=f"du_{u[0]}", type="secondary"):
                         conn = get_db_connection()
                         cur = conn.cursor()
                         cur.execute("DELETE FROM daily_updates WHERE id = %s", (u[0],))
@@ -787,7 +977,7 @@ elif st.session_state.admin_page == 'daily_update':
             title = st.text_input("Title *")
             content = st.text_area("Content", height=150)
             active = st.checkbox("Active", value=True)
-            if st.form_submit_button("Add Update", type="primary"):
+            if st.form_submit_button("➕ Add Update", type="primary"):
                 if title:
                     conn = get_db_connection()
                     cur = conn.cursor()
@@ -820,7 +1010,7 @@ elif st.session_state.admin_page == 'pages':
                 with col3:
                     st.write("✅" if pg[3] else "📝")
                 with col4:
-                    if st.button("Del", key=f"pg_{pg[0]}", type="secondary"):
+                    if st.button("🗑️", key=f"pg_{pg[0]}", type="secondary"):
                         conn = get_db_connection()
                         cur = conn.cursor()
                         cur.execute("DELETE FROM pages WHERE id = %s", (pg[0],))
@@ -838,7 +1028,7 @@ elif st.session_state.admin_page == 'pages':
             slug = st.text_input("Slug (URL)")
             content = st.text_area("Content", height=200)
             published = st.checkbox("Publish", value=False)
-            if st.form_submit_button("Add Page", type="primary"):
+            if st.form_submit_button("➕ Add Page", type="primary"):
                 if title:
                     conn = get_db_connection()
                     cur = conn.cursor()
@@ -871,7 +1061,7 @@ elif st.session_state.admin_page == 'ads':
                 with col3:
                     st.write("✅" if ad[3] else "❌")
                 with col4:
-                    if st.button("Del", key=f"ad_{ad[0]}", type="secondary"):
+                    if st.button("🗑️", key=f"ad_{ad[0]}", type="secondary"):
                         conn = get_db_connection()
                         cur = conn.cursor()
                         cur.execute("DELETE FROM ads WHERE id = %s", (ad[0],))
@@ -889,7 +1079,7 @@ elif st.session_state.admin_page == 'ads':
             position = st.selectbox("Position", ["Header", "Sidebar", "Content", "Footer"])
             ad_code = st.text_area("Ad Code", height=150)
             active = st.checkbox("Active", value=True)
-            if st.form_submit_button("Add Ad", type="primary"):
+            if st.form_submit_button("➕ Add Ad", type="primary"):
                 if name:
                     conn = get_db_connection()
                     cur = conn.cursor()
@@ -902,7 +1092,7 @@ elif st.session_state.admin_page == 'ads':
                     st.rerun()
 
 elif st.session_state.admin_page == 'sitemap':
-    st.markdown("### Sitemap Generator")
+    st.markdown("### 🗺️ Sitemap Generator")
     st.info("Generate XML sitemap for your website")
     
     if st.button("Generate Sitemap", type="primary"):
@@ -924,13 +1114,13 @@ elif st.session_state.admin_page == 'sitemap':
         st.success("Sitemap generated!")
 
 elif st.session_state.admin_page == 'url':
-    st.markdown("### URL Settings")
+    st.markdown("### 🔗 URL Settings")
     st.info("Manage your website URLs and permalinks")
     
     with st.form("url_settings"):
         base_url = st.text_input("Base URL", value="https://yoursite.com")
         permalink = st.selectbox("Permalink Structure", ["/%postname%/", "/%year%/%monthnum%/%postname%/", "/%category%/%postname%/"])
-        if st.form_submit_button("Save Settings", type="primary"):
+        if st.form_submit_button("💾 Save Settings", type="primary"):
             st.success("URL settings saved!")
 
 elif st.session_state.admin_page == 'redirects':
@@ -954,7 +1144,7 @@ elif st.session_state.admin_page == 'redirects':
                 with col3:
                     st.write("✅" if r[3] else "❌")
                 with col4:
-                    if st.button("Del", key=f"rd_{r[0]}", type="secondary"):
+                    if st.button("🗑️", key=f"rd_{r[0]}", type="secondary"):
                         conn = get_db_connection()
                         cur = conn.cursor()
                         cur.execute("DELETE FROM redirects WHERE id = %s", (r[0],))
@@ -971,7 +1161,7 @@ elif st.session_state.admin_page == 'redirects':
             from_url = st.text_input("From URL *")
             to_url = st.text_input("To URL *")
             active = st.checkbox("Active", value=True)
-            if st.form_submit_button("Add Redirect", type="primary"):
+            if st.form_submit_button("➕ Add Redirect", type="primary"):
                 if from_url and to_url:
                     conn = get_db_connection()
                     cur = conn.cursor()
