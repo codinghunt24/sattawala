@@ -17,7 +17,7 @@ def get_games():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT name, game_time, yesterday_result, today_result FROM games WHERE is_active = true ORDER BY id ASC")
+        cur.execute("SELECT name, game_time, yesterday_result, today_result FROM games WHERE is_active = true ORDER BY display_order ASC")
         games = cur.fetchall()
         cur.close()
         conn.close()

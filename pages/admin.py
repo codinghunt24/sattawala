@@ -190,22 +190,25 @@ def save_scraped_games(games_data):
         saved_count = 0
         updated_count = 0
         
-        for game in games_data:
+        for index, game in enumerate(games_data):
+            if 'SHOW YOUR GAME HERE' in game['name'].upper():
+                continue
+                
             cur.execute("SELECT id FROM games WHERE name = %s", (game['name'],))
             existing = cur.fetchone()
             
             if existing:
                 cur.execute("""
                     UPDATE games 
-                    SET game_time = %s, yesterday_result = %s, today_result = %s, updated_at = %s
+                    SET game_time = %s, yesterday_result = %s, today_result = %s, display_order = %s, updated_at = %s
                     WHERE name = %s
-                """, (game['game_time'], game['yesterday_result'], game['today_result'], datetime.now(), game['name']))
+                """, (game['game_time'], game['yesterday_result'], game['today_result'], index, datetime.now(), game['name']))
                 updated_count += 1
             else:
                 cur.execute("""
-                    INSERT INTO games (name, game_time, yesterday_result, today_result, is_active)
-                    VALUES (%s, %s, %s, %s, %s)
-                """, (game['name'], game['game_time'], game['yesterday_result'], game['today_result'], True))
+                    INSERT INTO games (name, game_time, yesterday_result, today_result, is_active, display_order)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (game['name'], game['game_time'], game['yesterday_result'], game['today_result'], True, index))
                 saved_count += 1
         
         conn.commit()
