@@ -303,6 +303,109 @@
         font-size: 12px;
     }
     
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        padding: 30px 15%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 50%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    @media (max-width: 1200px) {
+        .hero-section { padding: 25px 10%; }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section { padding: 20px 3%; }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-section { padding: 15px 2%; }
+    }
+    
+    .hero-title {
+        color: #fff;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .hero-subtitle {
+        color: #a0a0b0;
+        font-size: 14px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .game-tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .game-tag {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: default;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    .game-tag:hover {
+        background: rgba(102, 126, 234, 0.3);
+        border-color: rgba(102, 126, 234, 0.5);
+        transform: translateY(-2px);
+    }
+    
+    .game-tag.featured {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        font-weight: 600;
+    }
+    
+    .game-tag.featured:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title { font-size: 18px; }
+        .hero-subtitle { font-size: 12px; }
+        .game-tag { padding: 6px 12px; font-size: 11px; }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-title { font-size: 16px; }
+        .game-tags-container { gap: 6px; }
+        .game-tag { padding: 5px 10px; font-size: 10px; }
+    }
+    
     .no-games {
         text-align: center;
         padding: 60px 20px;
@@ -349,6 +452,33 @@
         <div class="nav-menu">
             <a href="/" class="nav-item active">Home</a>
             <a href="/chart" class="nav-item">Chart</a>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-title">Popular Satta King Games</div>
+        <div class="hero-subtitle">Get Live Results & Charts for All Top Games</div>
+        <div class="game-tags-container">
+            <span class="game-tag featured">Satta King 786</span>
+            <span class="game-tag featured">Gali Satta King</span>
+            <span class="game-tag featured">Disawar Satta King</span>
+            <span class="game-tag featured">Satta Matka</span>
+            <span class="game-tag">Delhi Satta King</span>
+            <span class="game-tag">Faridabad Satta King</span>
+            <span class="game-tag">Ghaziabad Satta King</span>
+            <span class="game-tag">Kalyan Satta Matka</span>
+            <span class="game-tag">Shri Ganesh Satta King</span>
+            <span class="game-tag">Satta King Fast</span>
+            <span class="game-tag">Black Satta King</span>
+            <span class="game-tag">Madhur Satta</span>
+            <span class="game-tag">Satta Batta</span>
+            <span class="game-tag">Delhi Bazar</span>
+            <span class="game-tag">Taj Satta King</span>
+            <span class="game-tag">Play Bazaar</span>
+            <span class="game-tag">UP Satta King</span>
+            <span class="game-tag">Gali Disawar</span>
+            <span class="game-tag">Satta King Result</span>
+            <span class="game-tag">Satta King Chart</span>
         </div>
     </div>
 
