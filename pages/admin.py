@@ -64,13 +64,35 @@ st.markdown("""
     /* Hide page navigation in sidebar */
     [data-testid="stSidebarNav"] {display: none;}
     
-    /* Keep sidebar always visible */
+    /* Keep sidebar always visible and permanent */
     [data-testid="stSidebar"] {
-        min-width: 250px !important;
-        width: 250px !important;
+        min-width: 280px !important;
+        width: 280px !important;
+        transform: none !important;
+        visibility: visible !important;
     }
     
-    [data-testid="stSidebarCollapseButton"] {display: none;}
+    [data-testid="stSidebar"] > div {
+        width: 280px !important;
+    }
+    
+    [data-testid="stSidebarCollapseButton"] {display: none !important;}
+    [data-testid="collapsedControl"] {display: none !important;}
+    
+    .sidebar-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .sidebar-section-title {
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
     
     .admin-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -120,14 +142,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("### 📋 Menu")
+    st.markdown("## ⚙️ Admin Panel")
+    st.divider()
     
-    if st.button("🎮 Game", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
+    st.markdown("### 🎮 Game Section")
+    if st.button("📋 Manage Games", use_container_width=True, type="primary" if st.session_state.current_page == 'games' else "secondary"):
         st.session_state.current_page = 'games'
         st.session_state.edit_game_id = None
         st.rerun()
     
-    if st.button("📝 Post", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
+    st.divider()
+    
+    st.markdown("### 📝 Post Section")
+    if st.button("📋 Manage Posts", use_container_width=True, type="primary" if st.session_state.current_page == 'posts' else "secondary"):
         st.session_state.current_page = 'posts'
         st.session_state.edit_post_id = None
         st.rerun()
