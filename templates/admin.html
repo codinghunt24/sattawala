@@ -422,6 +422,7 @@
             <li><a href="#" class="active" onclick="showSection('games')">Games Management</a></li>
             <li><a href="#" onclick="showSection('scrape')">Web Scraping</a></li>
             <li><a href="#" onclick="showSection('dailyUpdate')">Daily Update</a></li>
+            <li><a href="#" onclick="showSection('posts')">Posts</a></li>
             <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
         </ul>
     </div>
@@ -530,6 +531,19 @@
             </div>
         </div>
         
+        <div id="postsSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Manual Posts</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Create SEO-optimized posts manually with full control</p>
+                <div style="margin-bottom: 15px;">
+                    <button class="btn btn-primary" onclick="openPostModal()">+ Create New Post</button>
+                </div>
+                <div class="games-list" id="postsList">
+                    <div class="loading">Loading posts...</div>
+                </div>
+            </div>
+        </div>
+        
         <div id="settingsSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Site Settings</div>
@@ -616,6 +630,83 @@
         </div>
     </div>
     
+    <div class="modal" id="postModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <div class="modal-title" id="postModalTitle">Create Post</div>
+                <button class="modal-close" onclick="closePostModal()">&times;</button>
+            </div>
+            <form id="postForm" onsubmit="savePost(event)">
+                <input type="hidden" id="postId">
+                <div class="form-group">
+                    <label>Post Title *</label>
+                    <input type="text" id="postTitle" required placeholder="Enter post title">
+                </div>
+                <div class="form-group">
+                    <label>URL Slug *</label>
+                    <input type="text" id="postSlug" required placeholder="auto-generated-from-title">
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea id="postContent" rows="8" placeholder="Write your post content here..."></textarea>
+                </div>
+                <div style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">SEO Settings</h4>
+                    <div class="form-group">
+                        <label>Meta Title</label>
+                        <input type="text" id="postMetaTitle" placeholder="SEO title (defaults to post title)">
+                    </div>
+                    <div class="form-group">
+                        <label>Meta Description</label>
+                        <textarea id="postMetaDesc" rows="2" placeholder="SEO description (150-160 characters recommended)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Meta Keywords</label>
+                        <input type="text" id="postMetaKeywords" placeholder="keyword1, keyword2, keyword3">
+                    </div>
+                </div>
+                <div style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">Open Graph (Social Media)</h4>
+                    <div class="form-group">
+                        <label>OG Title</label>
+                        <input type="text" id="postOgTitle" placeholder="Title for social media sharing">
+                    </div>
+                    <div class="form-group">
+                        <label>OG Description</label>
+                        <textarea id="postOgDesc" rows="2" placeholder="Description for social media sharing"></textarea>
+                    </div>
+                </div>
+                <div style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">Advanced SEO</h4>
+                    <div class="form-group">
+                        <label>Canonical URL</label>
+                        <input type="text" id="postCanonical" placeholder="https://yoursite.com/post-slug">
+                    </div>
+                    <div class="form-group">
+                        <label>Schema Type</label>
+                        <select id="postSchemaType">
+                            <option value="Article">Article</option>
+                            <option value="NewsArticle">News Article</option>
+                            <option value="BlogPosting">Blog Posting</option>
+                            <option value="WebPage">Web Page</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="postPublished">
+                        <option value="true">Published</option>
+                        <option value="false">Draft</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save Post</button>
+                    <button type="button" class="btn btn-secondary" onclick="closePostModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script>
         function showStatus(msg, isError = false) {
             const el = document.getElementById('statusMsg');
@@ -628,9 +719,11 @@
             document.getElementById('gamesSection').style.display = section === 'games' ? 'block' : 'none';
             document.getElementById('scrapeSection').style.display = section === 'scrape' ? 'block' : 'none';
             document.getElementById('dailyUpdateSection').style.display = section === 'dailyUpdate' ? 'block' : 'none';
+            document.getElementById('postsSection').style.display = section === 'posts' ? 'block' : 'none';
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
+            if (section === 'posts') loadManualPosts();
         }
         
         async function loadGames() {
@@ -998,6 +1091,143 @@
                 }
             } catch (e) {
                 statusEl.innerHTML = '<span style="color: #e74c3c;">Error creating posts</span>';
+            }
+        }
+        
+        // Manual Posts Functions
+        async function loadManualPosts() {
+            try {
+                const res = await fetch('/api/manual-posts');
+                const posts = await res.json();
+                const list = document.getElementById('postsList');
+                
+                if (posts.length === 0) {
+                    list.innerHTML = '<div style="color: #a0a0b0; text-align: center; padding: 30px;">No posts yet. Click "Create New Post" to add one.</div>';
+                    return;
+                }
+                
+                list.innerHTML = posts.map(post => `
+                    <div class="game-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 16px; font-weight: 600; color: #fff;">${post.title}</div>
+                            <div style="color: #a0a0b0; font-size: 12px; margin-top: 4px;">/${post.slug}</div>
+                            <div style="margin-top: 6px;">
+                                <span style="padding: 3px 8px; border-radius: 12px; font-size: 11px; ${post.is_published ? 'background: #27ae60; color: #fff;' : 'background: #e74c3c; color: #fff;'}">${post.is_published ? 'Published' : 'Draft'}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-sm" style="background: #3498db;" onclick="editPost(${post.id})">Edit</button>
+                            <button class="btn btn-sm" style="background: #e74c3c;" onclick="deletePost(${post.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                document.getElementById('postsList').innerHTML = '<div style="color: #e74c3c;">Error loading posts</div>';
+            }
+        }
+        
+        function openPostModal() {
+            document.getElementById('postModalTitle').textContent = 'Create Post';
+            document.getElementById('postId').value = '';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postSlug').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('postMetaTitle').value = '';
+            document.getElementById('postMetaDesc').value = '';
+            document.getElementById('postMetaKeywords').value = '';
+            document.getElementById('postOgTitle').value = '';
+            document.getElementById('postOgDesc').value = '';
+            document.getElementById('postCanonical').value = '';
+            document.getElementById('postSchemaType').value = 'Article';
+            document.getElementById('postPublished').value = 'true';
+            document.getElementById('postModal').style.display = 'flex';
+        }
+        
+        function closePostModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+        
+        document.getElementById('postTitle').addEventListener('input', function() {
+            if (!document.getElementById('postId').value) {
+                const slug = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').trim();
+                document.getElementById('postSlug').value = slug;
+            }
+        });
+        
+        async function editPost(id) {
+            try {
+                const res = await fetch('/api/manual-posts/' + id);
+                const post = await res.json();
+                document.getElementById('postModalTitle').textContent = 'Edit Post';
+                document.getElementById('postId').value = post.id;
+                document.getElementById('postTitle').value = post.title || '';
+                document.getElementById('postSlug').value = post.slug || '';
+                document.getElementById('postContent').value = post.content || '';
+                document.getElementById('postMetaTitle').value = post.meta_title || '';
+                document.getElementById('postMetaDesc').value = post.meta_description || '';
+                document.getElementById('postMetaKeywords').value = post.meta_keywords || '';
+                document.getElementById('postOgTitle').value = post.og_title || '';
+                document.getElementById('postOgDesc').value = post.og_description || '';
+                document.getElementById('postCanonical').value = post.canonical_url || '';
+                document.getElementById('postSchemaType').value = post.schema_type || 'Article';
+                document.getElementById('postPublished').value = post.is_published ? 'true' : 'false';
+                document.getElementById('postModal').style.display = 'flex';
+            } catch (e) {
+                showStatus('Error loading post', true);
+            }
+        }
+        
+        async function savePost(e) {
+            e.preventDefault();
+            const id = document.getElementById('postId').value;
+            const data = {
+                title: document.getElementById('postTitle').value,
+                slug: document.getElementById('postSlug').value,
+                content: document.getElementById('postContent').value,
+                meta_title: document.getElementById('postMetaTitle').value,
+                meta_description: document.getElementById('postMetaDesc').value,
+                meta_keywords: document.getElementById('postMetaKeywords').value,
+                og_title: document.getElementById('postOgTitle').value,
+                og_description: document.getElementById('postOgDesc').value,
+                canonical_url: document.getElementById('postCanonical').value,
+                schema_type: document.getElementById('postSchemaType').value,
+                is_published: document.getElementById('postPublished').value === 'true'
+            };
+            
+            try {
+                const url = id ? '/api/manual-posts/' + id : '/api/manual-posts';
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    closePostModal();
+                    loadManualPosts();
+                    showStatus(id ? 'Post updated!' : 'Post created!');
+                } else {
+                    showStatus(result.error || 'Error saving post', true);
+                }
+            } catch (e) {
+                showStatus('Error saving post', true);
+            }
+        }
+        
+        async function deletePost(id) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+            try {
+                const res = await fetch('/api/manual-posts/' + id, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    loadManualPosts();
+                    showStatus('Post deleted!');
+                } else {
+                    showStatus(result.error || 'Error deleting post', true);
+                }
+            } catch (e) {
+                showStatus('Error deleting post', true);
             }
         }
         

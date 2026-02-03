@@ -183,6 +183,24 @@ def init_database():
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(game_name, post_date)
             );
+            
+            CREATE TABLE IF NOT EXISTS manual_posts (
+                id SERIAL PRIMARY KEY,
+                slug VARCHAR(255) NOT NULL UNIQUE,
+                title VARCHAR(500) NOT NULL,
+                content TEXT,
+                meta_title VARCHAR(255),
+                meta_description TEXT,
+                meta_keywords TEXT,
+                og_title VARCHAR(255),
+                og_description TEXT,
+                canonical_url VARCHAR(500),
+                schema_type VARCHAR(50) DEFAULT 'Article',
+                is_published BOOLEAN DEFAULT false,
+                publish_date TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
         """)
         conn.commit()
         cur.close()
@@ -1133,6 +1151,170 @@ def api_update_site_settings():
         return jsonify({'message': 'Settings saved successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/manual-posts', methods=['GET'])
+def api_get_manual_posts():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, slug, title, is_published, created_at 
+            FROM manual_posts 
+            ORDER BY created_at DESC
+        """)
+        posts = [{'id': r[0], 'slug': r[1], 'title': r[2], 'is_published': r[3], 'created_at': str(r[4])} for r in cur.fetchall()]
+        cur.close()
+        conn.close()
+        return jsonify(posts)
+    except Exception as e:
+        return jsonify([])
+
+@app.route('/api/manual-posts/<int:id>', methods=['GET'])
+def api_get_manual_post(id):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, slug, title, content, meta_title, meta_description, meta_keywords,
+                   og_title, og_description, canonical_url, schema_type, is_published
+            FROM manual_posts WHERE id = %s
+        """, (id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return jsonify({
+                'id': row[0], 'slug': row[1], 'title': row[2], 'content': row[3],
+                'meta_title': row[4], 'meta_description': row[5], 'meta_keywords': row[6],
+                'og_title': row[7], 'og_description': row[8], 'canonical_url': row[9],
+                'schema_type': row[10], 'is_published': row[11]
+            })
+        return jsonify({'error': 'Post not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/manual-posts', methods=['POST'])
+def api_create_manual_post():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO manual_posts (slug, title, content, meta_title, meta_description, meta_keywords,
+                                      og_title, og_description, canonical_url, schema_type, is_published, publish_date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            data.get('slug'), data.get('title'), data.get('content'),
+            data.get('meta_title'), data.get('meta_description'), data.get('meta_keywords'),
+            data.get('og_title'), data.get('og_description'), data.get('canonical_url'),
+            data.get('schema_type', 'Article'), data.get('is_published', False),
+            get_ist_now() if data.get('is_published') else None
+        ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/manual-posts/<int:id>', methods=['PUT'])
+def api_update_manual_post(id):
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE manual_posts SET 
+                slug = %s, title = %s, content = %s, meta_title = %s, meta_description = %s,
+                meta_keywords = %s, og_title = %s, og_description = %s, canonical_url = %s,
+                schema_type = %s, is_published = %s, updated_at = %s,
+                publish_date = CASE WHEN %s AND publish_date IS NULL THEN %s ELSE publish_date END
+            WHERE id = %s
+        """, (
+            data.get('slug'), data.get('title'), data.get('content'),
+            data.get('meta_title'), data.get('meta_description'), data.get('meta_keywords'),
+            data.get('og_title'), data.get('og_description'), data.get('canonical_url'),
+            data.get('schema_type', 'Article'), data.get('is_published', False), get_ist_now(),
+            data.get('is_published'), get_ist_now(), id
+        ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/manual-posts/<int:id>', methods=['DELETE'])
+def api_delete_manual_post(id):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM manual_posts WHERE id = %s", (id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+def get_manual_posts_published():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, slug, title, content, meta_description, publish_date 
+            FROM manual_posts 
+            WHERE is_published = true 
+            ORDER BY publish_date DESC
+        """)
+        posts = [{
+            'id': r[0], 'slug': r[1], 'title': r[2], 'content': r[3],
+            'meta_description': r[4], 'publish_date': r[5]
+        } for r in cur.fetchall()]
+        cur.close()
+        conn.close()
+        return posts
+    except:
+        return []
+
+@app.route('/latest')
+def latest_page():
+    posts = get_manual_posts_published()
+    site_settings = get_site_settings()
+    now = get_ist_now()
+    return render_template('latest.html',
+                         posts=posts,
+                         site_settings=site_settings,
+                         current_date=now.strftime("%d-%m-%Y"),
+                         current_time=now.strftime("%I:%M:%S %p"))
+
+@app.route('/latest/<slug>')
+def manual_post_page(slug):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, slug, title, content, meta_title, meta_description, meta_keywords,
+                   og_title, og_description, canonical_url, schema_type, publish_date
+            FROM manual_posts 
+            WHERE slug = %s AND is_published = true
+        """, (slug,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            post = {
+                'id': row[0], 'slug': row[1], 'title': row[2], 'content': row[3],
+                'meta_title': row[4] or row[2], 'meta_description': row[5],
+                'meta_keywords': row[6], 'og_title': row[7] or row[2],
+                'og_description': row[8] or row[5], 'canonical_url': row[9],
+                'schema_type': row[10] or 'Article', 'publish_date': row[11]
+            }
+            site_settings = get_site_settings()
+            return render_template('manual_post.html', post=post, site_settings=site_settings)
+        return redirect('/latest')
+    except:
+        return redirect('/latest')
 
 @app.route('/favicon.ico')
 def favicon():
