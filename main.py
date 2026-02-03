@@ -1036,7 +1036,7 @@ def api_create_daily_posts():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/post/<slug>')
+@app.route('/<slug>')
 def view_post(slug):
     try:
         conn = get_db_connection()

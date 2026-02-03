@@ -578,7 +578,7 @@
         <div class="daily-posts-grid">
             {% if daily_posts and daily_posts|length > 0 %}
                 {% for post in daily_posts %}
-                <a href="/post/{{ post.slug }}" class="post-card">
+                <a href="/{{ post.slug }}" class="post-card">
                     <div class="post-card-title">{{ post.title }}</div>
                     <div class="post-card-date">{{ post.post_date }}</div>
                     <div class="post-card-desc">{{ post.description }}</div>
