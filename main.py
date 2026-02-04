@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory, session
+from functools import wraps
+import hashlib
 from werkzeug.utils import secure_filename
 import psycopg2
 import os
@@ -23,6 +25,17 @@ def get_ist_now():
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'satta-king-secret-key')
+
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('admin_logged_in'):
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 scheduler = BackgroundScheduler()
 scheduler.start()
@@ -428,7 +441,35 @@ def chart():
         ad_settings=ad_settings
     )
 
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if session.get('admin_logged_in'):
+        return redirect(url_for('admin'))
+    
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['admin_logged_in'] = True
+            session.permanent = True
+            app.permanent_session_lifetime = timedelta(days=7)
+            flash('Login successful!', 'success')
+            return redirect(url_for('admin'))
+        else:
+            error = 'Invalid username or password'
+    
+    return render_template('admin_login.html', error=error)
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('admin_login'))
+
 @app.route('/admin')
+@login_required
 def admin():
     return render_template('admin.html')
 
