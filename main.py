@@ -210,6 +210,9 @@ def init_database():
                 IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='ad_settings' AND column_name='google_analytics_id') THEN
                     ALTER TABLE ad_settings ADD COLUMN google_analytics_id VARCHAR(50);
                 END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='ad_settings' AND column_name='ads_txt_content') THEN
+                    ALTER TABLE ad_settings ADD COLUMN ads_txt_content TEXT;
+                END IF;
             END $$;
             
             CREATE TABLE IF NOT EXISTS daily_update_settings (
@@ -1771,7 +1774,7 @@ def get_ad_settings():
         cur.execute("""SELECT adsense_publisher_id, auto_ads_enabled, ad_header, ad_after_header, 
                        ad_between_games, ad_before_footer, ad_sidebar, manual_ad_code_header,
                        manual_ad_code_after_header, manual_ad_code_between_games, 
-                       manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id FROM ad_settings LIMIT 1""")
+                       manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id, ads_txt_content FROM ad_settings LIMIT 1""")
         row = cur.fetchone()
         cur.close()
         conn.close()
@@ -1789,7 +1792,8 @@ def get_ad_settings():
                 'manual_ad_code_between_games': row[9],
                 'manual_ad_code_before_footer': row[10],
                 'manual_ad_code_sidebar': row[11],
-                'google_analytics_id': row[12]
+                'google_analytics_id': row[12],
+                'ads_txt_content': row[13]
             }
         return {}
     except:
@@ -1816,27 +1820,27 @@ def api_save_ad_settings():
                 ad_before_footer = %s, ad_sidebar = %s,
                 manual_ad_code_header = %s, manual_ad_code_after_header = %s,
                 manual_ad_code_between_games = %s, manual_ad_code_before_footer = %s,
-                manual_ad_code_sidebar = %s, google_analytics_id = %s, updated_at = %s WHERE id = %s""",
+                manual_ad_code_sidebar = %s, google_analytics_id = %s, ads_txt_content = %s, updated_at = %s WHERE id = %s""",
                 (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
                  data.get('ad_header', False), data.get('ad_after_header', False),
                  data.get('ad_between_games', False), data.get('ad_before_footer', False),
                  data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
                  data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
                  data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
-                 data.get('google_analytics_id'), get_ist_now(), existing[0]))
+                 data.get('google_analytics_id'), data.get('ads_txt_content'), get_ist_now(), existing[0]))
         else:
             cur.execute("""INSERT INTO ad_settings (adsense_publisher_id, auto_ads_enabled,
                 ad_header, ad_after_header, ad_between_games, ad_before_footer, ad_sidebar,
                 manual_ad_code_header, manual_ad_code_after_header, manual_ad_code_between_games,
-                manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id, updated_at)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id, ads_txt_content, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
                  data.get('ad_header', False), data.get('ad_after_header', False),
                  data.get('ad_between_games', False), data.get('ad_before_footer', False),
                  data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
                  data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
                  data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
-                 data.get('google_analytics_id'), get_ist_now()))
+                 data.get('google_analytics_id'), data.get('ads_txt_content'), get_ist_now()))
         
         conn.commit()
         cur.close()
@@ -2027,6 +2031,14 @@ Allow: /
 Sitemap: {base_url}/sitemap.xml
 """
     return content, 200, {'Content-Type': 'text/plain'}
+
+@app.route('/ads.txt')
+def ads_txt():
+    ad_settings = get_ad_settings()
+    ads_content = ad_settings.get('ads_txt_content', '')
+    if not ads_content:
+        ads_content = "# No ads.txt content configured yet\n# Add your AdSense ads.txt content in Admin Panel > Ads Management"
+    return ads_content, 200, {'Content-Type': 'text/plain'}
 
 @app.route('/sitemap.xml')
 def sitemap_index():

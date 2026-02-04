@@ -645,6 +645,33 @@
                     </div>
                 </div>
                 
+                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(0,200,100,0.3); margin-top: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #00c853 0%, #00e676 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📄</div>
+                        <div>
+                            <div style="font-weight: 700; color: #fff; font-size: 18px;">ads.txt File</div>
+                            <div style="font-size: 12px; color: #6a6a8a;">Required for AdSense approval - accessible at /ads.txt</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>ads.txt Content</label>
+                        <textarea id="adsTxtContent" rows="6" placeholder="google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0" style="width: 100%; padding: 12px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #e0e0e0; font-family: monospace; font-size: 13px;"></textarea>
+                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 8px;">
+                            Paste your AdSense ads.txt content here. Get it from 
+                            <a href="https://www.google.com/adsense" target="_blank" style="color: #667eea;">AdSense</a> → 
+                            Sites → Your Domain → Ads.txt status → Download
+                        </p>
+                    </div>
+                    
+                    <div style="background: #2a2a4a; padding: 12px; border-radius: 8px; margin-top: 10px;">
+                        <div style="font-size: 12px; color: #a0a0b0;">
+                            <strong style="color: #00c853;">Preview URL:</strong> 
+                            <a href="/ads.txt" target="_blank" style="color: #667eea;">/ads.txt</a>
+                        </div>
+                    </div>
+                </div>
+                
                 <div style="margin-top: 20px;">
                     <button class="btn btn-primary" onclick="saveAdSettings()">Save Ad Settings</button>
                 </div>
@@ -1613,6 +1640,7 @@
                 document.getElementById('adCodeBetweenGames').value = settings.manual_ad_code_between_games || '';
                 document.getElementById('adCodeBeforeFooter').value = settings.manual_ad_code_before_footer || '';
                 document.getElementById('adCodeSidebar').value = settings.manual_ad_code_sidebar || '';
+                document.getElementById('adsTxtContent').value = settings.ads_txt_content || '';
             } catch (e) {
                 console.error('Error loading ad settings:', e);
             }
@@ -1634,7 +1662,8 @@
                     manual_ad_code_after_header: document.getElementById('adCodeAfterHeader').value,
                     manual_ad_code_between_games: document.getElementById('adCodeBetweenGames').value,
                     manual_ad_code_before_footer: document.getElementById('adCodeBeforeFooter').value,
-                    manual_ad_code_sidebar: document.getElementById('adCodeSidebar').value
+                    manual_ad_code_sidebar: document.getElementById('adCodeSidebar').value,
+                    ads_txt_content: document.getElementById('adsTxtContent').value
                 };
                 
                 const res = await fetch('/api/ad-settings', {
