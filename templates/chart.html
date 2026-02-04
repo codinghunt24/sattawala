@@ -484,6 +484,18 @@
         </div>
     </div>
 
+    <!-- Ad After Header -->
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div class="ad-container" style="text-align: center; padding: 15px 0; background: #f8f9fa; margin: 10px 0;">
+        {% if ad_settings.manual_ad_code_after_header %}
+        {{ ad_settings.manual_ad_code_after_header|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <div class="chart-header">
         <h1 class="chart-title">Record Chart</h1>
         <div class="chart-subtitle">{{ game_name if game_name else "Select a game" }}</div>
@@ -596,6 +608,18 @@
     <div class="no-results">Please select a game to view results</div>
     {% endif %}
 </div>
+
+<!-- Ad Before Footer -->
+{% if ad_settings and ad_settings.ad_before_footer %}
+<div class="ad-container" style="text-align: center; padding: 20px 0; background: #f8f9fa; margin: 20px 0; border-radius: 8px;">
+    {% if ad_settings.manual_ad_code_before_footer %}
+    {{ ad_settings.manual_ad_code_before_footer|safe }}
+    {% else %}
+    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    {% endif %}
+</div>
+{% endif %}
 
 <div class="footer-section">
     <div class="footer-links">
