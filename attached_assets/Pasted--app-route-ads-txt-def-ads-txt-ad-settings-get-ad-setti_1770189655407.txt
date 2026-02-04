@@ -1,0 +1,60 @@
+> \
+> @app.route("/ads.txt")\
+> def ads_txt():\
+>     ad_settings = get_ad_settings()\
+>     ads_content = ad_settings.get("ads_txt_content", "")\
+>     if not ads_content:\
+>         ads_content = "# No ads.txt content configured"\
+>     return ads_content, 200, {"Content-Type": "text/plain"}' main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# grep -n "IF NOT EXISTS.*ad_settings.*google_analytics" main.py
+210:                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='ad_settings' AND column_name='google_analytics_id') THEN
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i '211a\
+>                 IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='\''ad_settings'\'' AND column_name='\''ads_txt_content'\'') THEN\
+>                     ALTER TABLE ad_settings ADD COLUMN ads_txt_content TEXT;\
+>                 END IF;' main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# grep -n "ads_txt_content" main.py
+212:                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='ad_settings' AND column_name='ads_txt_content') THEN
+213:                    ALTER TABLE ad_settings ADD COLUMN ads_txt_content TEXT;
+2032:    ads_content = ad_settings.get("ads_txt_content", "")
+(venv) root@mail:/home/digitalcash24/jj-communication.com# grep -n "google_analytics_id FROM ad_settings" main.py
+1771:                       manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id FROM ad_settings LIMIT 1""")
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -n '1761,1780p' main.py
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_ad_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""SELECT adsense_publisher_id, auto_ads_enabled, ad_header, ad_after_header, 
+                       ad_between_games, ad_before_footer, ad_sidebar, manual_ad_code_header,
+                       manual_ad_code_after_header, manual_ad_code_between_games, 
+                       manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id FROM ad_settings LIMIT 1""")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {
+                'adsense_publisher_id': row[0],
+                'auto_ads_enabled': row[1],
+                'ad_header': row[2],
+                'ad_after_header': row[3],
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i 's/google_analytics_id FROM ad_settings LIMIT 1/google_analytics_id, ads_txt_content FROM ad_settings LIMIT 1/' main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -n '1785,1800p' main.py
+                'manual_ad_code_after_header': row[8],
+                'manual_ad_code_between_games': row[9],
+                'manual_ad_code_before_footer': row[10],
+                'manual_ad_code_sidebar': row[11],
+                'google_analytics_id': row[12]
+            }
+        return {}
+    except:
+        return {}
+
+@app.route('/api/ad-settings', methods=['GET'])
+def api_get_ad_settings():
+    return jsonify(get_ad_settings())
+
+@app.route('/api/ad-settings', methods=['POST'])
+def api_save_ad_settings():
+(venv) root@mail:/home/digitalcash24/jj-communication.com# 
