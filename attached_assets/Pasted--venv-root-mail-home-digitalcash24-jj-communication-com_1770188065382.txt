@@ -1,0 +1,33 @@
+(venv) root@mail:/home/digitalcash24/jj-communication.com# cat app.log
+nohup: ignoring input
+[2026-02-04 07:51:05 +0100] [3142091] [INFO] Starting gunicorn 23.0.0
+[2026-02-04 07:51:05 +0100] [3142091] [INFO] Listening at: http://0.0.0.0:8002 (3142091)
+[2026-02-04 07:51:05 +0100] [3142091] [INFO] Using worker: sync
+[2026-02-04 07:51:05 +0100] [3142093] [INFO] Booting worker with pid: 3142093
+[2026-02-04 07:52:26,075] ERROR in app: Exception on /sitemap.xml [GET]
+Traceback (most recent call last):
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/digitalcash24/jj-communication.com/main.py", line 1995, in sitemap_index
+    <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+NameError: name 'base_url' is not defined
+[2026-02-04 07:53:23,291] ERROR in app: Exception on /chart [GET]
+Traceback (most recent call last):
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/digitalcash24/jj-communication.com/venv/lib/python3.8/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/digitalcash24/jj-communication.com/main.py", line 333, in chart
+    canonical_url = f"https://sattaking.replit.app/chart?game={game_slug}" if game_slug else "https://sattaking.replit.app/chart"
+NameError: name 'base_url' is not defined
+(venv) root@mail:/home/digitalcash24/jj-communication.com# 
