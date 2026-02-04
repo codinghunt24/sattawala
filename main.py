@@ -1980,31 +1980,33 @@ def manual_post_page(slug):
 
 @app.route('/robots.txt')
 def robots_txt():
-    content = """User-agent: *
+    base_url = request.host_url.rstrip('/').replace('http://', 'https://')
+    content = f"""User-agent: *
 Allow: /
-Sitemap: https://sattaking.replit.app/sitemap.xml
+Sitemap: {base_url}/sitemap.xml
 """
     return content, 200, {'Content-Type': 'text/plain'}
 
 @app.route('/sitemap.xml')
 def sitemap_index():
     now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <sitemap>
-        <loc>https://sattaking.replit.app/sitemap-pages.xml</loc>
+        <loc>{base_url}/sitemap-pages.xml</loc>
         <lastmod>{now}</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://sattaking.replit.app/sitemap-daily.xml</loc>
+        <loc>{base_url}/sitemap-daily.xml</loc>
         <lastmod>{now}</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://sattaking.replit.app/sitemap-charts.xml</loc>
+        <loc>{base_url}/sitemap-charts.xml</loc>
         <lastmod>{now}</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://sattaking.replit.app/sitemap-latest.xml</loc>
+        <loc>{base_url}/sitemap-latest.xml</loc>
         <lastmod>{now}</lastmod>
     </sitemap>
 </sitemapindex>'''
@@ -2013,28 +2015,29 @@ def sitemap_index():
 @app.route('/sitemap-pages.xml')
 def sitemap_pages():
     now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://sattaking.replit.app/</loc>
+        <loc>{base_url}/</loc>
         <lastmod>{now}</lastmod>
         <changefreq>hourly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://sattaking.replit.app/chart</loc>
+        <loc>{base_url}/chart</loc>
         <lastmod>{now}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://sattaking.replit.app/daily-update</loc>
+        <loc>{base_url}/daily-update</loc>
         <lastmod>{now}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://sattaking.replit.app/latest</loc>
+        <loc>{base_url}/latest</loc>
         <lastmod>{now}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
@@ -2045,6 +2048,7 @@ def sitemap_pages():
 @app.route('/sitemap-daily.xml')
 def sitemap_daily():
     now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     urls = []
     try:
         conn = get_db_connection()
@@ -2056,7 +2060,7 @@ def sitemap_daily():
         for post in posts:
             lastmod = post[1].strftime('%Y-%m-%dT%H:%M:%S+05:30') if post[1] else now
             urls.append(f'''    <url>
-        <loc>https://sattaking.replit.app/{post[0]}</loc>
+        <loc>{base_url}/{post[0]}</loc>
         <lastmod>{lastmod}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
@@ -2073,13 +2077,14 @@ def sitemap_daily():
 @app.route('/sitemap-charts.xml')
 def sitemap_charts():
     now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     urls = []
     try:
         games = get_all_games_list()
         for game in games:
             slug = create_slug(game)
             urls.append(f'''    <url>
-        <loc>https://sattaking.replit.app/chart?game={slug}</loc>
+        <loc>{base_url}/chart?game={slug}</loc>
         <lastmod>{now}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
@@ -2096,6 +2101,7 @@ def sitemap_charts():
 @app.route('/sitemap-latest.xml')
 def sitemap_latest():
     now = get_ist_now().strftime('%Y-%m-%dT%H:%M:%S+05:30')
+    base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     urls = []
     try:
         conn = get_db_connection()
@@ -2107,7 +2113,7 @@ def sitemap_latest():
         for post in posts:
             lastmod = post[1].strftime('%Y-%m-%dT%H:%M:%S+05:30') if post[1] else now
             urls.append(f'''    <url>
-        <loc>https://sattaking.replit.app/latest/{post[0]}</loc>
+        <loc>{base_url}/latest/{post[0]}</loc>
         <lastmod>{lastmod}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
