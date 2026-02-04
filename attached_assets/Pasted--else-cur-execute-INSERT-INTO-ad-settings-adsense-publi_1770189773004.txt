@@ -1,0 +1,32 @@
+     else:
+            cur.execute("""INSERT INTO ad_settings (adsense_publisher_id, auto_ads_enabled,
+                ad_header, ad_after_header, ad_between_games, ad_before_footer, ad_sidebar,
+                manual_ad_code_header, manual_ad_code_after_header, manual_ad_code_between_games,
+                manual_ad_code_before_footer, manual_ad_code_sidebar, google_analytics_id, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (data.get('adsense_publisher_id'), data.get('auto_ads_enabled', False),
+                 data.get('ad_header', False), data.get('ad_after_header', False),
+                 data.get('ad_between_games', False), data.get('ad_before_footer', False),
+                 data.get('ad_sidebar', False), data.get('manual_ad_code_header'),
+                 data.get('manual_ad_code_after_header'), data.get('manual_ad_code_between_games'),
+                 data.get('manual_ad_code_before_footer'), data.get('manual_ad_code_sidebar'),
+                 data.get('google_analytics_id'), get_ist_now()))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'Ad settings saved successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/manual-posts', methods=['GET'])
+def api_get_manual_posts():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i 's/google_analytics_id = %s, updated_at = %s WHERE id = %s/google_analytics_id = %s, ads_txt_content = %s, updated_at = %s WHERE id = %s/' main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i "s/data.get('google_analytics_id'), get_ist_now(), existing\[0\]))/data.get('google_analytics_id'), data.get('ads_txt_content'), get_ist_now(), existing[0]))/" main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i 's/google_analytics_id, updated_at)/google_analytics_id, ads_txt_content, updated_at)/' main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i 's/%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",/%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",/' main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# sed -i "s/data.get('google_analytics_id'), get_ist_now()))/data.get('google_analytics_id'), data.get('ads_txt_content'), get_ist_now()))/" main.py
+(venv) root@mail:/home/digitalcash24/jj-communication.com# 
