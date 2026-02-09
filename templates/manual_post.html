@@ -2,15 +2,19 @@
 
 {% block title %}{{ post.meta_title }}{% endblock %}
 
-{% block meta %}
+{% block head %}
+<title>{{ post.meta_title }}</title>
 <meta name="description" content="{{ post.meta_description or post.title }}">
 <meta name="keywords" content="{{ post.meta_keywords or 'satta king, satta result' }}">
-<link rel="canonical" href="{{ post.canonical_url or request.url }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ post.canonical_url or (base_url ~ '/latest/' ~ post.slug) }}">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{ post.og_title or post.title }}">
 <meta property="og:description" content="{{ post.og_description or post.meta_description or post.title }}">
-<meta property="og:url" content="{{ request.url }}">
+<meta property="og:url" content="{{ base_url }}/latest/{{ post.slug }}">
+<meta property="og:site_name" content="Satta King">
+<meta property="og:locale" content="en_IN">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ post.og_title or post.title }}">

@@ -2,9 +2,19 @@
 
 {% block title %}Latest Posts{% endblock %}
 
-{% block meta %}
+{% block head %}
+<title>Latest Posts</title>
 <meta name="description" content="Latest Satta King posts, news, and updates. Stay informed with the newest information about Satta King results and games.">
 <meta name="keywords" content="satta king latest, satta king news, satta king updates, satta king posts">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ base_url }}/latest">
+<meta property="og:title" content="Latest Satta King Posts">
+<meta property="og:description" content="Latest Satta King posts, news, and updates.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ base_url }}/latest">
+<meta property="og:site_name" content="Satta King">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Latest Satta King Posts">
 {% endblock %}
 
 {% block styles %}

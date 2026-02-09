@@ -325,6 +325,7 @@ def daily_update_page():
     
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
+    base_url = get_base_url()
     return render_template('daily_update.html', 
         daily_posts=result['posts'], 
         today_date=today_date, 
@@ -332,7 +333,8 @@ def daily_update_page():
         ad_settings=ad_settings,
         current_page=result['current_page'],
         total_pages=result['total_pages'],
-        total_posts=result['total_posts']
+        total_posts=result['total_posts'],
+        base_url=base_url
     )
 
 @app.route('/chart')
@@ -507,44 +509,52 @@ def admin():
 def privacy_policy():
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
+    base_url = get_base_url()
     return render_template('static_page.html', 
         page_title="Privacy Policy",
         page_content=get_privacy_policy_content(),
         site_settings=site_settings,
-        ad_settings=ad_settings
+        ad_settings=ad_settings,
+        base_url=base_url
     )
 
 @app.route('/about')
 def about_page():
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
+    base_url = get_base_url()
     return render_template('static_page.html', 
         page_title="About Us",
         page_content=get_about_content(),
         site_settings=site_settings,
-        ad_settings=ad_settings
+        ad_settings=ad_settings,
+        base_url=base_url
     )
 
 @app.route('/contact')
 def contact_page():
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
+    base_url = get_base_url()
     return render_template('static_page.html', 
         page_title="Contact Us",
         page_content=get_contact_content(),
         site_settings=site_settings,
-        ad_settings=ad_settings
+        ad_settings=ad_settings,
+        base_url=base_url
     )
 
 @app.route('/disclaimer')
 def disclaimer_page():
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
+    base_url = get_base_url()
     return render_template('static_page.html', 
         page_title="Disclaimer",
         page_content=get_disclaimer_content(),
         site_settings=site_settings,
-        ad_settings=ad_settings
+        ad_settings=ad_settings,
+        base_url=base_url
     )
 
 def get_privacy_policy_content():
@@ -2026,11 +2036,13 @@ def latest_page():
     posts = get_manual_posts_published()
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
+    base_url = get_base_url()
     now = get_ist_now()
     return render_template('latest.html',
                          posts=posts,
                          site_settings=site_settings,
                          ad_settings=ad_settings,
+                         base_url=base_url,
                          current_date=now.strftime("%d-%m-%Y"),
                          current_time=now.strftime("%I:%M:%S %p"))
 
@@ -2058,7 +2070,8 @@ def manual_post_page(slug):
             }
             site_settings = get_site_settings()
             ad_settings = get_ad_settings()
-            return render_template('manual_post.html', post=post, site_settings=site_settings, ad_settings=ad_settings)
+            base_url = get_base_url()
+            return render_template('manual_post.html', post=post, site_settings=site_settings, ad_settings=ad_settings, base_url=base_url)
         return redirect('/latest')
     except:
         return redirect('/latest')
@@ -2203,6 +2216,9 @@ def robots_txt():
     base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     content = f"""User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
 Disallow: /*?o=
 Disallow: /*&o=
 
