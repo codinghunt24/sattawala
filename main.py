@@ -265,6 +265,23 @@ def init_database():
 
 init_database()
 
+ALLOWED_QUERY_PARAMS = {'page', 'game', 'month', 'year'}
+
+@app.before_request
+def block_spam_query_params():
+    if request.path.startswith('/api/') or request.path.startswith('/admin'):
+        return None
+    unknown_params = set(request.args.keys()) - ALLOWED_QUERY_PARAMS
+    if unknown_params:
+        clean_args = {k: v for k, v in request.args.items() if k in ALLOWED_QUERY_PARAMS}
+        clean_url = request.path
+        if clean_args:
+            clean_url += '?' + '&'.join(f'{k}={v}' for k, v in clean_args.items())
+        return redirect(clean_url, code=301)
+
+def get_base_url():
+    return request.host_url.rstrip('/').replace('http://', 'https://')
+
 @app.route('/')
 def index():
     games = get_games()
@@ -285,7 +302,8 @@ def index():
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
     daily_posts = get_daily_posts_for_display()
-    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, ad_settings=ad_settings, daily_posts=daily_posts)
+    base_url = get_base_url()
+    return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, ad_settings=ad_settings, daily_posts=daily_posts, base_url=base_url)
 
 @app.route('/daily-update')
 def daily_update_page():
@@ -346,7 +364,8 @@ def chart():
     seo_title = f"{game_name} Result Chart {month_name} {selected_year} | Satta King" if game_name else "Satta King Record Chart | View All Game Results"
     seo_description = f"Check {game_name} Satta King result chart for {month_name} {selected_year}. View daily results, winning numbers, and complete record chart. Updated live with latest {game_name} results." if game_name else "View complete Satta King record charts for all games."
     seo_keywords = f"{game_name}, {game_name} result, {game_name} chart, {game_name} {month_name} {selected_year}, satta king {game_name}, {game_name} record, {game_name} live result" if game_name else "satta king, satta king chart, satta king result"
-    canonical_url = f"https://sattaking.replit.app/chart?game={game_slug}" if game_slug else "https://sattaking.replit.app/chart"
+    base_url = get_base_url()
+    canonical_url = f"{base_url}/chart?game={game_slug}" if game_slug else f"{base_url}/chart"
     
     schema_data = {
         "@context": "https://schema.org",
@@ -1692,7 +1711,8 @@ def view_post(slug):
         
         site_settings = get_site_settings()
         ad_settings = get_ad_settings()
-        return render_template('post.html', post=post, site_settings=site_settings, ad_settings=ad_settings)
+        base_url = get_base_url()
+        return render_template('post.html', post=post, site_settings=site_settings, ad_settings=ad_settings, base_url=base_url)
     except Exception as e:
         return f"Error: {e}", 500
 
@@ -2028,6 +2048,11 @@ def robots_txt():
     base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     content = f"""User-agent: *
 Allow: /
+Disallow: /*?o=
+Disallow: /*&o=
+
+Clean-param: o /
+
 Sitemap: {base_url}/sitemap.xml
 """
     return content, 200, {'Content-Type': 'text/plain'}
