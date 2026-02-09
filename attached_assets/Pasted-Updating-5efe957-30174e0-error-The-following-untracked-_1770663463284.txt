@@ -1,0 +1,63 @@
+Updating 5efe957..30174e0
+error: The following untracked working tree files would be overwritten by merge:
+        templates/admin_login.html
+Please move or remove them before you merge.
+Aborting
+root@mail:/home/digitalcash24/jj-communication.com# mv /home/digitalcash24/jj-communication.com/templates/admin_login.html /home/digitalcash24/jj-communication.com/templates/admin_login.html.bak
+root@mail:/home/digitalcash24/jj-communication.com# git pull origin main
+From https://github.com/codinghunt24/sattawala
+ * branch            main       -> FETCH_HEAD
+Updating 5efe957..30174e0
+Fast-forward
+ .replit                                                                                          |    5 +-
+ .streamlit/config.toml                                                                           |    2 +-
+ app.py                                                                                           |    7 +-
+ attached_assets/Pasted--app-route-ads-txt-def-ads-txt-ad-settings-get-ad-setti_1770189655407.txt |   60 ++++
+ attached_assets/Pasted--else-cur-execute-INSERT-INTO-ad-settings-adsense-publi_1770189773004.txt |   32 ++
+ attached_assets/Pasted--venv-root-mail-home-digitalcash24-jj-communication-com_1770161435776.txt |   18 ++
+ attached_assets/Pasted--venv-root-mail-home-digitalcash24-jj-communication-com_1770188065382.txt |   33 +++
+ attached_assets/Pasted--venv-root-mail-home-digitalcash24-jj-communication-com_1770188675631.txt |   34 +++
+ attached_assets/Pasted-1801-def-api-save-ad-settings-venv-root-mail-home-digit_1770189709590.txt |   54 ++++
+ attached_assets/Pasted-lrwxrwxrwx-1-root-root-43-Feb-2-21-37-sattaking-com-im-_1770160961934.txt |   23 ++
+ attached_assets/Pasted-solid-rgba-255-255-255-0-1-border-radius-8px-color-e0e0_1770189877074.txt |   23 ++
+ attached_assets/Screenshot_(597)_1770160786321.png                                               |  Bin 0 -> 106058 bytes
+ attached_assets/Screenshot_(597)_1770161404763.png                                               |  Bin 0 -> 106058 bytes
+ attached_assets/Screenshot_(598)_1770186780701.png                                               |  Bin 0 -> 24381 bytes
+ attached_assets/Screenshot_(599)_1770187732723.png                                               |  Bin 0 -> 139468 bytes
+ attached_assets/Screenshot_(629)_1770650906467.png                                               |  Bin 0 -> 151793 bytes
+ attached_assets/Screenshot_(630)_1770651020707.png                                               |  Bin 0 -> 165562 bytes
+ attached_assets/Screenshot_(631)_1770652307880.png                                               |  Bin 0 -> 260456 bytes
+ attached_assets/Screenshot_(632)_1770653299007.png                                               |  Bin 0 -> 203701 bytes
+ main.py                                                                                          |  525 ++++++++++++++++++++++++---------
+ pyproject.toml                                                                                   |    6 +-
+ start.sh                                                                                         |    2 +
+ templates/admin.html                                                                             | 1204 ++++++++++++++++++++++++++++++++++++++++++++-------------------------------
+ templates/admin_login.html                                                                       |  180 ++++++++++++
+ templates/chart.html                                                                             |   24 ++
+ templates/daily_update.html                                                                      |   57 +++-
+ templates/index.html                                                                             |   23 +-
+ templates/latest.html                                                                            |   38 ++-
+ templates/manual_post.html                                                                       |   36 ++-
+ templates/post.html                                                                              |  506 ++++++++++++++++++++++++++------
+ templates/static_page.html                                                                       |   10 +-
+ uv.lock                                                                                          |  316 +++++++++++++++++++-
+ 32 files changed, 2454 insertions(+), 764 deletions(-)
+ create mode 100644 attached_assets/Pasted--app-route-ads-txt-def-ads-txt-ad-settings-get-ad-setti_1770189655407.txt
+ create mode 100644 attached_assets/Pasted--else-cur-execute-INSERT-INTO-ad-settings-adsense-publi_1770189773004.txt
+ create mode 100644 attached_assets/Pasted--venv-root-mail-home-digitalcash24-jj-communication-com_1770161435776.txt
+ create mode 100644 attached_assets/Pasted--venv-root-mail-home-digitalcash24-jj-communication-com_1770188065382.txt
+ create mode 100644 attached_assets/Pasted--venv-root-mail-home-digitalcash24-jj-communication-com_1770188675631.txt
+ create mode 100644 attached_assets/Pasted-1801-def-api-save-ad-settings-venv-root-mail-home-digit_1770189709590.txt
+ create mode 100644 attached_assets/Pasted-lrwxrwxrwx-1-root-root-43-Feb-2-21-37-sattaking-com-im-_1770160961934.txt
+ create mode 100644 attached_assets/Pasted-solid-rgba-255-255-255-0-1-border-radius-8px-color-e0e0_1770189877074.txt
+ create mode 100644 attached_assets/Screenshot_(597)_1770160786321.png
+ create mode 100644 attached_assets/Screenshot_(597)_1770161404763.png
+ create mode 100644 attached_assets/Screenshot_(598)_1770186780701.png
+ create mode 100644 attached_assets/Screenshot_(599)_1770187732723.png
+ create mode 100644 attached_assets/Screenshot_(629)_1770650906467.png
+ create mode 100644 attached_assets/Screenshot_(630)_1770651020707.png
+ create mode 100644 attached_assets/Screenshot_(631)_1770652307880.png
+ create mode 100644 attached_assets/Screenshot_(632)_1770653299007.png
+ create mode 100755 start.sh
+ create mode 100644 templates/admin_login.html
+root@mail:/home/digitalcash24/jj-communication.com# 
