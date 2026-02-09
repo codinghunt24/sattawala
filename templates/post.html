@@ -4,37 +4,90 @@
 <title>{{ post.title }}</title>
 <meta name="description" content="{{ post.meta_description }}">
 <meta name="keywords" content="{{ post.meta_keywords }}">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="{{ base_url }}/{{ post.slug }}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{{ base_url }}/{{ post.slug }}">
 <meta property="og:title" content="{{ post.title }}">
 <meta property="og:description" content="{{ post.meta_description }}">
-<meta name="twitter:card" content="summary">
+<meta property="og:site_name" content="Satta King">
+<meta property="og:locale" content="en_IN">
+<meta property="article:published_time" content="{{ post.post_date }}T00:00:00+05:30">
+<meta property="article:modified_time" content="{{ post.post_date }}T23:59:59+05:30">
+<meta property="article:section" content="Satta King Results">
+<meta property="article:tag" content="{{ post.game_name }}">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ post.title }}">
 <meta name="twitter:description" content="{{ post.meta_description }}">
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ base_url }}/{{ post.slug }}"
+    },
     "headline": "{{ post.title }}",
     "description": "{{ post.meta_description }}",
-    "datePublished": "{{ post.post_date }}",
-    "author": {"@type": "Organization", "name": "Satta King"},
-    "publisher": {"@type": "Organization", "name": "Satta King"}
+    "datePublished": "{{ post.post_date }}T00:00:00+05:30",
+    "dateModified": "{{ post.post_date }}T23:59:59+05:30",
+    "author": {"@type": "Organization", "name": "Satta King", "url": "{{ base_url }}"},
+    "publisher": {"@type": "Organization", "name": "Satta King", "url": "{{ base_url }}"},
+    "keywords": "{{ post.meta_keywords }}"
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ base_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Daily Update", "item": "{{ base_url }}/daily-update"},
+        {"@type": "ListItem", "position": 3, "name": "{{ post.title }}", "item": "{{ base_url }}/{{ post.slug }}"}
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What is today's {{ post.game_name }} result?",
+            "acceptedAnswer": {"@type": "Answer", "text": "{% if post.result and post.result != 'Waiting...' %}The {{ post.game_name }} result for {{ post.post_date.strftime('%d %B %Y') }} is {{ post.result }}. This result has been verified.{% else %}The {{ post.game_name }} result for {{ post.post_date.strftime('%d %B %Y') }} has not been declared yet. Please check back at the scheduled result time for the latest update.{% endif %}"}
+        },
+        {
+            "@type": "Question",
+            "name": "What time does {{ post.game_name }} result come?",
+            "acceptedAnswer": {"@type": "Answer", "text": "{{ post.game_name }} result is declared daily at the scheduled game time. Visit our homepage to see the exact timing."}
+        },
+        {
+            "@type": "Question",
+            "name": "Where can I check {{ post.game_name }} result chart?",
+            "acceptedAnswer": {"@type": "Answer", "text": "You can check the complete {{ post.game_name }} result chart on our Record Chart page. It shows daily results organized by month and year."}
+        },
+        {
+            "@type": "Question",
+            "name": "Is this {{ post.game_name }} result accurate?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Yes, all results on our website are 100% verified from authentic sources before publishing."}
+        }
+    ]
 }
 </script>
 {% endblock %}
 
 {% block styles %}
 <style>
+    * { box-sizing: border-box; }
+    
     .main-container {
         max-width: 1400px;
         margin: 0 auto;
         padding: 0 15%;
     }
     
-    @media (max-width: 1200px) { .main-container { padding: 0 10%; } }
+    @media (max-width: 1200px) { .main-container { padding: 0 8%; } }
     @media (max-width: 768px) { .main-container { padding: 0 3%; } }
     @media (max-width: 480px) { .main-container { padding: 0 2%; } }
     
@@ -52,10 +105,7 @@
         gap: 10px;
     }
     
-    .logo-container img {
-        max-height: 60px;
-    }
-    
+    .logo-container img { max-height: 60px; }
     .site-title { color: #333; font-size: 28px; font-weight: 800; margin: 0; }
     
     .nav-section {
@@ -64,135 +114,345 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    @media (max-width: 1200px) { .nav-section { padding: 10px 10%; } }
+    @media (max-width: 1200px) { .nav-section { padding: 10px 8%; } }
     @media (max-width: 768px) { .nav-section { padding: 10px 3%; } }
     
     .nav-menu { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .nav-item { color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; transition: all 0.3s; }
+    .nav-item { color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; transition: all 0.3s; text-decoration: none; }
     .nav-item:hover, .nav-item.active { background: #333; }
+
+    .breadcrumb {
+        padding: 12px 0;
+        font-size: 13px;
+        color: #666;
+    }
+    .breadcrumb a { color: #1a73e8; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 6px; color: #999; }
     
     .post-container {
         background: #fff;
-        border-radius: 15px;
-        padding: 30px;
+        border-radius: 12px;
+        padding: 0;
         margin: 20px 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+        overflow: hidden;
     }
     
     .post-header {
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .post-title {
-        color: #333;
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-    
-    .post-meta {
-        color: #888;
-        font-size: 14px;
-    }
-    
-    .post-content h2 {
-        color: #333;
-        font-size: 24px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .result-box {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        padding: 30px;
-        text-align: center;
-        margin: 20px 0;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 28px 30px;
         color: #fff;
     }
     
-    .result-box.waiting {
-        background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
-    }
-    
-    .result-box.declared {
-        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-    }
-    
-    .result-label {
-        display: block;
-        font-size: 14px;
-        opacity: 0.9;
-        margin-bottom: 10px;
-    }
-    
-    .result-value {
-        display: block;
-        font-size: 48px;
+    .post-title {
+        color: #fff;
+        font-size: 26px;
         font-weight: 700;
-        margin: 10px 0;
+        margin: 0 0 10px;
+        line-height: 1.3;
     }
     
-    .result-note {
-        display: block;
-        font-size: 12px;
-        opacity: 0.8;
+    .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        font-size: 13px;
+        color: rgba(255,255,255,0.75);
     }
     
-    .post-info {
-        margin-top: 30px;
-        line-height: 1.8;
-        color: #444;
+    .post-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
     
-    .post-info h3 {
-        color: #333;
-        font-size: 20px;
-        margin: 25px 0 15px;
-        border-left: 4px solid #667eea;
-        padding-left: 15px;
+    .post-body {
+        padding: 25px 30px 30px;
     }
     
-    .post-info p {
-        margin-bottom: 15px;
+    .result-card {
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        margin: 0 0 25px;
+        position: relative;
+        overflow: hidden;
     }
     
-    .post-info ul {
-        margin-left: 20px;
-        margin-bottom: 15px;
+    .result-card.waiting {
+        background: linear-gradient(135deg, #ff9800 0%, #f44336 100%);
+        color: #fff;
     }
     
-    .post-info li {
+    .result-card.declared {
+        background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+        color: #fff;
+    }
+    
+    .result-card-label {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        opacity: 0.9;
         margin-bottom: 8px;
     }
     
-    .result-table {
-        width: 100%;
-        border-collapse: collapse;
+    .result-card-value {
+        font-size: 52px;
+        font-weight: 800;
+        line-height: 1.2;
+        margin: 8px 0;
+    }
+    
+    .result-card-note {
+        font-size: 12px;
+        opacity: 0.85;
+        margin-top: 5px;
+    }
+    
+    .result-card-badge {
+        display: inline-block;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 10px;
+    }
+    
+    .result-card.declared .result-card-badge { background: rgba(255,255,255,0.25); }
+    .result-card.waiting .result-card-badge { background: rgba(255,255,255,0.25); }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 20px 0;
+    }
+    
+    @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+    
+    .info-item {
+        background: #f8f9fa;
+        padding: 14px 16px;
+        border-radius: 8px;
+        border-left: 3px solid #1a73e8;
+    }
+    
+    .info-item-label {
+        font-size: 11px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+    
+    .info-item-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 30px 0 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #f0f0f0;
+        position: relative;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: #1a73e8;
+    }
+    
+    .post-text {
+        color: #444;
+        line-height: 1.8;
+        font-size: 15px;
+    }
+    
+    .post-text p { margin-bottom: 12px; }
+    
+    .post-text ul {
+        margin: 10px 0 15px 5px;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .post-text ul li {
+        padding: 8px 0 8px 28px;
+        position: relative;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .post-text ul li:last-child { border-bottom: none; }
+    
+    .post-text ul li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #00c853;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    
+    .chart-link-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: #eef3ff;
+        padding: 18px 20px;
+        border-radius: 10px;
+        margin: 15px 0;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: 1px solid #d4e0ff;
+    }
+    
+    .chart-link-card:hover {
+        background: #dfe9ff;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(26,115,232,0.15);
+    }
+    
+    .chart-link-icon {
+        width: 42px;
+        height: 42px;
+        background: #1a73e8;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    
+    .chart-link-text {
+        color: #1a73e8;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    
+    .chart-link-sub {
+        color: #666;
+        font-size: 12px;
+        margin-top: 2px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
         margin: 15px 0;
     }
     
-    .result-table td {
-        padding: 12px 15px;
-        border: 1px solid #e0e0e0;
+    @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
+    
+    .feature-card {
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 10px;
+        border: 1px solid #eee;
     }
     
-    .result-table tr:nth-child(odd) {
-        background: #f9f9f9;
+    .feature-card-title {
+        font-weight: 700;
+        color: #333;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+    .feature-card-desc {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .faq-item {
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        border: 1px solid #eee;
+    }
+    
+    .faq-question {
+        padding: 16px 20px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+    
+    .faq-question:hover { background: #f0f0f0; }
+    
+    .faq-arrow {
+        font-size: 12px;
+        transition: transform 0.3s;
+        color: #999;
+    }
+    
+    .faq-item.active .faq-arrow { transform: rotate(180deg); }
+    
+    .faq-answer {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+        color: #555;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+    
+    .faq-item.active .faq-answer {
+        max-height: 300px;
+        padding: 0 20px 16px;
+    }
+
+    .disclaimer-box {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-left: 4px solid #f59e0b;
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        font-size: 13px;
+        color: #92400e;
+        line-height: 1.6;
     }
     
     .back-link {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         margin-top: 20px;
-        color: #667eea;
+        color: #1a73e8;
         font-weight: 500;
+        font-size: 14px;
+        text-decoration: none;
+        padding: 8px 16px;
+        background: #eef3ff;
+        border-radius: 8px;
+        transition: all 0.2s;
     }
     
-    .back-link:hover {
-        color: #764ba2;
-    }
+    .back-link:hover { background: #dfe9ff; }
     
     .footer-section {
         background: #1a1a2e;
@@ -202,9 +462,17 @@
     }
     
     .footer-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 15px; }
-    .footer-link { color: #a0a0b0; font-size: 14px; cursor: pointer; transition: color 0.3s; }
+    .footer-link { color: #a0a0b0; font-size: 14px; cursor: pointer; transition: color 0.3s; text-decoration: none; }
     .footer-link:hover { color: #fff; }
     .copyright { color: #6a6a7a; font-size: 12px; }
+    
+    @media (max-width: 768px) {
+        .post-header { padding: 20px; }
+        .post-title { font-size: 20px; }
+        .post-body { padding: 20px; }
+        .result-card-value { font-size: 40px; }
+        .footer-section { padding: 25px 5%; }
+    }
 </style>
 {% endblock %}
 
@@ -220,16 +488,15 @@
         </div>
     </div>
 
-    <div class="nav-section">
+    <nav class="nav-section">
         <div class="nav-menu">
             <a href="/" class="nav-item">Home</a>
             <a href="/chart" class="nav-item">Chart</a>
-            <a href="/daily-update" class="nav-item">Daily Update</a>
+            <a href="/daily-update" class="nav-item active">Daily Update</a>
             <a href="/latest" class="nav-item">Latest</a>
         </div>
-    </div>
+    </nav>
 
-    <!-- Ad After Header -->
     {% if ad_settings and ad_settings.ad_after_header %}
     <div class="ad-container" style="text-align: center; padding: 15px 0; background: #f8f9fa; margin: 10px 0;">
         {% if ad_settings.manual_ad_code_after_header %}
@@ -241,22 +508,39 @@
     </div>
     {% endif %}
 
-    <div class="post-container">
-        <div class="post-header">
-            <h1 class="post-title">{{ post.title }}</h1>
-            <div class="post-meta">
-                <span>{{ post.game_name }}</span> | 
-                <span>{{ post.post_date.strftime('%B %d, %Y') }}</span>
-            </div>
-        </div>
-        
-        {{ post.content | safe }}
-        
-        <a href="/" class="back-link">&larr; Back to Home</a>
+    <div class="breadcrumb">
+        <a href="/">Home</a> <span>›</span>
+        <a href="/daily-update">Daily Update</a> <span>›</span>
+        {{ post.game_name }} Result
     </div>
+
+    <article class="post-container" itemscope itemtype="https://schema.org/Article">
+        <header class="post-header">
+            <h1 class="post-title" itemprop="headline">{{ post.title }}</h1>
+            <div class="post-meta">
+                <div class="post-meta-item">
+                    <span>🎮</span>
+                    <span itemprop="about">{{ post.game_name }}</span>
+                </div>
+                <div class="post-meta-item">
+                    <span>📅</span>
+                    <time datetime="{{ post.post_date }}" itemprop="datePublished">{{ post.post_date.strftime('%d %B %Y') }}</time>
+                </div>
+                <div class="post-meta-item">
+                    <span>✅</span>
+                    <span>Verified Result</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="post-body" itemprop="articleBody">
+            {{ post.content | safe }}
+            
+            <a href="/" class="back-link">← Back to Home</a>
+        </div>
+    </article>
 </div>
 
-<!-- Ad Before Footer -->
 {% if ad_settings and ad_settings.ad_before_footer %}
 <div class="ad-container" style="text-align: center; padding: 20px 0; background: #f8f9fa; margin: 20px 0; border-radius: 8px;">
     {% if ad_settings.manual_ad_code_before_footer %}
@@ -268,7 +552,7 @@
 </div>
 {% endif %}
 
-<div class="footer-section">
+<footer class="footer-section">
     <div class="footer-links">
         <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
         <a href="/about" class="footer-link">About Us</a>
@@ -276,5 +560,13 @@
         <a href="/disclaimer" class="footer-link">Disclaimer</a>
     </div>
     <div class="copyright">© 2026 Satta King. All rights reserved.</div>
-</div>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-question').forEach(function(q) {
+    q.addEventListener('click', function() {
+        this.parentElement.classList.toggle('active');
+    });
+});
+</script>
 {% endblock %}
