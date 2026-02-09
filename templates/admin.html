@@ -6,317 +6,304 @@
     <title>Admin Panel - Satta King</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: #0f1117;
             min-height: 100vh;
-            color: #e0e0e0;
+            color: #c9d1d9;
         }
-        
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 15%;
-        }
-        
-        @media (max-width: 1200px) {
-            .main-container { padding: 0 10%; }
-        }
-        
-        @media (max-width: 768px) {
-            .main-container { padding: 0 3%; }
-        }
-        
-        @media (max-width: 480px) {
-            .main-container { padding: 0 2%; }
-        }
-        
-        .header-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 25px 0;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        
-        .site-title {
-            color: #fff;
-            font-size: 36px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .site-subtitle {
-            color: rgba(255,255,255,0.9);
-            font-size: 14px;
-            margin-top: 8px;
-        }
-        
-        .nav-section {
-            background: #1e1e30;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .nav-menu-top {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .nav-item {
-            color: #b0b0c0;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-        
-        .nav-item:hover, .nav-item.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-        }
-        
+
         .admin-wrapper {
             display: flex;
-            min-height: calc(100vh - 120px);
-        }
-        
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
             min-height: 100vh;
-            border-right: 1px solid rgba(255,255,255,0.05);
-            padding: 20px;
         }
-        
+
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: #161b22;
+            min-height: 100vh;
+            border-right: 1px solid #21262d;
+            display: flex;
+            flex-direction: column;
+        }
+
         .sidebar-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 25px;
+            padding: 20px 18px;
+            border-bottom: 1px solid #21262d;
         }
-        
+
         .sidebar-logo {
             color: #fff;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
-        
+
         .sidebar-subtitle {
-            color: rgba(255,255,255,0.8);
-            font-size: 11px;
-            margin-top: 5px;
+            color: #8b949e;
+            font-size: 12px;
+            margin-top: 3px;
+            font-weight: 500;
         }
-        
-        .nav-menu { list-style: none; }
-        
+
+        .nav-menu {
+            list-style: none;
+            padding: 12px 10px;
+            flex: 1;
+        }
+
         .nav-menu li {
-            margin-bottom: 8px;
+            margin-bottom: 2px;
         }
-        
+
         .nav-menu a {
-            display: block;
-            padding: 12px 15px;
-            color: #a0a0b0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            color: #8b949e;
             text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s;
+            border-radius: 6px;
+            transition: all 0.15s ease;
             font-size: 14px;
+            font-weight: 500;
         }
-        
-        .nav-menu a:hover, .nav-menu a.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+
+        .nav-menu a .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
         }
-        
+
+        .nav-menu a:hover {
+            background: #1c2128;
+            color: #e6edf3;
+        }
+
+        .nav-menu a.active {
+            background: rgba(56, 139, 253, 0.15);
+            color: #58a6ff;
+        }
+
         .main-content {
             flex: 1;
-            padding: 25px;
+            padding: 0;
             overflow-y: auto;
+            background: #0f1117;
+            min-width: 0;
         }
-        
+
         .content-header {
-            background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+            background: #161b22;
+            padding: 18px 28px;
+            border-bottom: 1px solid #21262d;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
+
         .content-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e6edf3;
         }
-        
+
+        .content-body {
+            padding: 24px 28px;
+        }
+
         .card {
-            background: linear-gradient(135deg, #252540 0%, #2a2a50 100%);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-        
-        .card-title {
-            color: #fff;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
+            background: #161b22;
             border-radius: 8px;
-            cursor: pointer;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #21262d;
+        }
+
+        .card-title {
+            color: #e6edf3;
+            font-size: 16px;
             font-weight: 600;
-            transition: all 0.3s;
-            font-size: 14px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #21262d;
         }
-        
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #238636;
             color: #fff;
+            border: 1px solid #2ea043;
         }
-        
+
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            background: #2ea043;
         }
-        
+
         .btn-danger {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            background: #da3633;
             color: #fff;
+            border: 1px solid #f85149;
         }
-        
+
+        .btn-danger:hover {
+            background: #f85149;
+        }
+
         .btn-secondary {
-            background: linear-gradient(135deg, #2a2a45 0%, #353560 100%);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #363b42;
         }
-        
+
+        .btn-secondary:hover {
+            background: #30363d;
+            border-color: #8b949e;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
-        
+
         .form-group label {
             display: block;
-            color: #a0a0b0;
+            color: #c9d1d9;
             font-size: 13px;
-            margin-bottom: 5px;
+            font-weight: 500;
+            margin-bottom: 6px;
         }
-        
-        .form-group input, .form-group select {
+
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px 15px;
-            background: #1a1a2e;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
+            padding: 8px 12px;
+            background: #0d1117;
+            color: #e6edf3;
+            border: 1px solid #30363d;
+            border-radius: 6px;
             font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.15s ease;
         }
-        
-        .form-group input:focus, .form-group select:focus {
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.15);
         }
-        
+
         .games-list {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
         }
-        
+
         .game-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            margin-bottom: 8px;
+            padding: 12px 14px;
+            background: #0d1117;
+            border: 1px solid #21262d;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            transition: border-color 0.15s;
         }
-        
-        .game-info {
-            flex: 1;
+
+        .game-item:hover {
+            border-color: #30363d;
         }
-        
+
+        .game-info { flex: 1; }
+
         .game-name {
-            color: #00d4ff;
+            color: #58a6ff;
             font-weight: 600;
             font-size: 14px;
         }
-        
+
         .game-time {
-            color: #6a6a7a;
+            color: #8b949e;
             font-size: 12px;
+            margin-top: 2px;
         }
-        
+
         .game-results {
             display: flex;
-            gap: 10px;
-            margin-right: 15px;
+            gap: 8px;
+            margin-right: 12px;
         }
-        
+
         .result-badge {
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 3px 10px;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
         }
-        
+
         .result-yesterday {
-            background: #e74c3c;
-            color: #fff;
+            background: rgba(218, 54, 51, 0.15);
+            color: #f85149;
+            border: 1px solid rgba(218, 54, 51, 0.3);
         }
-        
+
         .result-today {
-            background: #27ae60;
-            color: #fff;
+            background: rgba(35, 134, 54, 0.15);
+            color: #3fb950;
+            border: 1px solid rgba(35, 134, 54, 0.3);
         }
-        
+
         .game-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
-        
+
         .btn-small {
-            padding: 6px 12px;
+            padding: 5px 10px;
             font-size: 12px;
         }
-        
+
         .status-msg {
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 13px;
         }
-        
+
         .status-success {
-            background: rgba(39, 174, 96, 0.2);
-            color: #2ecc71;
-            border: 1px solid rgba(39, 174, 96, 0.3);
+            background: rgba(35, 134, 54, 0.15);
+            color: #3fb950;
+            border: 1px solid rgba(35, 134, 54, 0.3);
         }
-        
+
         .status-error {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            background: rgba(218, 54, 51, 0.15);
+            color: #f85149;
+            border: 1px solid rgba(218, 54, 51, 0.3);
         }
-        
+
         .loading {
-            color: #a0a0b0;
+            color: #8b949e;
             text-align: center;
-            padding: 20px;
+            padding: 30px;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -324,99 +311,78 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(4px);
         }
-        
-        .modal.active {
-            display: flex;
-        }
-        
+
+        .modal.active { display: flex; }
+
         .modal-content {
-            background: linear-gradient(135deg, #1e1e30 0%, #252540 100%);
-            padding: 25px;
-            border-radius: 15px;
+            background: #161b22;
+            padding: 24px;
+            border-radius: 10px;
             width: 90%;
             max-width: 500px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid #30363d;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #21262d;
         }
-        
+
         .modal-title {
-            color: #fff;
-            font-size: 20px;
+            color: #e6edf3;
+            font-size: 18px;
             font-weight: 600;
         }
-        
+
         .modal-close {
             background: none;
             border: none;
-            color: #a0a0b0;
-            font-size: 24px;
+            color: #8b949e;
+            font-size: 22px;
             cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
         }
-        
+
+        .modal-close:hover {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
         .modal-actions {
             display: flex;
             gap: 10px;
             margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #21262d;
         }
-        
-        .footer-section {
-            background: #1e1e30;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        
-        .footer-link {
-            color: #a0a0b0;
-            font-size: 13px;
-            transition: color 0.3s;
-            text-decoration: none;
-        }
-        
-        .footer-link:hover {
-            color: #667eea;
-        }
-        
-        .copyright {
-            color: #6a6a7a;
-            font-size: 12px;
-        }
-        
+
         .mobile-menu-btn {
             display: none;
             position: fixed;
-            top: 10px;
-            left: 10px;
+            top: 12px;
+            left: 12px;
             z-index: 1001;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 20px;
+            background: #21262d;
+            color: #e6edf3;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 18px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        
+
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -424,31 +390,38 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
-        
-        @media (max-width: 768px) {
+
+        @media (max-width: 900px) {
             .mobile-menu-btn { display: block; }
-            .admin-wrapper { flex-direction: column; }
             .sidebar {
                 position: fixed;
                 top: 0;
-                left: -280px;
-                width: 260px;
+                left: -260px;
+                width: 250px;
                 height: 100vh;
                 z-index: 1000;
-                transition: left 0.3s ease;
+                transition: left 0.2s ease;
                 overflow-y: auto;
-                min-height: 100vh;
             }
             .sidebar.open { left: 0; }
             .sidebar-overlay.open { display: block; }
-            .main-content { padding: 15px; padding-top: 55px; width: 100%; }
-            .content-header { flex-direction: column; gap: 10px; }
+            .main-content { width: 100%; }
+            .content-header { padding: 14px 16px; padding-left: 52px; }
+            .content-body { padding: 16px; }
+            .content-title { font-size: 17px; }
             .game-item { flex-direction: column; gap: 8px; align-items: flex-start; }
             .game-results { margin-right: 0; }
             .game-actions { width: 100%; justify-content: flex-end; }
+            .card { padding: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .content-body { padding: 12px; }
+            .card { padding: 14px; }
+            .btn { padding: 7px 12px; font-size: 12px; }
         }
     </style>
 </head>
@@ -464,17 +437,17 @@
         </div>
         
         <ul class="nav-menu">
-            <li><a href="/" target="_blank">View Website</a></li>
-            <li><a href="#" onclick="showSection('indexing')">Instant Indexing</a></li>
-            <li><a href="#" class="active" onclick="showSection('games')">Games Management</a></li>
-            <li><a href="#" onclick="showSection('scrape')">Web Scraping</a></li>
-            <li><a href="#" onclick="showSection('dailyUpdate')">Daily Update</a></li>
-            <li><a href="#" onclick="showSection('posts')">Posts</a></li>
-            <li><a href="#" onclick="showSection('ads')">Ads Management</a></li>
-            <li><a href="#" onclick="showSection('sitemap')">Sitemap</a></li>
-            <li><a href="#" onclick="showSection('history')">Historical Import</a></li>
-            <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
-            <li style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;"><a href="/admin/logout" style="color: #ff6b6b;">🔒 Logout</a></li>
+            <li><a href="/" target="_blank"><span class="nav-icon">🌐</span> View Website</a></li>
+            <li><a href="#" onclick="showSection('indexing')"><span class="nav-icon">🚀</span> Instant Indexing</a></li>
+            <li><a href="#" class="active" onclick="showSection('games')"><span class="nav-icon">🎮</span> Games</a></li>
+            <li><a href="#" onclick="showSection('scrape')"><span class="nav-icon">🔄</span> Web Scraping</a></li>
+            <li><a href="#" onclick="showSection('dailyUpdate')"><span class="nav-icon">📅</span> Daily Update</a></li>
+            <li><a href="#" onclick="showSection('posts')"><span class="nav-icon">📝</span> Posts</a></li>
+            <li><a href="#" onclick="showSection('ads')"><span class="nav-icon">📢</span> Ads</a></li>
+            <li><a href="#" onclick="showSection('sitemap')"><span class="nav-icon">🗺️</span> Sitemap</a></li>
+            <li><a href="#" onclick="showSection('history')"><span class="nav-icon">📊</span> History Import</a></li>
+            <li><a href="#" onclick="showSection('settings')"><span class="nav-icon">⚙️</span> Settings</a></li>
+            <li style="margin-top: 12px; border-top: 1px solid #21262d; padding-top: 12px;"><a href="/admin/logout" style="color: #f85149;"><span class="nav-icon">🔒</span> Logout</a></li>
         </ul>
     </div>
     
@@ -483,6 +456,7 @@
             <h1 class="content-title">Admin Dashboard</h1>
         </div>
         
+        <div class="content-body">
         <div id="statusMsg"></div>
         
         <div id="gamesSection">
@@ -500,7 +474,7 @@
         <div id="scrapeSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Manual Scraping</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Scrape games data from satta-king-fast.com</p>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Scrape games data from satta-king-fast.com</p>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <button class="btn btn-primary" onclick="scrapeGames()" id="scrapeBtn">Scrape Now</button>
                     <button class="btn btn-danger" onclick="clearAllGames()">Clear All Games</button>
@@ -510,7 +484,7 @@
             
             <div class="card" style="margin-top: 20px;">
                 <div class="card-title">Auto Scraping Schedule</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Set up automatic scraping at regular intervals</p>
+                <p style="color: #8b949e; margin-bottom: 15px;">Set up automatic scraping at regular intervals</p>
                 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
@@ -521,7 +495,7 @@
                 
                 <div class="form-group">
                     <label>Scrape Interval (minutes)</label>
-                    <select id="scrapeInterval" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                    <select id="scrapeInterval" style="width: 100%; padding: 10px; background: #0d1117; color: #fff; border: 1px solid #30363d; border-radius: 8px;">
                         <option value="1">Every 1 minute</option>
                         <option value="2">Every 2 minutes</option>
                         <option value="3">Every 3 minutes</option>
@@ -538,14 +512,14 @@
                 </div>
                 
                 <div id="autoScrapeStatus" style="margin-top: 15px;"></div>
-                <div id="lastScrapeInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
+                <div id="lastScrapeInfo" style="margin-top: 10px; color: #8b949e; font-size: 13px;"></div>
             </div>
         </div>
         
         <div id="dailyUpdateSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Daily Update Auto Post</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Automatically generate SEO-optimized posts for all games daily</p>
+                <p style="color: #8b949e; margin-bottom: 15px;">Automatically generate SEO-optimized posts for all games daily</p>
                 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
@@ -556,22 +530,22 @@
                 
                 <div class="form-group">
                     <label>Post Time (IST)</label>
-                    <input type="time" id="dailyPostTime" value="10:00" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
-                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Posts will be created daily at this time for all active games</p>
+                    <input type="time" id="dailyPostTime" value="10:00" style="width: 100%; padding: 10px; background: #0d1117; color: #fff; border: 1px solid #30363d; border-radius: 8px;">
+                    <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Posts will be created daily at this time for all active games</p>
                 </div>
                 
                 <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
                     <button class="btn btn-primary" onclick="saveDailyUpdateSettings()">Save Settings</button>
-                    <button class="btn" style="background: #27ae60;" onclick="createPostsNow()">Create Posts Now</button>
+                    <button class="btn btn-primary" onclick="createPostsNow()">Create Posts Now</button>
                 </div>
                 
                 <div id="dailyUpdateStatus" style="margin-top: 15px;"></div>
-                <div id="lastPostInfo" style="margin-top: 10px; color: #6a6a7a; font-size: 13px;"></div>
+                <div id="lastPostInfo" style="margin-top: 10px; color: #8b949e; font-size: 13px;"></div>
             </div>
             
             <div class="card" style="margin-top: 20px;">
                 <div class="card-title">How It Works</div>
-                <ul style="color: #a0a0b0; line-height: 2; padding-left: 20px;">
+                <ul style="color: #8b949e; line-height: 2; padding-left: 20px;">
                     <li>Posts are auto-generated for each active game at the scheduled time</li>
                     <li>Each post has SEO-optimized title, description, and keywords</li>
                     <li>If result is not available, post shows "Waiting..." status</li>
@@ -585,7 +559,7 @@
         <div id="postsSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Manual Posts</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Create SEO-optimized posts manually with full control</p>
+                <p style="color: #8b949e; margin-bottom: 15px;">Create SEO-optimized posts manually with full control</p>
                 <div style="margin-bottom: 15px;">
                     <button class="btn btn-primary" onclick="openPostModal()">+ Create New Post</button>
                 </div>
@@ -598,27 +572,27 @@
         <div id="adsSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Ads Management</div>
-                <p style="color: #a0a0b0; margin-bottom: 20px;">Configure Google AdSense and manage ad placements</p>
+                <p style="color: #8b949e; margin-bottom: 20px;">Configure Google AdSense and manage ad placements</p>
                 
-                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3); margin-bottom: 25px;">
+                <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 25px;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">💰</div>
+                        <span style="font-size: 22px;">💰</span>
                         <div>
                             <div style="font-weight: 700; color: #fff; font-size: 18px;">Google AdSense</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Monetize your website with ads</div>
+                            <div style="font-size: 12px; color: #8b949e;">Monetize your website with ads</div>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Google Analytics ID</label>
                         <input type="text" id="googleAnalyticsId" placeholder="G-XXXXXXXXXX">
-                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Your Google Analytics Measurement ID (starts with G-)</p>
+                        <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Your Google Analytics Measurement ID (starts with G-)</p>
                     </div>
                     
                     <div class="form-group">
                         <label>AdSense Publisher ID</label>
                         <input type="text" id="adsensePublisherId" placeholder="ca-pub-XXXXXXXXXXXXXXXX">
-                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Your AdSense publisher ID (starts with ca-pub-)</p>
+                        <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Your AdSense publisher ID (starts with ca-pub-)</p>
                     </div>
                     
                     <div class="form-group" style="margin-top: 15px;">
@@ -626,95 +600,95 @@
                             <input type="checkbox" id="autoAdsEnabled" style="width: 18px; height: 18px;">
                             <span>Enable Auto Ads</span>
                         </label>
-                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Let Google automatically place ads on your site</p>
+                        <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Let Google automatically place ads on your site</p>
                     </div>
                 </div>
                 
-                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,193,7,0.3);">
+                <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📍</div>
+                        <span style="font-size: 22px;">📍</span>
                         <div>
                             <div style="font-weight: 700; color: #fff; font-size: 18px;">Manual Ad Placements</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Choose where to show ads on your website</div>
+                            <div style="font-size: 12px; color: #8b949e;">Choose where to show ads on your website</div>
                         </div>
                     </div>
                     
                     <div style="display: grid; gap: 15px;">
-                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                        <div style="background: #21262d; padding: 15px; border-radius: 10px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
                                     <input type="checkbox" id="adHeader" style="width: 18px; height: 18px;">
                                     <span>Header Ad (Top of Page)</span>
                                 </label>
                             </div>
-                            <textarea id="adCodeHeader" rows="3" placeholder="Paste your ad code here (optional - uses auto ad unit if empty)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                            <textarea id="adCodeHeader" rows="3" placeholder="Paste your ad code here (optional - uses auto ad unit if empty)" style="width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-family: monospace; font-size: 12px;"></textarea>
                         </div>
                         
-                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                        <div style="background: #21262d; padding: 15px; border-radius: 10px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
                                     <input type="checkbox" id="adAfterHeader" style="width: 18px; height: 18px;">
                                     <span>After Header (Below Navigation)</span>
                                 </label>
                             </div>
-                            <textarea id="adCodeAfterHeader" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                            <textarea id="adCodeAfterHeader" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-family: monospace; font-size: 12px;"></textarea>
                         </div>
                         
-                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                        <div style="background: #21262d; padding: 15px; border-radius: 10px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
                                     <input type="checkbox" id="adBetweenGames" style="width: 18px; height: 18px;">
                                     <span>Between Games (Middle of Content)</span>
                                 </label>
                             </div>
-                            <textarea id="adCodeBetweenGames" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                            <textarea id="adCodeBetweenGames" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-family: monospace; font-size: 12px;"></textarea>
                         </div>
                         
-                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                        <div style="background: #21262d; padding: 15px; border-radius: 10px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
                                     <input type="checkbox" id="adBeforeFooter" style="width: 18px; height: 18px;">
                                     <span>Before Footer (Bottom of Content)</span>
                                 </label>
                             </div>
-                            <textarea id="adCodeBeforeFooter" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                            <textarea id="adCodeBeforeFooter" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-family: monospace; font-size: 12px;"></textarea>
                         </div>
                         
-                        <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                        <div style="background: #21262d; padding: 15px; border-radius: 10px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600;">
                                     <input type="checkbox" id="adSidebar" style="width: 18px; height: 18px;">
                                     <span>Sidebar Ad (Desktop Only)</span>
                                 </label>
                             </div>
-                            <textarea id="adCodeSidebar" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e0e0e0; font-family: monospace; font-size: 12px;"></textarea>
+                            <textarea id="adCodeSidebar" rows="3" placeholder="Paste your ad code here (optional)" style="width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-family: monospace; font-size: 12px;"></textarea>
                         </div>
                     </div>
                 </div>
                 
-                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(0,200,100,0.3); margin-top: 20px;">
+                <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-top: 20px;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #00c853 0%, #00e676 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📄</div>
+                        <span style="font-size: 22px;">📄</span>
                         <div>
                             <div style="font-weight: 700; color: #fff; font-size: 18px;">ads.txt File</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Required for AdSense approval - accessible at /ads.txt</div>
+                            <div style="font-size: 12px; color: #8b949e;">Required for AdSense approval - accessible at /ads.txt</div>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>ads.txt Content</label>
-                        <textarea id="adsTxtContent" rows="6" placeholder="google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0" style="width: 100%; padding: 12px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #e0e0e0; font-family: monospace; font-size: 13px;"></textarea>
-                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 8px;">
+                        <textarea id="adsTxtContent" rows="6" placeholder="google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0" style="width: 100%; padding: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; font-family: monospace; font-size: 13px;"></textarea>
+                        <p style="color: #8b949e; font-size: 11px; margin-top: 8px;">
                             Paste your AdSense ads.txt content here. Get it from 
-                            <a href="https://www.google.com/adsense" target="_blank" style="color: #667eea;">AdSense</a> → 
+                            <a href="https://www.google.com/adsense" target="_blank" style="color: #58a6ff;">AdSense</a> → 
                             Sites → Your Domain → Ads.txt status → Download
                         </p>
                     </div>
                     
-                    <div style="background: #2a2a4a; padding: 12px; border-radius: 8px; margin-top: 10px;">
-                        <div style="font-size: 12px; color: #a0a0b0;">
-                            <strong style="color: #00c853;">Preview URL:</strong> 
-                            <a href="/ads.txt" target="_blank" style="color: #667eea;">/ads.txt</a>
+                    <div style="background: #21262d; padding: 12px; border-radius: 8px; margin-top: 10px;">
+                        <div style="font-size: 12px; color: #8b949e;">
+                            <strong style="color: #3fb950;">Preview URL:</strong> 
+                            <a href="/ads.txt" target="_blank" style="color: #58a6ff;">/ads.txt</a>
                         </div>
                     </div>
                 </div>
@@ -729,95 +703,95 @@
         <div id="sitemapSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Sitemap Generator</div>
-                <p style="color: #a0a0b0; margin-bottom: 20px;">Generate XML sitemaps for fast Google indexing (handles 100+ daily posts)</p>
+                <p style="color: #8b949e; margin-bottom: 20px;">Generate XML sitemaps for fast Google indexing (handles 100+ daily posts)</p>
                 
-                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(46,204,113,0.3); margin-bottom: 20px;">
+                <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 20px;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">🗺️</div>
+                        <span style="font-size: 22px;">🗺️</span>
                         <div>
                             <div style="font-weight: 700; color: #fff; font-size: 18px;">Auto-Generated Sitemaps</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Automatically updates when new content is added</div>
+                            <div style="font-size: 12px; color: #8b949e;">Automatically updates when new content is added</div>
                         </div>
                     </div>
                     
-                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <div style="background: #21262d; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
                         <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">📋 Available Sitemaps:</div>
                         <div style="display: grid; gap: 10px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #1a1a2e; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0d1117; border-radius: 8px;">
                                 <div>
-                                    <div style="color: #2ecc71; font-weight: 600;">Main Sitemap Index</div>
-                                    <code style="color: #a0a0c0; font-size: 12px;">/sitemap.xml</code>
+                                    <div style="color: #3fb950; font-weight: 600;">Main Sitemap Index</div>
+                                    <code style="color: #8b949e; font-size: 12px;">/sitemap.xml</code>
                                 </div>
                                 <a href="/sitemap.xml" target="_blank" class="btn btn-primary" style="padding: 8px 15px; font-size: 12px;">View</a>
                             </div>
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #1a1a2e; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0d1117; border-radius: 8px;">
                                 <div>
-                                    <div style="color: #667eea; font-weight: 600;">Pages Sitemap</div>
-                                    <code style="color: #a0a0c0; font-size: 12px;">/sitemap-pages.xml</code>
+                                    <div style="color: #58a6ff; font-weight: 600;">Pages Sitemap</div>
+                                    <code style="color: #8b949e; font-size: 12px;">/sitemap-pages.xml</code>
                                 </div>
-                                <a href="/sitemap-pages.xml" target="_blank" class="btn" style="padding: 8px 15px; font-size: 12px; background: #667eea;">View</a>
+                                <a href="/sitemap-pages.xml" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</a>
                             </div>
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #1a1a2e; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0d1117; border-radius: 8px;">
                                 <div>
-                                    <div style="color: #f39c12; font-weight: 600;">Daily Posts Sitemap</div>
-                                    <code style="color: #a0a0c0; font-size: 12px;">/sitemap-daily.xml</code>
+                                    <div style="color: #d29922; font-weight: 600;">Daily Posts Sitemap</div>
+                                    <code style="color: #8b949e; font-size: 12px;">/sitemap-daily.xml</code>
                                 </div>
-                                <a href="/sitemap-daily.xml" target="_blank" class="btn" style="padding: 8px 15px; font-size: 12px; background: #f39c12;">View</a>
+                                <a href="/sitemap-daily.xml" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</a>
                             </div>
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #1a1a2e; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0d1117; border-radius: 8px;">
                                 <div>
-                                    <div style="color: #e74c3c; font-weight: 600;">Charts Sitemap</div>
-                                    <code style="color: #a0a0c0; font-size: 12px;">/sitemap-charts.xml</code>
+                                    <div style="color: #f85149; font-weight: 600;">Charts Sitemap</div>
+                                    <code style="color: #8b949e; font-size: 12px;">/sitemap-charts.xml</code>
                                 </div>
-                                <a href="/sitemap-charts.xml" target="_blank" class="btn" style="padding: 8px 15px; font-size: 12px; background: #e74c3c;">View</a>
+                                <a href="/sitemap-charts.xml" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</a>
                             </div>
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #1a1a2e; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0d1117; border-radius: 8px;">
                                 <div>
-                                    <div style="color: #9b59b6; font-weight: 600;">Latest Posts Sitemap</div>
-                                    <code style="color: #a0a0c0; font-size: 12px;">/sitemap-latest.xml</code>
+                                    <div style="color: #bc8cff; font-weight: 600;">Latest Posts Sitemap</div>
+                                    <code style="color: #8b949e; font-size: 12px;">/sitemap-latest.xml</code>
                                 </div>
-                                <a href="/sitemap-latest.xml" target="_blank" class="btn" style="padding: 8px 15px; font-size: 12px; background: #9b59b6;">View</a>
+                                <a href="/sitemap-latest.xml" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</a>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="sitemapStats" style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                    <div id="sitemapStats" style="background: #21262d; padding: 15px; border-radius: 10px;">
                         <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">📊 Sitemap Statistics:</div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
-                            <div style="text-align: center; padding: 10px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statPages" style="font-size: 24px; font-weight: 700; color: #667eea;">-</div>
-                                <div style="font-size: 11px; color: #6a6a8a;">Static Pages</div>
+                            <div style="text-align: center; padding: 10px; background: #0d1117; border-radius: 8px;">
+                                <div id="statPages" style="font-size: 24px; font-weight: 700; color: #58a6ff;">-</div>
+                                <div style="font-size: 11px; color: #8b949e;">Static Pages</div>
                             </div>
-                            <div style="text-align: center; padding: 10px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statDaily" style="font-size: 24px; font-weight: 700; color: #f39c12;">-</div>
-                                <div style="font-size: 11px; color: #6a6a8a;">Daily Posts</div>
+                            <div style="text-align: center; padding: 10px; background: #0d1117; border-radius: 8px;">
+                                <div id="statDaily" style="font-size: 24px; font-weight: 700; color: #d29922;">-</div>
+                                <div style="font-size: 11px; color: #8b949e;">Daily Posts</div>
                             </div>
-                            <div style="text-align: center; padding: 10px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statCharts" style="font-size: 24px; font-weight: 700; color: #e74c3c;">-</div>
-                                <div style="font-size: 11px; color: #6a6a8a;">Chart Pages</div>
+                            <div style="text-align: center; padding: 10px; background: #0d1117; border-radius: 8px;">
+                                <div id="statCharts" style="font-size: 24px; font-weight: 700; color: #f85149;">-</div>
+                                <div style="font-size: 11px; color: #8b949e;">Chart Pages</div>
                             </div>
-                            <div style="text-align: center; padding: 10px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statLatest" style="font-size: 24px; font-weight: 700; color: #9b59b6;">-</div>
-                                <div style="font-size: 11px; color: #6a6a8a;">Latest Posts</div>
+                            <div style="text-align: center; padding: 10px; background: #0d1117; border-radius: 8px;">
+                                <div id="statLatest" style="font-size: 24px; font-weight: 700; color: #bc8cff;">-</div>
+                                <div style="font-size: 11px; color: #8b949e;">Latest Posts</div>
                             </div>
-                            <div style="text-align: center; padding: 10px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statTotal" style="font-size: 24px; font-weight: 700; color: #2ecc71;">-</div>
-                                <div style="font-size: 11px; color: #6a6a8a;">Total URLs</div>
+                            <div style="text-align: center; padding: 10px; background: #0d1117; border-radius: 8px;">
+                                <div id="statTotal" style="font-size: 24px; font-weight: 700; color: #3fb950;">-</div>
+                                <div style="font-size: 11px; color: #8b949e;">Total URLs</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div style="background: rgba(102,126,234,0.1); border: 1px solid rgba(102,126,234,0.3); border-radius: 8px; padding: 15px;">
-                    <div style="font-weight: 600; color: #667eea; margin-bottom: 10px;">🚀 Submit to Google:</div>
-                    <ol style="color: #a0a0c0; font-size: 13px; line-height: 1.8; padding-left: 20px;">
-                        <li>Go to <a href="https://search.google.com/search-console" target="_blank" style="color: #667eea;">Google Search Console</a></li>
+                <div style="background: rgba(102,126,234,0.1); border: 1px solid #30363d; border-radius: 8px; padding: 15px;">
+                    <div style="font-weight: 600; color: #58a6ff; margin-bottom: 10px;">🚀 Submit to Google:</div>
+                    <ol style="color: #8b949e; font-size: 13px; line-height: 1.8; padding-left: 20px;">
+                        <li>Go to <a href="https://search.google.com/search-console" target="_blank" style="color: #58a6ff;">Google Search Console</a></li>
                         <li>Add your website property</li>
                         <li>Go to Sitemaps section</li>
-                        <li>Enter: <code style="background: #2a2a4a; padding: 2px 8px; border-radius: 4px;">sitemap.xml</code></li>
+                        <li>Enter: <code style="background: #21262d; padding: 2px 8px; border-radius: 4px;">sitemap.xml</code></li>
                         <li>Click Submit</li>
                     </ol>
-                    <p style="color: #6a6a8a; font-size: 11px; margin-top: 10px;">Note: Sitemaps are split to handle 100+ posts daily without any indexing issues.</p>
+                    <p style="color: #8b949e; font-size: 11px; margin-top: 10px;">Note: Sitemaps are split to handle 100+ posts daily without any indexing issues.</p>
                 </div>
                 
                 <div style="margin-top: 20px;">
@@ -829,20 +803,20 @@
         <div id="historySection" style="display: none;">
             <div class="card">
                 <div class="card-title">Historical Data Import</div>
-                <p style="color: #a0a0b0; margin-bottom: 20px;">Import all game results from 2024 to present from satta-king-fast.com</p>
+                <p style="color: #8b949e; margin-bottom: 20px;">Import all game results from 2024 to present from satta-king-fast.com</p>
                 
-                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3); margin-bottom: 20px;">
+                <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 20px;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📥</div>
+                        <span style="font-size: 22px;">📥</span>
                         <div>
                             <div style="font-weight: 700; color: #fff; font-size: 18px;">Bulk Historical Import</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Downloads results for all games from Jan 2024 to now</div>
+                            <div style="font-size: 12px; color: #8b949e;">Downloads results for all games from Jan 2024 to now</div>
                         </div>
                     </div>
                     
-                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <div style="background: #21262d; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
                         <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">📋 What will be imported:</div>
-                        <ul style="color: #a0a0c0; font-size: 13px; line-height: 1.8; padding-left: 20px;">
+                        <ul style="color: #8b949e; font-size: 13px; line-height: 1.8; padding-left: 20px;">
                             <li>All games from satta-king-fast.com (85+ games)</li>
                             <li>Monthly results from January 2024 to February 2026</li>
                             <li>Each day's result stored in your database</li>
@@ -878,62 +852,62 @@
                         </div>
                     </div>
                     
-                    <div id="importProgress" style="display: none; background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <div id="importProgress" style="display: none; background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span style="color: #667eea; font-weight: 600;">Import Progress</span>
+                            <span style="color: #58a6ff; font-weight: 600;">Import Progress</span>
                             <span id="importProgressText" style="color: #2ecc71;">0%</span>
                         </div>
-                        <div style="background: #2a2a4a; border-radius: 10px; height: 10px; overflow: hidden;">
-                            <div id="importProgressBar" style="background: linear-gradient(90deg, #667eea, #2ecc71); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        <div style="background: #21262d; border-radius: 10px; height: 10px; overflow: hidden;">
+                            <div id="importProgressBar" style="background: #238636; height: 100%; width: 0%; transition: width 0.3s; border-radius: 10px;"></div>
                         </div>
-                        <div id="importCurrentGame" style="color: #6a6a8a; font-size: 12px; margin-top: 10px;"></div>
+                        <div id="importCurrentGame" style="color: #8b949e; font-size: 12px; margin-top: 10px;"></div>
                     </div>
                     
-                    <div style="background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 12px; margin-bottom: 15px;">
-                        <div style="color: #e74c3c; font-weight: 600; margin-bottom: 5px;">⚠️ Important Note:</div>
-                        <div style="color: #a0a0c0; font-size: 12px;">This process may take 5-10 minutes depending on the date range. Do not close this page while importing.</div>
+                    <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+                        <div style="color: #f85149; font-weight: 600; margin-bottom: 5px;">Important Note:</div>
+                        <div style="color: #8b949e; font-size: 12px;">This process may take 5-10 minutes depending on the date range. Do not close this page while importing.</div>
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 15px;">
                     <button class="btn btn-primary" onclick="startHistoricalImport()" id="startImportBtn">Start Import</button>
-                    <button class="btn" onclick="checkImportStats()" style="background: #2a2a4a;">Check Database Stats</button>
+                    <button class="btn" onclick="checkImportStats()" style="background: #21262d;">Check Database Stats</button>
                 </div>
                 
                 <div id="importStatus" style="margin-top: 15px;"></div>
                 
                 <div id="dbStats" style="margin-top: 20px; display: none;">
-                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px;">
+                    <div style="background: #21262d; padding: 15px; border-radius: 10px;">
                         <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">📊 Database Statistics:</div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                            <div style="text-align: center; padding: 15px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statTotalGames" style="font-size: 28px; font-weight: 700; color: #667eea;">-</div>
-                                <div style="font-size: 12px; color: #6a6a8a;">Unique Games</div>
+                            <div style="text-align: center; padding: 15px; background: #0d1117; border-radius: 8px;">
+                                <div id="statTotalGames" style="font-size: 28px; font-weight: 700; color: #58a6ff;">-</div>
+                                <div style="font-size: 12px; color: #8b949e;">Unique Games</div>
                             </div>
-                            <div style="text-align: center; padding: 15px; background: #1a1a2e; border-radius: 8px;">
+                            <div style="text-align: center; padding: 15px; background: #0d1117; border-radius: 8px;">
                                 <div id="statTotalResults" style="font-size: 28px; font-weight: 700; color: #2ecc71;">-</div>
-                                <div style="font-size: 12px; color: #6a6a8a;">Total Results</div>
+                                <div style="font-size: 12px; color: #8b949e;">Total Results</div>
                             </div>
-                            <div style="text-align: center; padding: 15px; background: #1a1a2e; border-radius: 8px;">
-                                <div id="statDateRange" style="font-size: 14px; font-weight: 700; color: #f39c12;">-</div>
-                                <div style="font-size: 12px; color: #6a6a8a;">Date Range</div>
+                            <div style="text-align: center; padding: 15px; background: #0d1117; border-radius: 8px;">
+                                <div id="statDateRange" style="font-size: 14px; font-weight: 700; color: #d29922;">-</div>
+                                <div style="font-size: 12px; color: #8b949e;">Date Range</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div style="border-top: 1px solid #3a3a5a; margin: 30px 0; padding-top: 25px;">
+                <div style="border-top: 1px solid #21262d; margin: 30px 0; padding-top: 25px;">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;">📝</div>
+                        <span style="font-size: 22px;">📝</span>
                         <div>
                             <div style="font-weight: 700; color: #fff; font-size: 18px;">Generate Posts from Historical Data</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Creates Daily Update posts from imported game_results</div>
+                            <div style="font-size: 12px; color: #8b949e;">Creates Daily Update posts from imported game_results</div>
                         </div>
                     </div>
                     
-                    <div style="background: #2a2a4a; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <div style="background: #21262d; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
                         <div style="font-weight: 600; color: #fff; margin-bottom: 10px;">ℹ️ यह क्या करेगा:</div>
-                        <ul style="color: #a0a0c0; font-size: 13px; line-height: 1.8; padding-left: 20px;">
+                        <ul style="color: #8b949e; font-size: 13px; line-height: 1.8; padding-left: 20px;">
                             <li>Historical Import से imported results को Daily Posts में convert करेगा</li>
                             <li>हर game के लिए हर date की SEO-optimized post बनेगी</li>
                             <li>Duplicate posts skip हो जाएंगी</li>
@@ -942,14 +916,14 @@
                     </div>
                     
                     <div id="postGenProgress" style="display: none; margin-bottom: 15px;">
-                        <div style="background: #2a2a4a; border-radius: 10px; height: 25px; overflow: hidden;">
-                            <div id="postGenProgressBar" style="width: 0%; height: 100%; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); transition: width 0.3s;"></div>
+                        <div style="background: #21262d; border-radius: 10px; height: 25px; overflow: hidden;">
+                            <div id="postGenProgressBar" style="width: 0%; height: 100%; background: #238636; transition: width 0.3s; border-radius: 10px;"></div>
                         </div>
-                        <div id="postGenProgressText" style="text-align: center; margin-top: 8px; font-size: 13px; color: #a0a0c0;">0%</div>
+                        <div id="postGenProgressText" style="text-align: center; margin-top: 8px; font-size: 13px; color: #8b949e;">0%</div>
                     </div>
                     
                     <div style="display: flex; gap: 15px;">
-                        <button class="btn btn-primary" onclick="startPostGeneration()" id="startPostGenBtn" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);">Generate Posts</button>
+                        <button class="btn btn-primary" onclick="startPostGeneration()" id="startPostGenBtn">Generate Posts</button>
                     </div>
                     
                     <div id="postGenStatus" style="margin-top: 15px;"></div>
@@ -960,18 +934,18 @@
         <div id="settingsSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Site Settings</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Upload logo and favicon for your website</p>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Upload logo and favicon for your website</p>
                 
                 <div class="form-group">
                     <label>Header Logo</label>
                     <div style="display: flex; align-items: center; gap: 15px; margin-top: 8px;">
-                        <div id="logoPreview" style="width: 120px; height: 60px; background: #2a2a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                            <span style="color: #6a6a7a; font-size: 12px;">No Logo</span>
+                        <div id="logoPreview" style="width: 120px; height: 60px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <span style="color: #8b949e; font-size: 12px;">No Logo</span>
                         </div>
                         <div>
                             <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="previewLogo(this)">
                             <button class="btn btn-primary" onclick="document.getElementById('logoInput').click()">Upload Logo</button>
-                            <button class="btn" style="background: #e74c3c; margin-left: 5px;" onclick="removeLogo()">Remove</button>
+                            <button class="btn btn-danger" style="margin-left: 5px;" onclick="removeLogo()">Remove</button>
                         </div>
                     </div>
                 </div>
@@ -979,36 +953,36 @@
                 <div class="form-group" style="margin-top: 20px;">
                     <label>Favicon (Site Icon)</label>
                     <div style="display: flex; align-items: center; gap: 15px; margin-top: 8px;">
-                        <div id="faviconPreview" style="width: 48px; height: 48px; background: #2a2a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                            <span style="color: #6a6a7a; font-size: 10px;">No Icon</span>
+                        <div id="faviconPreview" style="width: 48px; height: 48px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <span style="color: #8b949e; font-size: 10px;">No Icon</span>
                         </div>
                         <div>
                             <input type="file" id="faviconInput" accept="image/*,.ico" style="display: none;" onchange="previewFavicon(this)">
                             <button class="btn btn-primary" onclick="document.getElementById('faviconInput').click()">Upload Favicon</button>
-                            <button class="btn" style="background: #e74c3c; margin-left: 5px;" onclick="removeFavicon()">Remove</button>
+                            <button class="btn btn-danger" style="margin-left: 5px;" onclick="removeFavicon()">Remove</button>
                         </div>
                     </div>
-                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Recommended: 32x32 or 64x64 pixels</p>
+                    <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Recommended: 32x32 or 64x64 pixels</p>
                 </div>
                 
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #21262d;">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">📊</div>
+                        <span style="font-size: 20px;">📊</span>
                         <div>
-                            <div style="font-weight: 700; color: #fff; font-size: 16px;">Google Analytics</div>
-                            <div style="font-size: 12px; color: #6a6a8a;">Track your website traffic</div>
+                            <div style="font-weight: 600; color: #e6edf3; font-size: 15px;">Google Analytics</div>
+                            <div style="font-size: 12px; color: #8b949e;">Track your website traffic</div>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Google Analytics Tracking ID</label>
                         <input type="text" id="gaTrackingId" placeholder="G-XXXXXXXXXX or UA-XXXXXXXXX-X">
-                        <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Get your tracking ID from <a href="https://analytics.google.com" target="_blank" style="color: #667eea;">Google Analytics</a></p>
+                        <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Get your tracking ID from <a href="https://analytics.google.com" target="_blank" style="color: #58a6ff;">Google Analytics</a></p>
                     </div>
                     
-                    <div style="background: rgba(102,126,234,0.1); border: 1px solid rgba(102,126,234,0.3); border-radius: 8px; padding: 12px; margin-top: 15px;">
-                        <div style="font-weight: 600; color: #667eea; margin-bottom: 8px;">📋 How to get Tracking ID:</div>
-                        <ol style="color: #a0a0c0; font-size: 12px; line-height: 1.8; padding-left: 20px;">
+                    <div style="background: rgba(56, 139, 253, 0.1); border: 1px solid rgba(56, 139, 253, 0.2); border-radius: 6px; padding: 12px; margin-top: 15px;">
+                        <div style="font-weight: 600; color: #58a6ff; margin-bottom: 8px;">How to get Tracking ID:</div>
+                        <ol style="color: #8b949e; font-size: 12px; line-height: 1.8; padding-left: 20px;">
                             <li>Go to <strong>Google Analytics</strong> → Create Account</li>
                             <li>Create a new Property with your website name</li>
                             <li>Go to Admin → Data Streams → Web</li>
@@ -1026,20 +1000,20 @@
             
             <div class="card" style="margin-top: 20px;">
                 <div class="card-title">404 Redirect Settings</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Redirect broken/old URLs to prevent 404 errors</p>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Redirect broken/old URLs to prevent 404 errors</p>
                 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                         <input type="checkbox" id="redirect404Enabled" style="width: 18px; height: 18px;" checked>
                         <span>Enable 404 Redirect</span>
                     </label>
-                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">When enabled, all not found pages will redirect to the URL below</p>
+                    <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">When enabled, all not found pages will redirect to the URL below</p>
                 </div>
                 
                 <div class="form-group">
                     <label>Redirect URL</label>
                     <input type="text" id="redirect404Url" value="/" placeholder="/">
-                    <p style="color: #6a6a7a; font-size: 11px; margin-top: 5px;">Enter "/" for home page or any other URL like "/daily-update"</p>
+                    <p style="color: #8b949e; font-size: 11px; margin-top: 5px;">Enter "/" for home page or any other URL like "/daily-update"</p>
                 </div>
                 
                 <div style="margin-top: 20px;">
@@ -1053,13 +1027,13 @@
         <div id="indexingSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Google Service Account</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Configure your Google Service Account credentials for the Indexing API</p>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Configure your Google Service Account credentials for the Indexing API</p>
                 <div id="indexingCredStatus" style="margin-bottom: 15px;">
-                    <span style="color: #6a6a7a;">Checking status...</span>
+                    <span style="color: #8b949e;">Checking status...</span>
                 </div>
                 <div class="form-group">
                     <label>Service Account JSON Key</label>
-                    <textarea id="indexingCredsJson" rows="8" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder='Paste your Google service account JSON key here...'></textarea>
+                    <textarea id="indexingCredsJson" rows="8" style="width: 100%; padding: 8px 12px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder='Paste your Google service account JSON key here...'></textarea>
                 </div>
                 <button class="btn btn-primary" onclick="saveIndexingCredentials()">Save Credentials</button>
                 <div id="indexingCredSaveStatus" style="margin-top: 15px;"></div>
@@ -1067,14 +1041,14 @@
             
             <div class="card">
                 <div class="card-title">Submit URLs for Indexing</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Submit specific URLs to Google for indexing or removal</p>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Submit specific URLs to Google for indexing or removal</p>
                 <div class="form-group">
                     <label>URLs (one per line)</label>
-                    <textarea id="indexingUrls" rows="6" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-size: 13px; resize: vertical;" placeholder="https://example.com/page1&#10;https://example.com/page2"></textarea>
+                    <textarea id="indexingUrls" rows="6" style="width: 100%; padding: 8px 12px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; font-size: 13px; resize: vertical;" placeholder="https://example.com/page1&#10;https://example.com/page2"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Action Type</label>
-                    <select id="indexingAction" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                    <select id="indexingAction" style="width: 100%; padding: 8px 12px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
                         <option value="URL_UPDATED">URL_UPDATED (Index/Re-index)</option>
                         <option value="URL_DELETED">URL_DELETED (Remove from index)</option>
                     </select>
@@ -1086,11 +1060,12 @@
             
             <div class="card">
                 <div class="card-title">Auto Submit Site URLs</div>
-                <p style="color: #a0a0b0; margin-bottom: 15px;">Automatically generate and submit all active page URLs from your site (homepage, charts, daily posts, manual posts)</p>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Automatically generate and submit all active page URLs from your site (homepage, charts, daily posts, manual posts)</p>
                 <button class="btn btn-primary" onclick="autoSubmitUrls()" id="autoSubmitBtn">Auto Submit All URLs</button>
                 <div id="autoSubmitStatus" style="margin-top: 15px;"></div>
                 <div id="autoSubmitResults" style="margin-top: 15px;"></div>
             </div>
+        </div>
         </div>
     </div>
     </div>
@@ -1140,25 +1115,20 @@
     
     <div class="modal" id="postModal">
         <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px 25px; border-radius: 12px 12px 0 0;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 20px;">📝</span>
-                    </div>
-                    <div>
-                        <div class="modal-title" id="postModalTitle" style="font-size: 20px; font-weight: 700;">Create New Post</div>
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px;">Full SEO Control</div>
-                    </div>
+            <div class="modal-header" style="padding: 20px 24px; border-bottom: 1px solid #21262d; margin-bottom: 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">📝</span>
+                    <div class="modal-title" id="postModalTitle">Create New Post</div>
                 </div>
-                <button class="modal-close" onclick="closePostModal()" style="background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 8px; color: #fff; font-size: 20px; cursor: pointer;">&times;</button>
+                <button class="modal-close" onclick="closePostModal()">&times;</button>
             </div>
             
-            <div style="padding: 25px;">
-                <div style="display: flex; gap: 8px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
-                    <button type="button" class="post-tab active" onclick="showPostTab('basic')" id="tabBasic" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s;">📄 Basic</button>
-                    <button type="button" class="post-tab" onclick="showPostTab('seo')" id="tabSeo" style="padding: 10px 20px; background: #2a2a4a; border: none; border-radius: 8px; color: #a0a0b0; font-weight: 600; cursor: pointer; transition: all 0.3s;">🔍 SEO</button>
-                    <button type="button" class="post-tab" onclick="showPostTab('social')" id="tabSocial" style="padding: 10px 20px; background: #2a2a4a; border: none; border-radius: 8px; color: #a0a0b0; font-weight: 600; cursor: pointer; transition: all 0.3s;">📱 Social</button>
-                    <button type="button" class="post-tab" onclick="showPostTab('advanced')" id="tabAdvanced" style="padding: 10px 20px; background: #2a2a4a; border: none; border-radius: 8px; color: #a0a0b0; font-weight: 600; cursor: pointer; transition: all 0.3s;">⚙️ Advanced</button>
+            <div style="padding: 24px;">
+                <div style="display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid #21262d; padding-bottom: 12px; flex-wrap: wrap;">
+                    <button type="button" class="post-tab active" onclick="showPostTab('basic')" id="tabBasic" style="padding: 8px 16px; background: rgba(56,139,253,0.15); border: 1px solid rgba(56,139,253,0.3); border-radius: 6px; color: #58a6ff; font-weight: 500; font-size: 13px; cursor: pointer;">Basic</button>
+                    <button type="button" class="post-tab" onclick="showPostTab('seo')" id="tabSeo" style="padding: 8px 16px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #8b949e; font-weight: 500; font-size: 13px; cursor: pointer;">SEO</button>
+                    <button type="button" class="post-tab" onclick="showPostTab('social')" id="tabSocial" style="padding: 8px 16px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #8b949e; font-weight: 500; font-size: 13px; cursor: pointer;">Social</button>
+                    <button type="button" class="post-tab" onclick="showPostTab('advanced')" id="tabAdvanced" style="padding: 8px 16px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #8b949e; font-weight: 500; font-size: 13px; cursor: pointer;">Advanced</button>
                 </div>
                 
                 <form id="postForm" onsubmit="savePost(event)">
@@ -1168,20 +1138,20 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group" style="grid-column: 1/-1;">
                                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
-                                    <span style="color: #667eea;">✦</span> Post Title <span style="color: #e74c3c;">*</span>
+                                    <span style="color: #58a6ff;">✦</span> Post Title <span style="color: #e74c3c;">*</span>
                                 </label>
                                 <input type="text" id="postTitle" required placeholder="Enter an engaging post title..." style="font-size: 16px; padding: 14px 16px;">
                             </div>
                             <div class="form-group">
                                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
-                                    <span style="color: #667eea;">🔗</span> URL Slug <span style="color: #e74c3c;">*</span>
+                                    <span style="color: #58a6ff;">🔗</span> URL Slug <span style="color: #e74c3c;">*</span>
                                 </label>
                                 <input type="text" id="postSlug" required placeholder="auto-generated-from-title" style="font-family: monospace;">
-                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">URL: /latest/<span id="slugPreview">your-slug</span></div>
+                                <div style="font-size: 11px; color: #8b949e; margin-top: 5px;">URL: /latest/<span id="slugPreview">your-slug</span></div>
                             </div>
                             <div class="form-group">
                                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
-                                    <span style="color: #27ae60;">●</span> Status
+                                    <span style="color: #3fb950;">●</span> Status
                                 </label>
                                 <select id="postPublished" style="padding: 14px 16px;">
                                     <option value="true">✅ Published</option>
@@ -1191,97 +1161,97 @@
                         </div>
                         <div class="form-group" style="margin-top: 20px;">
                             <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; margin-bottom: 8px;">
-                                <span style="color: #667eea;">📝</span> Content
+                                <span style="color: #58a6ff;">📝</span> Content
                             </label>
                             
-                            <div style="background: #1a1a2e; border-radius: 10px; overflow: hidden; border: 1px solid rgba(102,126,234,0.3);">
-                                <div id="editorToolbar" style="display: flex; flex-wrap: wrap; gap: 3px; padding: 10px; background: #0f0f1a; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                    <div style="display: flex; gap: 3px; padding-right: 10px; border-right: 1px solid rgba(255,255,255,0.1);">
-                                        <button type="button" onclick="formatText('bold')" title="Bold (Ctrl+B)" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer;">B</button>
-                                        <button type="button" onclick="formatText('italic')" title="Italic (Ctrl+I)" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-style: italic; cursor: pointer;">I</button>
-                                        <button type="button" onclick="formatText('underline')" title="Underline (Ctrl+U)" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; text-decoration: underline; cursor: pointer;">U</button>
-                                        <button type="button" onclick="formatText('strikeThrough')" title="Strike" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; text-decoration: line-through; cursor: pointer;">S</button>
+                            <div style="background: #0d1117; border-radius: 10px; overflow: hidden; border: 1px solid #30363d;">
+                                <div id="editorToolbar" style="display: flex; flex-wrap: wrap; gap: 3px; padding: 10px; background: #0d1117; border-bottom: 1px solid #30363d;">
+                                    <div style="display: flex; gap: 3px; padding-right: 10px; border-right: 1px solid #30363d;">
+                                        <button type="button" onclick="formatText('bold')" title="Bold (Ctrl+B)" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer;">B</button>
+                                        <button type="button" onclick="formatText('italic')" title="Italic (Ctrl+I)" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; font-style: italic; cursor: pointer;">I</button>
+                                        <button type="button" onclick="formatText('underline')" title="Underline (Ctrl+U)" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; text-decoration: underline; cursor: pointer;">U</button>
+                                        <button type="button" onclick="formatText('strikeThrough')" title="Strike" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; text-decoration: line-through; cursor: pointer;">S</button>
                                     </div>
                                     
-                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
-                                        <button type="button" onclick="insertHeading('h1')" title="Heading 1" style="padding: 0 8px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-size: 14px; font-weight: bold; cursor: pointer;">H1</button>
-                                        <button type="button" onclick="insertHeading('h2')" title="Heading 2" style="padding: 0 8px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer;">H2</button>
-                                        <button type="button" onclick="insertHeading('h3')" title="Heading 3" style="padding: 0 8px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; font-size: 12px; font-weight: bold; cursor: pointer;">H3</button>
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid #30363d;">
+                                        <button type="button" onclick="insertHeading('h1')" title="Heading 1" style="padding: 0 8px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; font-size: 14px; font-weight: bold; cursor: pointer;">H1</button>
+                                        <button type="button" onclick="insertHeading('h2')" title="Heading 2" style="padding: 0 8px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer;">H2</button>
+                                        <button type="button" onclick="insertHeading('h3')" title="Heading 3" style="padding: 0 8px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; font-size: 12px; font-weight: bold; cursor: pointer;">H3</button>
                                     </div>
                                     
-                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
-                                        <button type="button" onclick="formatText('insertUnorderedList')" title="Bullet List" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">•</button>
-                                        <button type="button" onclick="formatText('insertOrderedList')" title="Numbered List" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">1.</button>
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid #30363d;">
+                                        <button type="button" onclick="formatText('insertUnorderedList')" title="Bullet List" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; cursor: pointer;">•</button>
+                                        <button type="button" onclick="formatText('insertOrderedList')" title="Numbered List" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; cursor: pointer;">1.</button>
                                     </div>
                                     
-                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
-                                        <button type="button" onclick="formatText('justifyLeft')" title="Align Left" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">⬅</button>
-                                        <button type="button" onclick="formatText('justifyCenter')" title="Align Center" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">⬌</button>
-                                        <button type="button" onclick="formatText('justifyRight')" title="Align Right" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">➡</button>
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid #30363d;">
+                                        <button type="button" onclick="formatText('justifyLeft')" title="Align Left" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; cursor: pointer;">⬅</button>
+                                        <button type="button" onclick="formatText('justifyCenter')" title="Align Center" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; cursor: pointer;">⬌</button>
+                                        <button type="button" onclick="formatText('justifyRight')" title="Align Right" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; cursor: pointer;">➡</button>
                                     </div>
                                     
-                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.1);">
-                                        <button type="button" onclick="insertLink()" title="Insert Link" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #667eea; cursor: pointer;">🔗</button>
-                                        <button type="button" onclick="insertImage()" title="Insert Image" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #27ae60; cursor: pointer;">🖼️</button>
-                                        <button type="button" onclick="insertVideo()" title="Insert YouTube Video" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #e74c3c; cursor: pointer;">▶️</button>
+                                    <div style="display: flex; gap: 3px; padding: 0 10px; border-right: 1px solid #30363d;">
+                                        <button type="button" onclick="insertLink()" title="Insert Link" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #58a6ff; cursor: pointer;">🔗</button>
+                                        <button type="button" onclick="insertImage()" title="Insert Image" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #27ae60; cursor: pointer;">🖼️</button>
+                                        <button type="button" onclick="insertVideo()" title="Insert YouTube Video" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #e74c3c; cursor: pointer;">▶️</button>
                                     </div>
                                     
                                     <div style="display: flex; gap: 3px; padding-left: 10px;">
-                                        <button type="button" onclick="insertTable()" title="Insert Table" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #f39c12; cursor: pointer;">📊</button>
-                                        <button type="button" onclick="insertHR()" title="Horizontal Line" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #fff; cursor: pointer;">—</button>
-                                        <button type="button" onclick="formatText('removeFormat')" title="Clear Formatting" style="width: 32px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #e74c3c; cursor: pointer;">✕</button>
+                                        <button type="button" onclick="insertTable()" title="Insert Table" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #f39c12; cursor: pointer;">📊</button>
+                                        <button type="button" onclick="insertHR()" title="Horizontal Line" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #fff; cursor: pointer;">—</button>
+                                        <button type="button" onclick="formatText('removeFormat')" title="Clear Formatting" style="width: 32px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #e74c3c; cursor: pointer;">✕</button>
                                     </div>
                                     
                                     <div style="margin-left: auto; display: flex; gap: 3px;">
-                                        <button type="button" onclick="toggleHtmlView()" id="htmlViewBtn" title="Toggle HTML View" style="padding: 0 10px; height: 32px; background: #2a2a4a; border: none; border-radius: 6px; color: #667eea; cursor: pointer; font-size: 11px;">&lt;/&gt; HTML</button>
+                                        <button type="button" onclick="toggleHtmlView()" id="htmlViewBtn" title="Toggle HTML View" style="padding: 0 10px; height: 32px; background: #21262d; border: none; border-radius: 6px; color: #58a6ff; cursor: pointer; font-size: 11px;">&lt;/&gt; HTML</button>
                                     </div>
                                 </div>
                                 
-                                <div id="contentEditor" contenteditable="true" style="min-height: 300px; padding: 20px; color: #e0e0e0; font-size: 14px; line-height: 1.8; outline: none; background: #1a1a2e;" onpaste="handlePaste(event)"></div>
-                                <textarea id="postContent" style="display: none; width: 100%; min-height: 300px; padding: 20px; background: #1a1a2e; border: none; color: #e0e0e0; font-family: monospace; font-size: 13px; line-height: 1.6; resize: vertical;"></textarea>
+                                <div id="contentEditor" contenteditable="true" style="min-height: 300px; padding: 20px; color: #e6edf3; font-size: 14px; line-height: 1.8; outline: none; background: #0d1117;" onpaste="handlePaste(event)"></div>
+                                <textarea id="postContent" style="display: none; width: 100%; min-height: 300px; padding: 20px; background: #0d1117; border: none; color: #e6edf3; font-family: monospace; font-size: 13px; line-height: 1.6; resize: vertical;"></textarea>
                             </div>
                             
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                                <div style="font-size: 11px; color: #6a6a8a;">Use toolbar or keyboard shortcuts: Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline)</div>
-                                <div id="wordCount" style="font-size: 11px; color: #667eea;">Words: 0</div>
+                                <div style="font-size: 11px; color: #8b949e;">Use toolbar or keyboard shortcuts: Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline)</div>
+                                <div id="wordCount" style="font-size: 11px; color: #58a6ff;">Words: 0</div>
                             </div>
                         </div>
                     </div>
                     
                     <div id="postTabSeo" style="display: none;">
-                        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3);">
+                        <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                                <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">🔍</div>
+                                <span style="font-size: 18px;">🔍</span>
                                 <div>
                                     <div style="font-weight: 700; color: #fff;">Search Engine Optimization</div>
-                                    <div style="font-size: 12px; color: #6a6a8a;">Control how your post appears in Google search results</div>
+                                    <div style="font-size: 12px; color: #8b949e;">Control how your post appears in Google search results</div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Meta Title <span style="color: #6a6a8a; font-weight: 400;">(60 characters recommended)</span></label>
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">Meta Title <span style="color: #8b949e; font-weight: 400;">(60 characters recommended)</span></label>
                                 <input type="text" id="postMetaTitle" placeholder="SEO optimized title for search engines" maxlength="70">
-                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #6a6a8a; margin-top: 5px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8b949e; margin-top: 5px;">
                                     <span>Appears in browser tab & search results</span>
                                     <span id="metaTitleCount">0/70</span>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-top: 15px;">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Meta Description <span style="color: #6a6a8a; font-weight: 400;">(150-160 characters)</span></label>
-                                <textarea id="postMetaDesc" rows="3" placeholder="Write a compelling description that will appear in search results..." maxlength="160" style="width: 100%; padding: 12px 15px; background: #2a2a4a; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #e0e0e0; font-size: 14px; line-height: 1.5; resize: vertical;"></textarea>
-                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #6a6a8a; margin-top: 5px;">
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">Meta Description <span style="color: #8b949e; font-weight: 400;">(150-160 characters)</span></label>
+                                <textarea id="postMetaDesc" rows="3" placeholder="Write a compelling description that will appear in search results..." maxlength="160" style="width: 100%; padding: 12px 15px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; font-size: 14px; line-height: 1.5; resize: vertical;"></textarea>
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8b949e; margin-top: 5px;">
                                     <span>Shows below title in Google search</span>
                                     <span id="metaDescCount">0/160</span>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-top: 15px;">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Meta Keywords <span style="color: #6a6a8a; font-weight: 400;">(comma separated)</span></label>
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">Meta Keywords <span style="color: #8b949e; font-weight: 400;">(comma separated)</span></label>
                                 <input type="text" id="postMetaKeywords" placeholder="satta king, satta result, gali result, desawar">
-                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Target keywords for better ranking</div>
+                                <div style="font-size: 11px; color: #8b949e; margin-top: 5px;">Target keywords for better ranking</div>
                             </div>
                         </div>
                         
                         <div style="background: #0d0d15; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);">
-                            <div style="font-weight: 600; color: #667eea; margin-bottom: 10px;">🔎 Google Preview</div>
+                            <div style="font-weight: 600; color: #58a6ff; margin-bottom: 10px;">🔎 Google Preview</div>
                             <div style="background: #fff; padding: 15px; border-radius: 8px;">
                                 <div id="googlePreviewTitle" style="color: #1a0dab; font-size: 18px; font-weight: 400; margin-bottom: 3px;">Post Title Preview</div>
                                 <div id="googlePreviewUrl" style="color: #006621; font-size: 13px; margin-bottom: 3px;">https://yoursite.com/latest/post-slug</div>
@@ -1291,59 +1261,57 @@
                     </div>
                     
                     <div id="postTabSocial" style="display: none;">
-                        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3);">
+                        <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                                 <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #1877f2 0%, #0d65d9 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">📱</div>
                                 <div>
                                     <div style="font-weight: 700; color: #fff;">Open Graph Tags</div>
-                                    <div style="font-size: 12px; color: #6a6a8a;">Control how your post appears when shared on Facebook, Twitter, WhatsApp</div>
+                                    <div style="font-size: 12px; color: #8b949e;">Control how your post appears when shared on Facebook, Twitter, WhatsApp</div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">OG Title</label>
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">OG Title</label>
                                 <input type="text" id="postOgTitle" placeholder="Title for social media sharing">
-                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Leave empty to use Meta Title</div>
+                                <div style="font-size: 11px; color: #8b949e; margin-top: 5px;">Leave empty to use Meta Title</div>
                             </div>
                             <div class="form-group" style="margin-top: 15px;">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">OG Description</label>
-                                <textarea id="postOgDesc" rows="3" placeholder="Description for social media sharing" style="width: 100%; padding: 12px 15px; background: #2a2a4a; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #e0e0e0; font-size: 14px; line-height: 1.5; resize: vertical;"></textarea>
-                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Leave empty to use Meta Description</div>
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">OG Description</label>
+                                <textarea id="postOgDesc" rows="3" placeholder="Description for social media sharing" style="width: 100%; padding: 12px 15px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; font-size: 14px; line-height: 1.5; resize: vertical;"></textarea>
+                                <div style="font-size: 11px; color: #8b949e; margin-top: 5px;">Leave empty to use Meta Description</div>
                             </div>
                         </div>
                     </div>
                     
                     <div id="postTabAdvanced" style="display: none;">
-                        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(102,126,234,0.3);">
+                        <div style="background: #0d1117; padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                                <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">⚙️</div>
+                                <span style="font-size: 18px;">⚙️</span>
                                 <div>
                                     <div style="font-weight: 700; color: #fff;">Advanced SEO Settings</div>
-                                    <div style="font-size: 12px; color: #6a6a8a;">Schema markup and canonical URL configuration</div>
+                                    <div style="font-size: 12px; color: #8b949e;">Schema markup and canonical URL configuration</div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Canonical URL</label>
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">Canonical URL</label>
                                 <input type="text" id="postCanonical" placeholder="https://yoursite.com/latest/post-slug">
-                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Prevents duplicate content issues. Leave empty for auto-generated URL.</div>
+                                <div style="font-size: 11px; color: #8b949e; margin-top: 5px;">Prevents duplicate content issues. Leave empty for auto-generated URL.</div>
                             </div>
                             <div class="form-group" style="margin-top: 15px;">
-                                <label style="font-weight: 600; color: #b0b0c0; margin-bottom: 8px; display: block;">Schema.org Type</label>
+                                <label style="font-weight: 600; color: #c9d1d9; margin-bottom: 8px; display: block;">Schema.org Type</label>
                                 <select id="postSchemaType" style="padding: 14px 16px;">
                                     <option value="Article">📄 Article - General articles</option>
                                     <option value="NewsArticle">📰 News Article - News & updates</option>
                                     <option value="BlogPosting">📝 Blog Posting - Blog posts</option>
                                     <option value="WebPage">🌐 Web Page - General page</option>
                                 </select>
-                                <div style="font-size: 11px; color: #6a6a8a; margin-top: 5px;">Helps Google understand your content type for rich snippets</div>
+                                <div style="font-size: 11px; color: #8b949e; margin-top: 5px;">Helps Google understand your content type for rich snippets</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div style="display: flex; gap: 12px; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 14px 25px; font-size: 15px; font-weight: 600; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <span>💾</span> Save Post
-                        </button>
-                        <button type="button" class="btn" style="padding: 14px 25px; background: #3a3a5a; color: #b0b0c0;" onclick="closePostModal()">Cancel</button>
+                    <div style="display: flex; gap: 12px; margin-top: 25px; padding-top: 20px; border-top: 1px solid #21262d;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px 20px; font-size: 14px;">Save Post</button>
+                        <button type="button" class="btn btn-secondary" style="padding: 10px 20px;" onclick="closePostModal()">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -1572,7 +1540,7 @@
             if (enabled) {
                 statusEl.innerHTML = `<div class="status-msg status-success">Auto-scraping is ACTIVE - Running every ${interval} minute(s)</div>`;
             } else {
-                statusEl.innerHTML = `<div style="color: #a0a0b0; font-size: 13px;">Auto-scraping is disabled</div>`;
+                statusEl.innerHTML = `<div style="color: #8b949e; font-size: 13px;">Auto-scraping is disabled</div>`;
             }
         }
         
@@ -1630,13 +1598,13 @@
         
         function removeLogo() {
             currentLogoData = '';
-            document.getElementById('logoPreview').innerHTML = '<span style="color: #6a6a7a; font-size: 12px;">No Logo</span>';
+            document.getElementById('logoPreview').innerHTML = '<span style="color: #8b949e; font-size: 12px;">No Logo</span>';
             document.getElementById('logoInput').value = '';
         }
         
         function removeFavicon() {
             currentFaviconData = '';
-            document.getElementById('faviconPreview').innerHTML = '<span style="color: #6a6a7a; font-size: 10px;">No Icon</span>';
+            document.getElementById('faviconPreview').innerHTML = '<span style="color: #8b949e; font-size: 10px;">No Icon</span>';
             document.getElementById('faviconInput').value = '';
         }
         
@@ -1805,7 +1773,7 @@
             btn.disabled = true;
             btn.textContent = 'Importing...';
             progressEl.style.display = 'block';
-            statusEl.innerHTML = '<span style="color: #667eea;">Starting import process...</span>';
+            statusEl.innerHTML = '<span style="color: #58a6ff;">Starting import process...</span>';
             
             let gameIndex = 0;
             let totalImported = 0;
@@ -2012,7 +1980,7 @@
                 const list = document.getElementById('postsList');
                 
                 if (posts.length === 0) {
-                    list.innerHTML = '<div style="color: #a0a0b0; text-align: center; padding: 30px;">No posts yet. Click "Create New Post" to add one.</div>';
+                    list.innerHTML = '<div style="color: #8b949e; text-align: center; padding: 30px;">No posts yet. Click "Create New Post" to add one.</div>';
                     return;
                 }
                 
@@ -2020,7 +1988,7 @@
                     <div class="game-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div style="flex: 1;">
                             <div style="font-size: 16px; font-weight: 600; color: #fff;">${post.title}</div>
-                            <div style="color: #a0a0b0; font-size: 12px; margin-top: 4px;">/${post.slug}</div>
+                            <div style="color: #8b949e; font-size: 12px; margin-top: 4px;">/${post.slug}</div>
                             <div style="margin-top: 6px;">
                                 <span style="padding: 3px 8px; border-radius: 12px; font-size: 11px; ${post.is_published ? 'background: #27ae60; color: #fff;' : 'background: #e74c3c; color: #fff;'}">${post.is_published ? 'Published' : 'Draft'}</span>
                             </div>
@@ -2045,11 +2013,13 @@
             ['Basic', 'Seo', 'Social', 'Advanced'].forEach(t => {
                 const btn = document.getElementById('tab' + t);
                 if (t.toLowerCase() === tab) {
-                    btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                    btn.style.color = '#fff';
+                    btn.style.background = 'rgba(56,139,253,0.15)';
+                    btn.style.borderColor = 'rgba(56,139,253,0.3)';
+                    btn.style.color = '#58a6ff';
                 } else {
-                    btn.style.background = '#2a2a4a';
-                    btn.style.color = '#a0a0b0';
+                    btn.style.background = '#21262d';
+                    btn.style.borderColor = '#30363d';
+                    btn.style.color = '#8b949e';
                 }
             });
         }
@@ -2074,7 +2044,7 @@
             if (url) {
                 const text = document.getSelection().toString() || prompt('Enter link text:', 'Click here');
                 if (text) {
-                    document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank" style="color: #667eea;">' + text + '</a>');
+                    document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank" style="color: #58a6ff;">' + text + '</a>');
                 }
             }
             updateWordCount();
@@ -2116,7 +2086,7 @@
                     table += '<tr>';
                     for (let j = 0; j < parseInt(cols); j++) {
                         if (i === 0) {
-                            table += '<th style="border: 1px solid #444; padding: 10px; background: #2a2a4a;">Header</th>';
+                            table += '<th style="border: 1px solid #444; padding: 10px; background: #21262d;">Header</th>';
                         } else {
                             table += '<td style="border: 1px solid #444; padding: 10px;">Cell</td>';
                         }
@@ -2129,7 +2099,7 @@
         }
         
         function insertHR() {
-            document.execCommand('insertHTML', false, '<hr style="border: none; border-top: 2px solid #667eea; margin: 20px 0;">');
+            document.execCommand('insertHTML', false, '<hr style="border: none; border-top: 1px solid #30363d; margin: 20px 0;">');
         }
         
         function toggleHtmlView() {
@@ -2141,13 +2111,13 @@
                 editor.innerHTML = textarea.value;
                 editor.style.display = 'block';
                 textarea.style.display = 'none';
-                btn.style.background = '#2a2a4a';
-                btn.style.color = '#667eea';
+                btn.style.background = '#21262d';
+                btn.style.color = '#58a6ff';
             } else {
                 textarea.value = editor.innerHTML;
                 editor.style.display = 'none';
                 textarea.style.display = 'block';
-                btn.style.background = '#667eea';
+                btn.style.background = '#58a6ff';
                 btn.style.color = '#fff';
             }
             isHtmlView = !isHtmlView;
@@ -2376,7 +2346,7 @@
         function renderIndexingResults(results, containerId) {
             const container = document.getElementById(containerId);
             if (!results || results.length === 0) {
-                container.innerHTML = '<p style="color: #6a6a7a;">No results</p>';
+                container.innerHTML = '<p style="color: #8b949e;">No results</p>';
                 return;
             }
             let html = '<div style="max-height: 400px; overflow-y: auto;">';
@@ -2388,12 +2358,12 @@
                 const icon = r.status === 'success' ? '&#10003;' : '&#10007;';
                 html += '<div style="padding: 8px 12px; margin-bottom: 4px; background: rgba(0,0,0,0.2); border-radius: 6px; border-left: 3px solid ' + color + ';">';
                 html += '<span style="color: ' + color + '; font-weight: 600;">' + icon + '</span> ';
-                html += '<span style="color: #e0e0e0; font-size: 13px;">' + r.url + '</span>';
+                html += '<span style="color: #e6edf3; font-size: 13px;">' + r.url + '</span>';
                 if (r.error) html += '<br><span style="color: #e74c3c; font-size: 11px;">' + r.error + '</span>';
                 html += '</div>';
             });
             html += '</div>';
-            html = '<div style="margin-bottom: 10px; color: #a0a0b0; font-size: 13px;">Results: <span style="color: #2ecc71;">' + successCount + ' success</span>, <span style="color: #e74c3c;">' + errorCount + ' errors</span></div>' + html;
+            html = '<div style="margin-bottom: 10px; color: #8b949e; font-size: 13px;">Results: <span style="color: #2ecc71;">' + successCount + ' success</span>, <span style="color: #e74c3c;">' + errorCount + ' errors</span></div>' + html;
             container.innerHTML = html;
         }
 
