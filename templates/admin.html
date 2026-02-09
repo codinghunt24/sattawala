@@ -401,17 +401,63 @@
             font-size: 12px;
         }
         
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1001;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
         @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
             .admin-wrapper { flex-direction: column; }
-            .sidebar { width: 100%; min-height: auto; }
-            .main-content { padding: 15px; }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 260px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                overflow-y: auto;
+                min-height: 100vh;
+            }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.open { display: block; }
+            .main-content { padding: 15px; padding-top: 55px; width: 100%; }
+            .content-header { flex-direction: column; gap: 10px; }
+            .game-item { flex-direction: column; gap: 8px; align-items: flex-start; }
+            .game-results { margin-right: 0; }
+            .game-actions { width: 100%; justify-content: flex-end; }
         }
     </style>
 </head>
 <body>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">&#9776;</button>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     
     <div class="admin-wrapper">
-    <div class="sidebar">
+    <div class="sidebar" id="adminSidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">Satta King</div>
             <div class="sidebar-subtitle">Admin Panel</div>
@@ -1305,6 +1351,11 @@
     </div>
     
     <script>
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('open');
+        }
+        
         function showStatus(msg, isError = false) {
             const el = document.getElementById('statusMsg');
             el.className = 'status-msg ' + (isError ? 'status-error' : 'status-success');
@@ -1324,6 +1375,7 @@
             document.getElementById('indexingSection').style.display = section === 'indexing' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
+            if (window.innerWidth <= 768) toggleSidebar();
             if (section === 'posts') loadManualPosts();
             if (section === 'ads') loadAdSettings();
             if (section === 'sitemap') loadSitemapStats();
