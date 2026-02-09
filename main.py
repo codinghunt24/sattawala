@@ -239,6 +239,12 @@ def init_database():
                 UNIQUE(game_name, post_date)
             );
             
+            CREATE TABLE IF NOT EXISTS indexing_settings (
+                id SERIAL PRIMARY KEY,
+                credentials_json TEXT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
             CREATE TABLE IF NOT EXISTS manual_posts (
                 id SERIAL PRIMARY KEY,
                 slug VARCHAR(255) NOT NULL UNIQUE,
@@ -2044,6 +2050,141 @@ def manual_post_page(slug):
         return redirect('/latest')
     except:
         return redirect('/latest')
+
+def get_indexing_credentials():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT credentials_json FROM indexing_settings ORDER BY id DESC LIMIT 1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        return row[0] if row else None
+    except:
+        return None
+
+@app.route('/api/indexing/status')
+@login_required
+def api_indexing_status():
+    creds = get_indexing_credentials()
+    return jsonify({'configured': creds is not None})
+
+@app.route('/api/indexing/save-credentials', methods=['POST'])
+@login_required
+def api_save_indexing_credentials():
+    try:
+        data = request.get_json()
+        creds_json = data.get('credentials_json', '')
+        try:
+            json.loads(creds_json)
+        except:
+            return jsonify({'success': False, 'error': 'Invalid JSON format'}), 400
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM indexing_settings ORDER BY id DESC LIMIT 1")
+        row = cur.fetchone()
+        if row:
+            cur.execute("UPDATE indexing_settings SET credentials_json = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s", (creds_json, row[0]))
+        else:
+            cur.execute("INSERT INTO indexing_settings (credentials_json) VALUES (%s)", (creds_json,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/indexing/submit-urls', methods=['POST'])
+@login_required
+def api_submit_indexing_urls():
+    try:
+        from oauth2client.service_account import ServiceAccountCredentials
+        from googleapiclient.discovery import build
+        data = request.get_json()
+        urls = data.get('urls', [])
+        action = data.get('action', 'URL_UPDATED')
+        if action not in ('URL_UPDATED', 'URL_DELETED'):
+            return jsonify({'success': False, 'error': 'Invalid action type'}), 400
+        if not urls:
+            return jsonify({'success': False, 'error': 'No URLs provided'}), 400
+        creds_json = get_indexing_credentials()
+        if not creds_json:
+            return jsonify({'success': False, 'error': 'Google credentials not configured'}), 400
+        SCOPES = ['https://www.googleapis.com/auth/indexing']
+        credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(creds_json), scopes=SCOPES)
+        service = build('indexing', 'v3', credentials=credentials)
+        results = []
+        for url in urls:
+            url = url.strip()
+            if not url:
+                continue
+            try:
+                result = service.urlNotifications().publish(body={'url': url, 'type': action}).execute()
+                results.append({'url': url, 'status': 'success', 'response': str(result)})
+            except Exception as e:
+                results.append({'url': url, 'status': 'error', 'error': str(e)})
+        return jsonify({'success': True, 'results': results})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/indexing/auto-submit', methods=['POST'])
+@login_required
+def api_auto_submit_indexing():
+    try:
+        from oauth2client.service_account import ServiceAccountCredentials
+        from googleapiclient.discovery import build
+        creds_json = get_indexing_credentials()
+        if not creds_json:
+            return jsonify({'success': False, 'error': 'Google credentials not configured'}), 400
+        base_url = request.host_url.rstrip('/').replace('http://', 'https://')
+        urls = [
+            f"{base_url}/",
+            f"{base_url}/chart",
+            f"{base_url}/daily-update",
+            f"{base_url}/latest",
+        ]
+        try:
+            games = get_all_games_list()
+            for game in games:
+                slug = create_slug(game)
+                urls.append(f"{base_url}/chart?game={slug}")
+        except:
+            pass
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT slug FROM daily_posts WHERE is_published = true ORDER BY post_date DESC LIMIT 500")
+            posts = cur.fetchall()
+            cur.close()
+            conn.close()
+            for post in posts:
+                urls.append(f"{base_url}/{post[0]}")
+        except:
+            pass
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT slug FROM manual_posts WHERE is_published = true")
+            posts = cur.fetchall()
+            cur.close()
+            conn.close()
+            for post in posts:
+                urls.append(f"{base_url}/{post[0]}")
+        except:
+            pass
+        SCOPES = ['https://www.googleapis.com/auth/indexing']
+        credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(creds_json), scopes=SCOPES)
+        service = build('indexing', 'v3', credentials=credentials)
+        results = []
+        for url in urls:
+            try:
+                result = service.urlNotifications().publish(body={'url': url, 'type': 'URL_UPDATED'}).execute()
+                results.append({'url': url, 'status': 'success', 'response': str(result)})
+            except Exception as e:
+                results.append({'url': url, 'status': 'error', 'error': str(e)})
+        return jsonify({'success': True, 'results': results, 'total_urls': len(urls)})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/robots.txt')
 def robots_txt():

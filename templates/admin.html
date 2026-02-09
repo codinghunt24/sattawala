@@ -427,6 +427,7 @@
             <li><a href="#" onclick="showSection('sitemap')">Sitemap</a></li>
             <li><a href="#" onclick="showSection('history')">Historical Import</a></li>
             <li><a href="#" onclick="showSection('settings')">Site Settings</a></li>
+            <li><a href="#" onclick="showSection('indexing')">Instant Indexing</a></li>
             <li style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;"><a href="/admin/logout" style="color: #ff6b6b;">🔒 Logout</a></li>
         </ul>
     </div>
@@ -1003,6 +1004,50 @@
         </div>
     </div>
     </div>
+        
+        <div id="indexingSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Google Service Account</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Configure your Google Service Account credentials for the Indexing API</p>
+                <div id="indexingCredStatus" style="margin-bottom: 15px;">
+                    <span style="color: #6a6a7a;">Checking status...</span>
+                </div>
+                <div class="form-group">
+                    <label>Service Account JSON Key</label>
+                    <textarea id="indexingCredsJson" rows="8" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder='Paste your Google service account JSON key here...'></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveIndexingCredentials()">Save Credentials</button>
+                <div id="indexingCredSaveStatus" style="margin-top: 15px;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Submit URLs for Indexing</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Submit specific URLs to Google for indexing or removal</p>
+                <div class="form-group">
+                    <label>URLs (one per line)</label>
+                    <textarea id="indexingUrls" rows="6" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-size: 13px; resize: vertical;" placeholder="https://example.com/page1&#10;https://example.com/page2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Action Type</label>
+                    <select id="indexingAction" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                        <option value="URL_UPDATED">URL_UPDATED (Index/Re-index)</option>
+                        <option value="URL_DELETED">URL_DELETED (Remove from index)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="submitIndexingUrls()">Submit URLs</button>
+                <div id="indexingSubmitStatus" style="margin-top: 15px;"></div>
+                <div id="indexingSubmitResults" style="margin-top: 15px;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Auto Submit Site URLs</div>
+                <p style="color: #a0a0b0; margin-bottom: 15px;">Automatically generate and submit all active page URLs from your site (homepage, charts, daily posts, manual posts)</p>
+                <button class="btn btn-primary" onclick="autoSubmitUrls()" id="autoSubmitBtn">Auto Submit All URLs</button>
+                <div id="autoSubmitStatus" style="margin-top: 15px;"></div>
+                <div id="autoSubmitResults" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </div>
     
     <div class="modal" id="gameModal">
         <div class="modal-content">
@@ -1276,11 +1321,13 @@
             document.getElementById('sitemapSection').style.display = section === 'sitemap' ? 'block' : 'none';
             document.getElementById('historySection').style.display = section === 'history' ? 'block' : 'none';
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
+            document.getElementById('indexingSection').style.display = section === 'indexing' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
             if (section === 'posts') loadManualPosts();
             if (section === 'ads') loadAdSettings();
             if (section === 'sitemap') loadSitemapStats();
+            if (section === 'indexing') loadIndexingStatus();
         }
         
         async function loadGames() {
@@ -2231,6 +2278,124 @@
             }
         }
         
+        async function loadIndexingStatus() {
+            try {
+                const res = await fetch('/api/indexing/status');
+                const data = await res.json();
+                const el = document.getElementById('indexingCredStatus');
+                if (data.configured) {
+                    el.innerHTML = '<span style="color: #2ecc71; font-weight: 600;">&#10003; Credentials Configured</span>';
+                } else {
+                    el.innerHTML = '<span style="color: #e74c3c; font-weight: 600;">&#10007; Not Configured</span>';
+                }
+            } catch(e) {
+                document.getElementById('indexingCredStatus').innerHTML = '<span style="color: #e74c3c;">Error checking status</span>';
+            }
+        }
+
+        async function saveIndexingCredentials() {
+            const creds = document.getElementById('indexingCredsJson').value.trim();
+            if (!creds) { showStatus('Please paste the JSON key', true); return; }
+            try {
+                JSON.parse(creds);
+            } catch(e) {
+                showStatus('Invalid JSON format', true);
+                return;
+            }
+            try {
+                const res = await fetch('/api/indexing/save-credentials', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({credentials_json: creds})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('indexingCredSaveStatus').innerHTML = '<div class="status-msg status-success">Credentials saved successfully!</div>';
+                    document.getElementById('indexingCredsJson').value = '';
+                    loadIndexingStatus();
+                } else {
+                    document.getElementById('indexingCredSaveStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Failed to save') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('indexingCredSaveStatus').innerHTML = '<div class="status-msg status-error">Error saving credentials</div>';
+            }
+        }
+
+        function renderIndexingResults(results, containerId) {
+            const container = document.getElementById(containerId);
+            if (!results || results.length === 0) {
+                container.innerHTML = '<p style="color: #6a6a7a;">No results</p>';
+                return;
+            }
+            let html = '<div style="max-height: 400px; overflow-y: auto;">';
+            let successCount = 0, errorCount = 0;
+            results.forEach(r => {
+                if (r.status === 'success') successCount++;
+                else errorCount++;
+                const color = r.status === 'success' ? '#2ecc71' : '#e74c3c';
+                const icon = r.status === 'success' ? '&#10003;' : '&#10007;';
+                html += '<div style="padding: 8px 12px; margin-bottom: 4px; background: rgba(0,0,0,0.2); border-radius: 6px; border-left: 3px solid ' + color + ';">';
+                html += '<span style="color: ' + color + '; font-weight: 600;">' + icon + '</span> ';
+                html += '<span style="color: #e0e0e0; font-size: 13px;">' + r.url + '</span>';
+                if (r.error) html += '<br><span style="color: #e74c3c; font-size: 11px;">' + r.error + '</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+            html = '<div style="margin-bottom: 10px; color: #a0a0b0; font-size: 13px;">Results: <span style="color: #2ecc71;">' + successCount + ' success</span>, <span style="color: #e74c3c;">' + errorCount + ' errors</span></div>' + html;
+            container.innerHTML = html;
+        }
+
+        async function submitIndexingUrls() {
+            const urlsText = document.getElementById('indexingUrls').value.trim();
+            const action = document.getElementById('indexingAction').value;
+            if (!urlsText) { showStatus('Please enter at least one URL', true); return; }
+            const urls = urlsText.split('\n').map(u => u.trim()).filter(u => u);
+            if (urls.length === 0) { showStatus('No valid URLs found', true); return; }
+            document.getElementById('indexingSubmitStatus').innerHTML = '<div class="loading">Submitting ' + urls.length + ' URL(s)... Please wait.</div>';
+            document.getElementById('indexingSubmitResults').innerHTML = '';
+            try {
+                const res = await fetch('/api/indexing/submit-urls', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({urls: urls, action: action})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('indexingSubmitStatus').innerHTML = '<div class="status-msg status-success">Submission complete!</div>';
+                    renderIndexingResults(data.results, 'indexingSubmitResults');
+                } else {
+                    document.getElementById('indexingSubmitStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Submission failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('indexingSubmitStatus').innerHTML = '<div class="status-msg status-error">Error submitting URLs</div>';
+            }
+        }
+
+        async function autoSubmitUrls() {
+            const btn = document.getElementById('autoSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+            document.getElementById('autoSubmitStatus').innerHTML = '<div class="loading">Generating and submitting all site URLs... This may take a moment.</div>';
+            document.getElementById('autoSubmitResults').innerHTML = '';
+            try {
+                const res = await fetch('/api/indexing/auto-submit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('autoSubmitStatus').innerHTML = '<div class="status-msg status-success">Auto submission complete! ' + (data.total_urls || 0) + ' URLs processed.</div>';
+                    renderIndexingResults(data.results, 'autoSubmitResults');
+                } else {
+                    document.getElementById('autoSubmitStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Auto submission failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('autoSubmitStatus').innerHTML = '<div class="status-msg status-error">Error during auto submission</div>';
+            }
+            btn.disabled = false;
+            btn.textContent = 'Auto Submit All URLs';
+        }
+
         loadGames();
         loadScrapeSettings();
         loadSiteSettings();
