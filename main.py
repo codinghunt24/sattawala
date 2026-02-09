@@ -369,7 +369,7 @@ def chart():
         results = get_game_results(game_name, selected_month, selected_year)
         days_in_month = calendar.monthrange(selected_year, selected_month)[1]
     
-    seo_title = f"{game_name} Result Chart {month_name} {selected_year} | Satta King" if game_name else "Satta King Record Chart | View All Game Results"
+    seo_title = f"{game_name} Result Chart {month_name} {selected_year}" if game_name else "Satta King Record Chart | View All Game Results"
     seo_description = f"Check {game_name} Satta King result chart for {month_name} {selected_year}. View daily results, winning numbers, and complete record chart. Updated live with latest {game_name} results." if game_name else "View complete Satta King record charts for all games."
     seo_keywords = f"{game_name}, {game_name} result, {game_name} chart, {game_name} {month_name} {selected_year}, satta king {game_name}, {game_name} record, {game_name} live result" if game_name else "satta king, satta king chart, satta king result"
     base_url = get_base_url()
