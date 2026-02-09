@@ -269,6 +269,8 @@ ALLOWED_QUERY_PARAMS = {'page', 'game', 'month', 'year'}
 
 @app.before_request
 def block_spam_query_params():
+    if request.path.startswith('/_stcore/'):
+        return ('', 404)
     if request.path.startswith('/api/') or request.path.startswith('/admin'):
         return None
     unknown_params = set(request.args.keys()) - ALLOWED_QUERY_PARAMS
