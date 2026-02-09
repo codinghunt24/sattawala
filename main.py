@@ -1259,7 +1259,7 @@ def generate_seo_post_content(game_name, result, post_date):
     result_display = result if result and result != '--' else 'Waiting...'
     is_waiting = result_display == 'Waiting...'
     
-    slug = f"{create_slug(game_name)}-result-{post_date.strftime('%d-%m-%Y')}"
+    slug = f"{create_slug(game_name)}-result-{post_date.day}-{post_date.strftime('%B')}-{post_date.year}"
     
     title = f"{game_name} Satta Result {date_str}"
     
