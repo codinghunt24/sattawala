@@ -258,6 +258,29 @@ def init_database():
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             
+            CREATE TABLE IF NOT EXISTS kerala_lottery_results (
+                id SERIAL PRIMARY KEY,
+                draw_date DATE NOT NULL,
+                lottery_name VARCHAR(255) NOT NULL,
+                draw_number VARCHAR(50),
+                first_prize VARCHAR(100),
+                first_prize_amount VARCHAR(50),
+                second_prize VARCHAR(100),
+                second_prize_amount VARCHAR(50),
+                third_prize VARCHAR(100),
+                third_prize_amount VARCHAR(50),
+                consolation_prize TEXT,
+                consolation_amount VARCHAR(50),
+                fourth_prize TEXT,
+                fifth_prize TEXT,
+                sixth_prize TEXT,
+                seventh_prize TEXT,
+                eighth_prize TEXT,
+                ninth_prize TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(draw_date)
+            );
+            
             CREATE TABLE IF NOT EXISTS manual_posts (
                 id SERIAL PRIMARY KEY,
                 slug VARCHAR(255) NOT NULL UNIQUE,
@@ -376,6 +399,228 @@ def index():
     base_url = get_base_url()
     return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, ad_settings=ad_settings, daily_posts=daily_posts, base_url=base_url)
 
+def scrape_kerala_lottery_results():
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+        }
+        url = "https://www.keralalottery.info/"
+        resp = requests.get(url, headers=headers, timeout=30)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        
+        results = []
+        
+        draw_text = soup.find('h3', string=lambda t: t and '1st Prize' in str(t))
+        if not draw_text:
+            draw_text = soup.find(string=lambda t: t and '1st Prize' in str(t))
+        
+        lottery_name = ""
+        draw_number = ""
+        draw_date = None
+        
+        title_el = soup.find('title')
+        if title_el:
+            title_text = title_el.get_text()
+            import re
+            date_match = re.search(r'(\d{2})[.-](\d{2})[.-](\d{4})', title_text)
+            if date_match:
+                d, m, y = date_match.groups()
+                try:
+                    from datetime import datetime as dt_parse
+                    draw_date = dt_parse.strptime(f"{d}-{m}-{y}", "%d-%m-%Y").date()
+                except:
+                    pass
+        
+        today_header = soup.find(string=lambda t: t and 'Today:' in str(t) if t else False)
+        if not today_header:
+            today_el = soup.find('b', string=lambda t: t and ('KR' in str(t) or 'SM' in str(t) or 'SS' in str(t) or 'SK' in str(t) or 'BT' in str(t) or 'DL' in str(t) or 'KN' in str(t)) if t else False)
+            if today_el:
+                lottery_name = today_el.get_text().strip()
+        
+        page_text = soup.get_text()
+        import re
+        
+        kr_match = re.search(r'(Karunya|Samrudhi|Sthree Sakthi|Fifty Fifty|Karunya Plus|Nirmal|Akshaya|Win-Win|Bhagyathara|Suvarna Keralam|Dhanalekshmi)\s+(KR|SM|SS|FF|KN|NR|AK|W|BT|SK|DL)[- ]?(\d+)', page_text)
+        if kr_match:
+            lottery_name = f"{kr_match.group(1)} {kr_match.group(2)} {kr_match.group(3)}"
+            draw_number = f"{kr_match.group(2)}-{kr_match.group(3)}"
+        
+        first_prize = ""
+        first_prize_amount = ""
+        second_prize = ""
+        second_prize_amount = ""
+        third_prize = ""
+        third_prize_amount = ""
+        consolation_prizes = ""
+        consolation_amount = ""
+        fourth_prizes = ""
+        fifth_prizes = ""
+        sixth_prizes = ""
+        seventh_prizes = ""
+        eighth_prizes = ""
+        ninth_prizes = ""
+        
+        h3_tags = soup.find_all('h3')
+        for h3 in h3_tags:
+            text = h3.get_text().strip()
+            if '1st Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                if amount_match:
+                    first_prize_amount = amount_match.group()
+                next_el = h3.find_next_sibling()
+                if next_el:
+                    first_prize = next_el.get_text().strip()
+            elif '2nd Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                if amount_match:
+                    second_prize_amount = amount_match.group()
+                next_el = h3.find_next_sibling()
+                if next_el:
+                    second_prize = next_el.get_text().strip()
+            elif '3rd Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                if amount_match:
+                    third_prize_amount = amount_match.group()
+                next_el = h3.find_next_sibling()
+                if next_el:
+                    third_prize = next_el.get_text().strip()
+        
+        h4_tags = soup.find_all('h4')
+        for h4 in h4_tags:
+            text = h4.get_text().strip()
+            if 'Consolation' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                if amount_match:
+                    consolation_amount = amount_match.group()
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    consolation_prizes = next_el.get_text().strip()
+            elif '4th Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    fourth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+            elif '5th Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    fifth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+            elif '6th Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    sixth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+            elif '7th Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    seventh_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+            elif '8th Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    eighth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+            elif '9th Prize' in text:
+                amount_match = re.search(r'₹[\d,]+', text)
+                next_el = h4.find_next_sibling()
+                if next_el:
+                    ninth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+        
+        if not draw_date:
+            draw_date = get_ist_now().date()
+        
+        if first_prize:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO kerala_lottery_results 
+                (draw_date, lottery_name, draw_number, first_prize, first_prize_amount,
+                 second_prize, second_prize_amount, third_prize, third_prize_amount,
+                 consolation_prize, consolation_amount, fourth_prize, fifth_prize,
+                 sixth_prize, seventh_prize, eighth_prize, ninth_prize)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (draw_date) DO UPDATE SET
+                lottery_name = EXCLUDED.lottery_name,
+                draw_number = EXCLUDED.draw_number,
+                first_prize = EXCLUDED.first_prize,
+                first_prize_amount = EXCLUDED.first_prize_amount,
+                second_prize = EXCLUDED.second_prize,
+                second_prize_amount = EXCLUDED.second_prize_amount,
+                third_prize = EXCLUDED.third_prize,
+                third_prize_amount = EXCLUDED.third_prize_amount,
+                consolation_prize = EXCLUDED.consolation_prize,
+                consolation_amount = EXCLUDED.consolation_amount,
+                fourth_prize = EXCLUDED.fourth_prize,
+                fifth_prize = EXCLUDED.fifth_prize,
+                sixth_prize = EXCLUDED.sixth_prize,
+                seventh_prize = EXCLUDED.seventh_prize,
+                eighth_prize = EXCLUDED.eighth_prize,
+                ninth_prize = EXCLUDED.ninth_prize
+            """, (draw_date, lottery_name, draw_number, first_prize, first_prize_amount,
+                  second_prize, second_prize_amount, third_prize, third_prize_amount,
+                  consolation_prizes, consolation_amount, fourth_prizes, fifth_prizes,
+                  sixth_prizes, seventh_prizes, eighth_prizes, ninth_prizes))
+            conn.commit()
+            cur.close()
+            conn.close()
+            
+            return {
+                'success': True,
+                'date': str(draw_date),
+                'lottery_name': lottery_name,
+                'first_prize': first_prize,
+                'first_prize_amount': first_prize_amount
+            }
+        
+        return {'success': False, 'error': 'Could not parse results from page'}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+def get_kerala_lottery_results(limit=30):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, draw_date, lottery_name, draw_number, first_prize, first_prize_amount,
+                   second_prize, second_prize_amount, third_prize, third_prize_amount,
+                   consolation_prize, consolation_amount, fourth_prize, fifth_prize,
+                   sixth_prize, seventh_prize, eighth_prize, ninth_prize, created_at
+            FROM kerala_lottery_results 
+            ORDER BY draw_date DESC LIMIT %s
+        """, (limit,))
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        results = []
+        for row in rows:
+            results.append({
+                'id': row[0], 'draw_date': str(row[1]), 'lottery_name': row[2],
+                'draw_number': row[3], 'first_prize': row[4], 'first_prize_amount': row[5],
+                'second_prize': row[6], 'second_prize_amount': row[7],
+                'third_prize': row[8], 'third_prize_amount': row[9],
+                'consolation_prize': row[10], 'consolation_amount': row[11],
+                'fourth_prize': row[12], 'fifth_prize': row[13],
+                'sixth_prize': row[14], 'seventh_prize': row[15],
+                'eighth_prize': row[16], 'ninth_prize': row[17]
+            })
+        return results
+    except:
+        return []
+
+@app.route('/api/kerala-lottery/scrape', methods=['POST'])
+def api_scrape_kerala_lottery():
+    result = scrape_kerala_lottery_results()
+    return jsonify(result)
+
+@app.route('/api/kerala-lottery/results')
+def api_kerala_lottery_results():
+    limit = request.args.get('limit', 30, type=int)
+    results = get_kerala_lottery_results(limit)
+    return jsonify({'results': results})
+
 @app.route('/kerala-lottery-result')
 def kerala_lottery_page():
     now = get_ist_now()
@@ -384,23 +629,25 @@ def kerala_lottery_page():
     current_year = now.strftime("%Y")
     today_day = now.strftime("%A")
     day_lottery_map = {
-        'Monday': 'Win-Win (W)',
+        'Monday': 'Bhagyathara (BT)',
         'Tuesday': 'Sthree Sakthi (SS)',
-        'Wednesday': 'Fifty Fifty (FF)',
+        'Wednesday': 'Dhanalekshmi (DL)',
         'Thursday': 'Karunya Plus (KN)',
-        'Friday': 'Nirmal (NR)',
+        'Friday': 'Suvarna Keralam (SK)',
         'Saturday': 'Karunya (KR)',
-        'Sunday': 'Akshaya (AK)'
+        'Sunday': 'Samrudhi (SM)'
     }
     today_lottery = day_lottery_map.get(today_day, 'Kerala Lottery')
     site_settings = get_site_settings()
     ad_settings = get_ad_settings()
     base_url = get_base_url()
+    kerala_results = get_kerala_lottery_results(30)
     return render_template('kerala_lottery.html',
         current_date=current_date, current_month=current_month,
         current_year=current_year, today_day=today_day,
         today_lottery=today_lottery, site_settings=site_settings,
-        ad_settings=ad_settings, base_url=base_url)
+        ad_settings=ad_settings, base_url=base_url,
+        kerala_results=kerala_results)
 
 @app.route('/daily-update')
 def daily_update_page():
