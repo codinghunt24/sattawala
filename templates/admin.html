@@ -1028,15 +1028,47 @@
         
         <div id="keralaLotterySection" style="display: none;">
             <div class="card">
-                <div class="card-title">Kerala Lottery Results Scraping</div>
-                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Scrape today's Kerala Lottery results from keralalottery.info and store date-wise</p>
+                <div class="card-title">Auto-Schedule Settings</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Schedule automatic Kerala Lottery result scraping. Results are drawn at 3:00 PM IST daily.</p>
+                <div id="keralaScheduleStatus" style="margin-bottom: 15px;"></div>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Auto Scrape</label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="keralaAutoScrape" style="width: 18px; height: 18px;">
+                            <span style="color: #e6edf3; font-size: 13px;">Enable daily auto-scrape</span>
+                        </label>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Scrape Time (IST)</label>
+                        <input type="time" id="keralaScrapeTime" value="15:30" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveKeralaSchedule()" style="margin-top: 18px;">Save Schedule</button>
+                </div>
+                <div id="keralaScheduleSaveStatus"></div>
+                <div id="keralaLastScrapeInfo" style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 12px; color: #8b949e;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Manual Scrape</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Manually scrape today's result from keralalottery.info</p>
                 <button class="btn btn-primary" onclick="scrapeKeralaLottery()" id="keralaScrapBtn">Scrape Today's Result</button>
                 <div id="keralaScrapeStatus" style="margin-top: 15px;"></div>
             </div>
             
             <div class="card">
-                <div class="card-title">Stored Kerala Lottery Results</div>
-                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">All scraped results stored date-wise in database</p>
+                <div class="card-title">View Result by Date</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Search for stored Kerala Lottery result by specific date</p>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                    <input type="date" id="keralaSearchDate" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                    <button class="btn" onclick="searchKeralaByDate()" style="background: #58a6ff; color: white;">Search</button>
+                </div>
+                <div id="keralaDateResult"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">All Stored Results (Date-wise)</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">All scraped results stored in database, newest first</p>
                 <button class="btn" onclick="loadKeralaResults()" style="margin-bottom: 15px; background: #238636; color: white;">Refresh Results</button>
                 <div id="keralaResultsContainer" style="max-height: 600px; overflow-y: auto;"></div>
             </div>
@@ -1366,7 +1398,7 @@
             if (section === 'posts') loadManualPosts();
             if (section === 'ads') loadAdSettings();
             if (section === 'sitemap') loadSitemapStats();
-            if (section === 'keralaLottery') loadKeralaResults();
+            if (section === 'keralaLottery') { loadKeralaSchedule(); loadKeralaResults(); }
             if (section === 'indexing') loadIndexingStatus();
         }
         
@@ -2438,6 +2470,52 @@
             btn.textContent = 'Auto Submit All URLs';
         }
 
+        async function loadKeralaSchedule() {
+            try {
+                const res = await fetch('/api/kerala-lottery/schedule');
+                const data = await res.json();
+                document.getElementById('keralaAutoScrape').checked = data.auto_scrape || false;
+                document.getElementById('keralaScrapeTime').value = data.scrape_time || '15:30';
+                let statusHtml = '';
+                if (data.auto_scrape) {
+                    statusHtml = '<span style="color: #2ecc71; font-weight: 600;">Active</span> - Auto-scraping at ' + data.scrape_time + ' IST daily';
+                } else {
+                    statusHtml = '<span style="color: #f85149;">Disabled</span> - Auto-scrape is off';
+                }
+                document.getElementById('keralaScheduleStatus').innerHTML = statusHtml;
+                let lastInfo = '';
+                if (data.last_scrape) {
+                    lastInfo = 'Last scrape: ' + data.last_scrape + ' | Status: <span style="color: ' + (data.last_scrape_status && data.last_scrape_status.includes('success') ? '#2ecc71' : data.last_scrape_status && data.last_scrape_status.includes('fail') ? '#e74c3c' : '#f0c040') + ';">' + (data.last_scrape_status || 'unknown') + '</span>';
+                } else {
+                    lastInfo = 'No scrape has been run yet';
+                }
+                document.getElementById('keralaLastScrapeInfo').innerHTML = lastInfo;
+            } catch(e) {
+                document.getElementById('keralaScheduleStatus').innerHTML = '<span style="color: #e74c3c;">Error loading schedule</span>';
+            }
+        }
+
+        async function saveKeralaSchedule() {
+            const autoScrape = document.getElementById('keralaAutoScrape').checked;
+            const scrapeTime = document.getElementById('keralaScrapeTime').value || '15:30';
+            try {
+                const res = await fetch('/api/kerala-lottery/schedule', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({auto_scrape: autoScrape, scrape_time: scrapeTime})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('keralaScheduleSaveStatus').innerHTML = '<div class="status-msg status-success">' + data.message + '</div>';
+                    loadKeralaSchedule();
+                } else {
+                    document.getElementById('keralaScheduleSaveStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('keralaScheduleSaveStatus').innerHTML = '<div class="status-msg status-error">Error: ' + e.message + '</div>';
+            }
+        }
+
         async function scrapeKeralaLottery() {
             const btn = document.getElementById('keralaScrapBtn');
             btn.disabled = true;
@@ -2449,6 +2527,7 @@
                 if (data.success) {
                     document.getElementById('keralaScrapeStatus').innerHTML = '<div class="status-msg status-success">Result scraped! Date: ' + data.date + ' | Lottery: ' + data.lottery_name + ' | 1st Prize: ' + data.first_prize + ' (' + data.first_prize_amount + ')</div>';
                     loadKeralaResults();
+                    loadKeralaSchedule();
                 } else {
                     document.getElementById('keralaScrapeStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Scraping failed') + '</div>';
                 }
@@ -2459,9 +2538,60 @@
             btn.textContent = "Scrape Today's Result";
         }
 
+        async function searchKeralaByDate() {
+            const date = document.getElementById('keralaSearchDate').value;
+            if (!date) { document.getElementById('keralaDateResult').innerHTML = '<p style="color: #f85149;">Please select a date</p>'; return; }
+            document.getElementById('keralaDateResult').innerHTML = '<div class="loading">Searching...</div>';
+            try {
+                const res = await fetch('/api/kerala-lottery/result-by-date?date=' + date);
+                const data = await res.json();
+                if (data.success && data.result) {
+                    const r = data.result;
+                    let html = '<div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 10px; padding: 20px; border: 1px solid #e2b339;">';
+                    html += '<div style="text-align: center; margin-bottom: 12px;">';
+                    html += '<span style="color: #e2b339; font-size: 16px; font-weight: 700;">' + r.lottery_name + '</span>';
+                    html += ' <span style="color: #8b949e; font-size: 13px;">(' + r.draw_number + ')</span>';
+                    html += '<br><span style="color: #8b949e; font-size: 13px;">Date: ' + r.draw_date + '</span></div>';
+                    html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">';
+                    html += '<div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; text-align: center; border-left: 3px solid #ffd700;">';
+                    html += '<div style="color: #8b949e; font-size: 11px;">1st Prize ' + (r.first_prize_amount||'') + '</div>';
+                    html += '<div style="color: #2ecc71; font-size: 16px; font-weight: 700;">' + (r.first_prize||'-') + '</div></div>';
+                    html += '<div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; text-align: center; border-left: 3px solid #c0c0c0;">';
+                    html += '<div style="color: #8b949e; font-size: 11px;">2nd Prize ' + (r.second_prize_amount||'') + '</div>';
+                    html += '<div style="color: #58a6ff; font-size: 14px; font-weight: 700;">' + (r.second_prize||'-') + '</div></div>';
+                    html += '<div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; text-align: center; border-left: 3px solid #cd7f32;">';
+                    html += '<div style="color: #8b949e; font-size: 11px;">3rd Prize ' + (r.third_prize_amount||'') + '</div>';
+                    html += '<div style="color: #f0c040; font-size: 14px; font-weight: 700;">' + (r.third_prize||'-') + '</div></div>';
+                    html += '</div>';
+                    if (r.consolation_prize) {
+                        html += '<div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; margin-bottom: 8px;">';
+                        html += '<div style="color: #e2b339; font-weight: 600; font-size: 12px;">Consolation ' + (r.consolation_amount||'') + '</div>';
+                        html += '<div style="color: #e6edf3; font-size: 11px; word-break: break-all;">' + r.consolation_prize + '</div></div>';
+                    }
+                    if (r.fourth_prize) {
+                        html += '<details style="margin-top: 8px;"><summary style="color: #58a6ff; cursor: pointer; font-size: 13px;">View 4th - 9th Prize Numbers</summary>';
+                        html += '<div style="margin-top: 8px; font-size: 11px; color: #e6edf3;">';
+                        if (r.fourth_prize) html += '<div style="margin-bottom: 6px;"><strong style="color: #f0c040;">4th Prize:</strong> ' + r.fourth_prize + '</div>';
+                        if (r.fifth_prize) html += '<div style="margin-bottom: 6px;"><strong style="color: #f0c040;">5th Prize:</strong> ' + r.fifth_prize + '</div>';
+                        if (r.sixth_prize) html += '<div style="margin-bottom: 6px;"><strong style="color: #f0c040;">6th Prize:</strong> ' + r.sixth_prize + '</div>';
+                        if (r.seventh_prize) html += '<div style="margin-bottom: 6px;"><strong style="color: #f0c040;">7th Prize:</strong> ' + r.seventh_prize + '</div>';
+                        if (r.eighth_prize) html += '<div style="margin-bottom: 6px;"><strong style="color: #f0c040;">8th Prize:</strong> ' + r.eighth_prize + '</div>';
+                        if (r.ninth_prize) html += '<div style="margin-bottom: 6px;"><strong style="color: #f0c040;">9th Prize:</strong> ' + r.ninth_prize + '</div>';
+                        html += '</div></details>';
+                    }
+                    html += '</div>';
+                    document.getElementById('keralaDateResult').innerHTML = html;
+                } else {
+                    document.getElementById('keralaDateResult').innerHTML = '<p style="color: #f85149;">No result found for ' + date + '. Try scraping first or check if results were announced on this date.</p>';
+                }
+            } catch(e) {
+                document.getElementById('keralaDateResult').innerHTML = '<p style="color: #e74c3c;">Error: ' + e.message + '</p>';
+            }
+        }
+
         async function loadKeralaResults() {
             try {
-                const res = await fetch('/api/kerala-lottery/results?limit=30');
+                const res = await fetch('/api/kerala-lottery/results?limit=60');
                 const data = await res.json();
                 const container = document.getElementById('keralaResultsContainer');
                 if (!data.results || data.results.length === 0) {
@@ -2472,19 +2602,23 @@
                 html += '<thead><tr style="background: rgba(0,0,0,0.3); color: #58a6ff;">';
                 html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Date</th>';
                 html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Lottery</th>';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Draw No.</th>';
                 html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">1st Prize</th>';
                 html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Amount</th>';
                 html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">2nd Prize</th>';
                 html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">3rd Prize</th>';
+                html += '<th style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">View</th>';
                 html += '</tr></thead><tbody>';
                 data.results.forEach(r => {
                     html += '<tr style="border-bottom: 1px solid #21262d;">';
                     html += '<td style="padding: 8px 10px; color: #e6edf3;">' + r.draw_date + '</td>';
                     html += '<td style="padding: 8px 10px; color: #58a6ff; font-weight: 600;">' + (r.lottery_name || '-') + '</td>';
+                    html += '<td style="padding: 8px 10px; color: #8b949e;">' + (r.draw_number || '-') + '</td>';
                     html += '<td style="padding: 8px 10px; color: #2ecc71; font-weight: 700;">' + (r.first_prize || '-') + '</td>';
                     html += '<td style="padding: 8px 10px; color: #f0c040;">' + (r.first_prize_amount || '-') + '</td>';
                     html += '<td style="padding: 8px 10px; color: #e6edf3;">' + (r.second_prize || '-') + '</td>';
                     html += '<td style="padding: 8px 10px; color: #e6edf3;">' + (r.third_prize || '-') + '</td>';
+                    html += '<td style="padding: 8px 10px; text-align: center;"><button onclick="document.getElementById(\'keralaSearchDate\').value=\'' + r.draw_date + '\'; searchKeralaByDate();" style="background: #58a6ff; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">Detail</button></td>';
                     html += '</tr>';
                 });
                 html += '</tbody></table>';

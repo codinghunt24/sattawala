@@ -258,6 +258,19 @@ def init_database():
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             
+            CREATE TABLE IF NOT EXISTS kerala_scrape_settings (
+                id SERIAL PRIMARY KEY,
+                auto_scrape BOOLEAN DEFAULT false,
+                scrape_time VARCHAR(10) DEFAULT '15:30',
+                last_scrape TIMESTAMP,
+                last_scrape_status VARCHAR(50),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            INSERT INTO kerala_scrape_settings (id, auto_scrape, scrape_time)
+            SELECT 1, false, '15:30'
+            WHERE NOT EXISTS (SELECT 1 FROM kerala_scrape_settings WHERE id = 1);
+            
             CREATE TABLE IF NOT EXISTS kerala_lottery_results (
                 id SERIAL PRIMARY KEY,
                 draw_date DATE NOT NULL,
@@ -606,16 +619,208 @@ def get_kerala_lottery_results(limit=30):
     except:
         return []
 
+def get_kerala_scrape_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT auto_scrape, scrape_time, last_scrape, last_scrape_status FROM kerala_scrape_settings WHERE id = 1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {
+                'auto_scrape': row[0],
+                'scrape_time': row[1] or '15:30',
+                'last_scrape': str(row[2]) if row[2] else None,
+                'last_scrape_status': row[3]
+            }
+        return {'auto_scrape': False, 'scrape_time': '15:30', 'last_scrape': None, 'last_scrape_status': None}
+    except:
+        return {'auto_scrape': False, 'scrape_time': '15:30', 'last_scrape': None, 'last_scrape_status': None}
+
+def update_kerala_scrape_status(status):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE kerala_scrape_settings SET last_scrape = NOW(), last_scrape_status = %s WHERE id = 1", (status,))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except:
+        pass
+
+def auto_kerala_scrape_job():
+    try:
+        now = get_ist_now()
+        today_date = now.date()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM kerala_lottery_results WHERE draw_date = %s", (today_date,))
+        existing = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if existing:
+            print(f"[{now}] Kerala auto-scrape: Result for {today_date} already exists, checking for updates...")
+            result = scrape_kerala_lottery_results()
+            if result.get('success'):
+                update_kerala_scrape_status('updated')
+                print(f"[{now}] Kerala auto-scrape: Updated result for {today_date}")
+            else:
+                update_kerala_scrape_status('no_new_data')
+                print(f"[{now}] Kerala auto-scrape: No new data")
+        else:
+            print(f"[{now}] Kerala auto-scrape: No result for {today_date}, scraping...")
+            result = scrape_kerala_lottery_results()
+            if result.get('success'):
+                update_kerala_scrape_status('success')
+                print(f"[{now}] Kerala auto-scrape: Saved {result.get('lottery_name')} result")
+            else:
+                update_kerala_scrape_status('failed: ' + result.get('error', 'unknown'))
+                print(f"[{now}] Kerala auto-scrape: Failed - {result.get('error')}")
+    except Exception as e:
+        update_kerala_scrape_status('error: ' + str(e))
+        print(f"Kerala auto-scrape error: {e}")
+
+def setup_kerala_scrape_scheduler():
+    try:
+        settings = get_kerala_scrape_settings()
+        try:
+            if scheduler.get_job('kerala_auto_scrape'):
+                scheduler.remove_job('kerala_auto_scrape')
+            if scheduler.get_job('kerala_auto_scrape_retry'):
+                scheduler.remove_job('kerala_auto_scrape_retry')
+        except:
+            pass
+        
+        if settings.get('auto_scrape'):
+            scrape_time = settings.get('scrape_time', '15:30')
+            hour, minute = map(int, scrape_time.split(':'))
+            
+            from apscheduler.triggers.cron import CronTrigger
+            scheduler.add_job(
+                auto_kerala_scrape_job,
+                CronTrigger(hour=hour, minute=minute, timezone=pytz.timezone('Asia/Kolkata')),
+                id='kerala_auto_scrape',
+                replace_existing=True
+            )
+            
+            retry_minute = (minute + 30) % 60
+            retry_hour = hour if minute + 30 < 60 else hour + 1
+            scheduler.add_job(
+                auto_kerala_scrape_job,
+                CronTrigger(hour=retry_hour, minute=retry_minute, timezone=pytz.timezone('Asia/Kolkata')),
+                id='kerala_auto_scrape_retry',
+                replace_existing=True
+            )
+            
+            print(f"Kerala auto-scrape scheduled at {scrape_time} IST daily (retry at {retry_hour:02d}:{retry_minute:02d})")
+    except Exception as e:
+        print(f"Error setting up Kerala scrape scheduler: {e}")
+
 @app.route('/api/kerala-lottery/scrape', methods=['POST'])
 def api_scrape_kerala_lottery():
     result = scrape_kerala_lottery_results()
+    if result.get('success'):
+        update_kerala_scrape_status('manual_success')
+    else:
+        update_kerala_scrape_status('manual_failed')
     return jsonify(result)
 
 @app.route('/api/kerala-lottery/results')
 def api_kerala_lottery_results():
     limit = request.args.get('limit', 30, type=int)
+    date_filter = request.args.get('date', None)
+    if date_filter:
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT id, draw_date, lottery_name, draw_number, first_prize, first_prize_amount,
+                       second_prize, second_prize_amount, third_prize, third_prize_amount,
+                       consolation_prize, consolation_amount, fourth_prize, fifth_prize,
+                       sixth_prize, seventh_prize, eighth_prize, ninth_prize, created_at
+                FROM kerala_lottery_results WHERE draw_date = %s
+            """, (date_filter,))
+            row = cur.fetchone()
+            cur.close()
+            conn.close()
+            if row:
+                result = {
+                    'id': row[0], 'draw_date': str(row[1]), 'lottery_name': row[2],
+                    'draw_number': row[3], 'first_prize': row[4], 'first_prize_amount': row[5],
+                    'second_prize': row[6], 'second_prize_amount': row[7],
+                    'third_prize': row[8], 'third_prize_amount': row[9],
+                    'consolation_prize': row[10], 'consolation_amount': row[11],
+                    'fourth_prize': row[12], 'fifth_prize': row[13],
+                    'sixth_prize': row[14], 'seventh_prize': row[15],
+                    'eighth_prize': row[16], 'ninth_prize': row[17]
+                }
+                return jsonify({'results': [result]})
+            return jsonify({'results': []})
+        except:
+            return jsonify({'results': []})
     results = get_kerala_lottery_results(limit)
     return jsonify({'results': results})
+
+@app.route('/api/kerala-lottery/schedule', methods=['GET'])
+def api_get_kerala_schedule():
+    settings = get_kerala_scrape_settings()
+    return jsonify(settings)
+
+@app.route('/api/kerala-lottery/schedule', methods=['POST'])
+def api_update_kerala_schedule():
+    try:
+        data = request.json
+        auto_scrape = data.get('auto_scrape', False)
+        scrape_time = data.get('scrape_time', '15:30')
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE kerala_scrape_settings 
+            SET auto_scrape = %s, scrape_time = %s 
+            WHERE id = 1
+        """, (auto_scrape, scrape_time))
+        conn.commit()
+        cur.close()
+        conn.close()
+        setup_kerala_scrape_scheduler()
+        return jsonify({'success': True, 'message': f"Auto-scrape {'enabled at ' + scrape_time + ' IST' if auto_scrape else 'disabled'}"})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/kerala-lottery/result-by-date')
+def api_kerala_result_by_date():
+    date = request.args.get('date')
+    if not date:
+        return jsonify({'success': False, 'error': 'Date required'})
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, draw_date, lottery_name, draw_number, first_prize, first_prize_amount,
+                   second_prize, second_prize_amount, third_prize, third_prize_amount,
+                   consolation_prize, consolation_amount, fourth_prize, fifth_prize,
+                   sixth_prize, seventh_prize, eighth_prize, ninth_prize
+            FROM kerala_lottery_results WHERE draw_date = %s
+        """, (date,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return jsonify({'success': True, 'result': {
+                'id': row[0], 'draw_date': str(row[1]), 'lottery_name': row[2],
+                'draw_number': row[3], 'first_prize': row[4], 'first_prize_amount': row[5],
+                'second_prize': row[6], 'second_prize_amount': row[7],
+                'third_prize': row[8], 'third_prize_amount': row[9],
+                'consolation_prize': row[10], 'consolation_amount': row[11],
+                'fourth_prize': row[12], 'fifth_prize': row[13],
+                'sixth_prize': row[14], 'seventh_prize': row[15],
+                'eighth_prize': row[16], 'ninth_prize': row[17]
+            }})
+        return jsonify({'success': False, 'error': 'No result found for this date'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/kerala-lottery-result')
 def kerala_lottery_page():
@@ -2099,6 +2304,7 @@ def view_post(slug):
         return f"Error: {e}", 500
 
 setup_daily_post_scheduler()
+setup_kerala_scrape_scheduler()
 
 def get_site_settings():
     try:
