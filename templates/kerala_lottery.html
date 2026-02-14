@@ -698,6 +698,34 @@
             </div>
 
         </div>
+
+        {% if kerala_posts and kerala_posts|length > 0 %}
+        <div style="margin-top: 30px;">
+            <h2 style="color: #e2b339; font-size: 20px; font-weight: 700; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e2b339;">Recent Kerala Lottery Result Posts</h2>
+            <div style="display: grid; gap: 10px;">
+                {% for post in kerala_posts %}
+                <a href="/kerala-lottery-result-today/{{ post.slug }}" style="display: block; text-decoration: none; padding: 12px 15px; background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1)); border-radius: 8px; border-left: 3px solid #e2b339; transition: all 0.2s;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <div style="color: #58a6ff; font-size: 14px; font-weight: 600;">{{ post.title }}</div>
+                            <div style="color: #8b949e; font-size: 12px; margin-top: 3px;">{{ post.lottery_name }} | {{ post.post_date.strftime('%d %b %Y') if post.post_date else '' }}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            {% if post.first_prize %}
+                            <div style="color: #2ecc71; font-weight: 700; font-size: 14px;">{{ post.first_prize }}</div>
+                            <div style="color: #8b949e; font-size: 11px;">{{ post.first_prize_amount }}</div>
+                            {% else %}
+                            <div style="color: #f0c040; font-size: 12px;">View Details</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        </div>
     </div>
 
     <div class="footer">

@@ -1471,12 +1471,27 @@ def kerala_lottery_page():
     ad_settings = get_ad_settings()
     base_url = get_base_url()
     kerala_results = get_kerala_lottery_results(30)
+    kerala_posts = []
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT slug, title, lottery_name, post_date, first_prize, first_prize_amount
+            FROM kerala_lottery_posts WHERE is_published = true
+            ORDER BY post_date DESC LIMIT 15
+        """)
+        kerala_posts = [{'slug': r[0], 'title': r[1], 'lottery_name': r[2],
+                         'post_date': r[3], 'first_prize': r[4], 'first_prize_amount': r[5]} for r in cur.fetchall()]
+        cur.close()
+        conn.close()
+    except:
+        pass
     return render_template('kerala_lottery.html',
         current_date=current_date, current_month=current_month,
         current_year=current_year, today_day=today_day,
         today_lottery=today_lottery, site_settings=site_settings,
         ad_settings=ad_settings, base_url=base_url,
-        kerala_results=kerala_results)
+        kerala_results=kerala_results, kerala_posts=kerala_posts)
 
 @app.route('/daily-update')
 def daily_update_page():
