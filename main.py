@@ -444,6 +444,19 @@ def index():
     base_url = get_base_url()
     return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, ad_settings=ad_settings, daily_posts=daily_posts, base_url=base_url)
 
+def format_prize_numbers(raw_text):
+    cleaned = re.sub(r'\s+', '', raw_text)
+    if re.match(r'^\d{16,}$', cleaned):
+        numbers = [cleaned[i:i+4] for i in range(0, len(cleaned), 4)]
+        return '  '.join(numbers)
+    cleaned2 = re.sub(r'\s+', ' ', raw_text).strip()
+    if cleaned2 and all(c.isdigit() for c in cleaned2.replace(' ', '')):
+        nums = cleaned2.split()
+        if len(nums) <= 1 and len(cleaned2) > 8:
+            numbers = [cleaned2.replace(' ', '')[i:i+4] for i in range(0, len(cleaned2.replace(' ', '')), 4)]
+            return '  '.join(numbers)
+    return cleaned2
+
 def scrape_kerala_lottery_results():
     try:
         headers = {
@@ -543,32 +556,32 @@ def scrape_kerala_lottery_results():
                 amount_match = re.search(r'₹[\d,]+', text)
                 next_el = tag.find_next_sibling()
                 if next_el:
-                    fourth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+                    fourth_prizes = (amount_match.group() + " | " if amount_match else "") + format_prize_numbers(next_el.get_text().strip())
             elif '5th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 next_el = tag.find_next_sibling()
                 if next_el:
-                    fifth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+                    fifth_prizes = (amount_match.group() + " | " if amount_match else "") + format_prize_numbers(next_el.get_text().strip())
             elif '6th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 next_el = tag.find_next_sibling()
                 if next_el:
-                    sixth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+                    sixth_prizes = (amount_match.group() + " | " if amount_match else "") + format_prize_numbers(next_el.get_text().strip())
             elif '7th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 next_el = tag.find_next_sibling()
                 if next_el:
-                    seventh_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+                    seventh_prizes = (amount_match.group() + " | " if amount_match else "") + format_prize_numbers(next_el.get_text().strip())
             elif '8th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 next_el = tag.find_next_sibling()
                 if next_el:
-                    eighth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+                    eighth_prizes = (amount_match.group() + " | " if amount_match else "") + format_prize_numbers(next_el.get_text().strip())
             elif '9th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 next_el = tag.find_next_sibling()
                 if next_el:
-                    ninth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
+                    ninth_prizes = (amount_match.group() + " | " if amount_match else "") + format_prize_numbers(next_el.get_text().strip())
         
         if not draw_date:
             draw_date = get_ist_now().date()
@@ -1096,17 +1109,33 @@ def generate_kerala_lottery_post_content(post_date, result_data=None):
     eighth_prize = result_data.get('eighth_prize', '') if result_data else ''
     ninth_prize = result_data.get('ninth_prize', '') if result_data else ''
     
+    def format_numbers_for_display(prize_text):
+        parts = prize_text.split(' | ', 1)
+        amount_prefix = ""
+        numbers_part = prize_text
+        if len(parts) == 2:
+            amount_prefix = parts[0]
+            numbers_part = parts[1]
+        nums = numbers_part.strip().split()
+        if len(nums) <= 1 and len(numbers_part.replace(' ', '')) > 8:
+            raw = numbers_part.replace(' ', '')
+            nums = [raw[i:i+4] for i in range(0, len(raw), 4)]
+        formatted_nums = ''.join([f'<span class="num-chip">{n.strip()}</span>' for n in nums if n.strip()])
+        if amount_prefix:
+            return f'<span class="prize-amount-tag">{amount_prefix}</span><div class="num-grid">{formatted_nums}</div>'
+        return f'<div class="num-grid">{formatted_nums}</div>'
+
     detailed_prizes = ""
     if has_result and fourth_prize:
         detailed_prizes = f"""
     <div class="detailed-prizes">
         <h3>Complete {actual_lottery_name} Prize List - {date_str}</h3>
-        <div class="prize-detail"><strong>4th Prize:</strong> <span>{fourth_prize}</span></div>
-        <div class="prize-detail"><strong>5th Prize:</strong> <span>{fifth_prize}</span></div>
-        <div class="prize-detail"><strong>6th Prize:</strong> <span>{sixth_prize}</span></div>
-        <div class="prize-detail"><strong>7th Prize:</strong> <span>{seventh_prize}</span></div>
-        <div class="prize-detail"><strong>8th Prize:</strong> <span>{eighth_prize}</span></div>
-        <div class="prize-detail"><strong>9th Prize:</strong> <span>{ninth_prize}</span></div>
+        <div class="prize-detail"><strong>4th Prize:</strong> {format_numbers_for_display(fourth_prize)}</div>
+        <div class="prize-detail"><strong>5th Prize:</strong> {format_numbers_for_display(fifth_prize)}</div>
+        <div class="prize-detail"><strong>6th Prize:</strong> {format_numbers_for_display(sixth_prize)}</div>
+        <div class="prize-detail"><strong>7th Prize:</strong> {format_numbers_for_display(seventh_prize)}</div>
+        <div class="prize-detail"><strong>8th Prize:</strong> {format_numbers_for_display(eighth_prize)}</div>
+        <div class="prize-detail"><strong>9th Prize:</strong> {format_numbers_for_display(ninth_prize)}</div>
     </div>"""
     
     schedule_section = """
