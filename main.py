@@ -52,7 +52,10 @@ scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
 def get_db_connection():
-    return psycopg2.connect(os.environ['DATABASE_URL'])
+    db_url = os.environ.get('DATABASE_URL')
+    if not db_url:
+        raise Exception("DATABASE_URL environment variable is not set. Please configure your database connection.")
+    return psycopg2.connect(db_url)
 
 def create_slug(name):
     slug = name.lower().strip()
