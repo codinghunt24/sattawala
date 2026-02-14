@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Kerala Daily Lottery Result Posts {{ current_month }} {{ current_year }} | Satta King</title>
+<meta name="description" content="Kerala Daily Lottery Result Posts - Check daily Kerala lottery results, winning numbers, prize structure for {{ current_month }} {{ current_year }}. Karunya, Sthree Sakthi, Bhagyathara, Dhanalekshmi, Karunya Plus, Suvarna Keralam, Samrudhi results updated daily.">
+<meta name="keywords" content="kerala lottery result, kerala lottery daily, kerala lottery today, kerala lottery result today, kerala daily lottery, kerala lottery posts, kerala lottery winning numbers, kerala lottery {{ current_month }} {{ current_year }}">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="author" content="Satta King">
+<meta name="language" content="English">
+<meta name="revisit-after" content="1 days">
+<link rel="canonical" href="{{ base_url }}/kerala-daily{% if current_page > 1 %}?page={{ current_page }}{% endif %}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ base_url }}/kerala-daily">
+<meta property="og:title" content="Kerala Daily Lottery Result Posts {{ current_month }} {{ current_year }}">
+<meta property="og:description" content="Daily Kerala Lottery results and winning numbers. Updated every day at 3:00 PM IST.">
+<meta property="og:site_name" content="Satta King">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kerala Daily Lottery Result Posts {{ current_month }} {{ current_year }}">
+<meta name="twitter:description" content="Daily Kerala Lottery results and winning numbers updated at 3:00 PM IST.">
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Kerala Daily Lottery Result Posts",
+    "description": "Daily Kerala Lottery result posts with winning numbers, prize details, and analysis",
+    "url": "{{ base_url }}/kerala-daily",
+    "isPartOf": {"@type": "WebSite", "name": "Satta King", "url": "{{ base_url }}/"},
+    "inLanguage": "en-IN"
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ base_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Kerala Daily", "item": "{{ base_url }}/kerala-daily"}
+    ]
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d1117; color: #e6edf3; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+
+    .header-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 25px 20px;
+        text-align: center;
+        border-bottom: 3px solid #e2b339;
+    }
+    .site-title { font-size: 28px; font-weight: 800; color: #e2b339; text-transform: uppercase; }
+    .site-subtitle { color: #8b949e; font-size: 13px; margin-top: 5px; }
+
+    .nav-section {
+        background: #161b22;
+        padding: 10px 0;
+        border-bottom: 1px solid #21262d;
+    }
+    .nav-menu {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+        padding: 0 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        white-space: nowrap;
+    }
+    .nav-menu::-webkit-scrollbar { display: none; }
+    .nav-item {
+        color: #e6edf3;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    .nav-item:hover, .nav-item.active { background: #30363d; color: #e2b339; }
+
+    .page-container { max-width: 900px; margin: 0 auto; padding: 20px 15px; }
+
+    .page-title-box {
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 25px;
+        background: linear-gradient(135deg, rgba(226,179,57,0.1), rgba(0,0,0,0.2));
+        border-radius: 12px;
+        border: 1px solid rgba(226,179,57,0.3);
+    }
+    .page-title-box h1 { color: #e2b339; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .page-title-box p { color: #8b949e; font-size: 13px; }
+
+    .post-card {
+        display: block;
+        background: linear-gradient(135deg, #161b22, #1a1a2e);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 12px;
+        border-left: 4px solid #e2b339;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid #21262d;
+    }
+    .post-card:hover {
+        border-color: #e2b339;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(226,179,57,0.15);
+    }
+    .post-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .post-card-title {
+        color: #58a6ff;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    .post-card:hover .post-card-title { color: #e2b339; }
+    .post-card-meta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+    .meta-tag {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+    .meta-date { background: rgba(88,166,255,0.15); color: #58a6ff; }
+    .meta-lottery { background: rgba(226,179,57,0.15); color: #e2b339; }
+    .meta-day { background: rgba(46,204,113,0.15); color: #2ecc71; }
+    .post-card-desc {
+        color: #8b949e;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 8px;
+    }
+    .post-card-prize {
+        text-align: right;
+        min-width: 100px;
+    }
+    .prize-label { color: #8b949e; font-size: 11px; }
+    .prize-value { color: #2ecc71; font-size: 16px; font-weight: 700; }
+    .prize-amount { color: #f0c040; font-size: 11px; }
+    .no-result-tag { color: #f0c040; font-size: 12px; font-style: italic; }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin: 30px 0 20px;
+        flex-wrap: wrap;
+    }
+    .page-btn {
+        display: inline-block;
+        padding: 8px 14px;
+        background: #161b22;
+        color: #e6edf3;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        border: 1px solid #30363d;
+        transition: all 0.2s;
+    }
+    .page-btn:hover { background: #30363d; border-color: #e2b339; color: #e2b339; }
+    .page-btn.active { background: #e2b339; color: #0d1117; border-color: #e2b339; font-weight: 700; }
+    .page-btn.disabled { opacity: 0.4; pointer-events: none; }
+    .page-info { color: #8b949e; font-size: 12px; text-align: center; margin-top: 10px; }
+
+    .no-posts {
+        text-align: center;
+        padding: 50px 20px;
+        color: #8b949e;
+    }
+    .no-posts h3 { color: #e2b339; margin-bottom: 10px; font-size: 18px; }
+
+    .footer {
+        background: #161b22;
+        padding: 20px;
+        text-align: center;
+        color: #8b949e;
+        font-size: 12px;
+        margin-top: 30px;
+        border-top: 1px solid #21262d;
+    }
+    .footer a { color: #58a6ff; text-decoration: none; }
+
+    @media (max-width: 768px) {
+        .site-title { font-size: 22px; }
+        .nav-item { padding: 6px 12px; font-size: 12px; }
+        .post-card { padding: 14px 15px; }
+        .post-card-title { font-size: 14px; }
+        .post-card-top { flex-direction: column; }
+        .post-card-prize { text-align: left; min-width: auto; }
+    }
+    @media (max-width: 480px) {
+        .nav-item { padding: 5px 8px; font-size: 10px; }
+        .page-title-box h1 { font-size: 18px; }
+        .post-card-title { font-size: 13px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="header-section">
+        {% if site_settings and site_settings.logo_data %}
+        <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 60px; max-width: 250px;">
+        {% endif %}
+        <h2 class="site-title">{{ site_settings.site_title if site_settings and site_settings.site_title else 'SATTA KING' }}</h2>
+        <p class="site-subtitle">Kerala Daily Lottery Results</p>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/daily-update" class="nav-item">Daily Update</a>
+            <a href="/latest" class="nav-item">Latest</a>
+            <a href="/kerala-lottery-result" class="nav-item">Kerala Lottery</a>
+            <a href="/kerala-daily" class="nav-item active">Kerala Daily</a>
+        </div>
+    </div>
+
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div style="text-align: center; padding: 10px;">
+        {% if ad_settings.manual_ad_code_after_header %}
+        {{ ad_settings.manual_ad_code_after_header|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="page-container">
+        <div class="page-title-box">
+            <h1>Kerala Daily Lottery Results</h1>
+            <p>Daily auto-published Kerala Lottery results with winning numbers, prize details & analysis | {{ current_month }} {{ current_year }}</p>
+        </div>
+
+        {% if posts and posts|length > 0 %}
+            {% for post in posts %}
+            <a href="/kerala-lottery-result-today/{{ post.slug }}" class="post-card">
+                <div class="post-card-top">
+                    <div style="flex: 1;">
+                        <div class="post-card-title">{{ post.title }}</div>
+                        <div class="post-card-meta">
+                            <span class="meta-tag meta-date">{{ post.post_date.strftime('%d %b %Y') if post.post_date else '' }}</span>
+                            <span class="meta-tag meta-lottery">{{ post.lottery_name or 'Kerala Lottery' }}</span>
+                            <span class="meta-tag meta-day">{{ post.post_date.strftime('%A') if post.post_date else '' }}</span>
+                        </div>
+                        <div class="post-card-desc">{{ post.meta_description[:150] }}{% if post.meta_description|length > 150 %}...{% endif %}</div>
+                    </div>
+                    <div class="post-card-prize">
+                        {% if post.first_prize %}
+                        <div class="prize-label">1st Prize</div>
+                        <div class="prize-value">{{ post.first_prize }}</div>
+                        <div class="prize-amount">{{ post.first_prize_amount }}</div>
+                        {% else %}
+                        <div class="no-result-tag">View Details</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+
+            {% if total_pages > 1 %}
+            <div class="pagination">
+                {% if current_page > 1 %}
+                <a href="/kerala-daily?page={{ current_page - 1 }}" class="page-btn">&laquo; Prev</a>
+                {% else %}
+                <span class="page-btn disabled">&laquo; Prev</span>
+                {% endif %}
+
+                {% set start_page = [1, current_page - 2] | max %}
+                {% set end_page = [total_pages, current_page + 2] | min %}
+
+                {% if start_page > 1 %}
+                <a href="/kerala-daily?page=1" class="page-btn">1</a>
+                {% if start_page > 2 %}<span style="color: #8b949e;">...</span>{% endif %}
+                {% endif %}
+
+                {% for p in range(start_page, end_page + 1) %}
+                <a href="/kerala-daily?page={{ p }}" class="page-btn {% if p == current_page %}active{% endif %}">{{ p }}</a>
+                {% endfor %}
+
+                {% if end_page < total_pages %}
+                {% if end_page < total_pages - 1 %}<span style="color: #8b949e;">...</span>{% endif %}
+                <a href="/kerala-daily?page={{ total_pages }}" class="page-btn">{{ total_pages }}</a>
+                {% endif %}
+
+                {% if current_page < total_pages %}
+                <a href="/kerala-daily?page={{ current_page + 1 }}" class="page-btn">Next &raquo;</a>
+                {% else %}
+                <span class="page-btn disabled">Next &raquo;</span>
+                {% endif %}
+            </div>
+            <div class="page-info">Page {{ current_page }} of {{ total_pages }} | Total {{ total_posts }} posts</div>
+            {% endif %}
+
+        {% else %}
+        <div class="no-posts">
+            <h3>No Posts Yet</h3>
+            <p>Kerala Lottery daily posts will appear here once auto-posting is enabled from the admin panel.</p>
+            <a href="/kerala-lottery-result" style="display: inline-block; margin-top: 15px; padding: 10px 25px; background: #e2b339; color: #0d1117; border-radius: 6px; text-decoration: none; font-weight: 700;">Check Kerala Lottery Result</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if ad_settings and ad_settings.ad_footer %}
+    <div style="text-align: center; padding: 10px;">
+        {% if ad_settings.manual_ad_code_footer %}
+        {{ ad_settings.manual_ad_code_footer|safe }}
+        {% else %}
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ ad_settings.adsense_publisher_id }}" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        <p>Kerala Daily Lottery Results | Updated Daily at 3:00 PM IST</p>
+        <p style="margin-top: 5px;">&copy; {{ current_year }} <a href="/">Satta King</a> | All Rights Reserved</p>
+    </div>
+{% endblock %}

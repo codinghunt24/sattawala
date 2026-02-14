@@ -1450,6 +1450,56 @@ def kerala_lottery_post_page(slug):
     except Exception as e:
         return redirect('/', code=301)
 
+@app.route('/kerala-daily')
+def kerala_daily_page():
+    now = get_ist_now()
+    current_month = now.strftime("%B")
+    current_year = now.strftime("%Y")
+    
+    import math
+    page = request.args.get('page', 1, type=int)
+    per_page = 15
+    if page < 1:
+        page = 1
+    
+    posts = []
+    total_posts = 0
+    total_pages = 1
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM kerala_lottery_posts WHERE is_published = true")
+        total_posts = cur.fetchone()[0]
+        total_pages = max(1, math.ceil(total_posts / per_page))
+        if page > total_pages:
+            page = total_pages
+        
+        offset = (page - 1) * per_page
+        cur.execute("""
+            SELECT id, slug, title, lottery_name, draw_number, post_date, 
+                   meta_description, first_prize, first_prize_amount, is_published, created_at
+            FROM kerala_lottery_posts WHERE is_published = true
+            ORDER BY post_date DESC LIMIT %s OFFSET %s
+        """, (per_page, offset))
+        rows = cur.fetchall()
+        posts = [{'id': r[0], 'slug': r[1], 'title': r[2], 'lottery_name': r[3],
+                  'draw_number': r[4], 'post_date': r[5], 'meta_description': r[6] or '',
+                  'first_prize': r[7], 'first_prize_amount': r[8],
+                  'is_published': r[9], 'created_at': r[10]} for r in rows]
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Kerala daily page error: {e}")
+    
+    site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
+    base_url = get_base_url()
+    
+    return render_template('kerala_daily.html',
+        posts=posts, current_page=page, total_pages=total_pages, total_posts=total_posts,
+        current_month=current_month, current_year=current_year,
+        site_settings=site_settings, ad_settings=ad_settings, base_url=base_url)
+
 @app.route('/kerala-lottery-result')
 def kerala_lottery_page():
     now = get_ist_now()

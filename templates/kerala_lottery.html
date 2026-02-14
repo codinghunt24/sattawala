@@ -157,7 +157,8 @@
     @media (max-width: 768px) { .nav-section { padding: 12px 3%; } }
     @media (max-width: 480px) { .nav-section { padding: 12px 2%; } }
 
-    .nav-menu { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 0 20px; }
+    .nav-menu { display: flex; justify-content: center; gap: 8px; flex-wrap: nowrap; padding: 0 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; white-space: nowrap; }
+    .nav-menu::-webkit-scrollbar { display: none; }
     .nav-item { color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
     .nav-item:hover, .nav-item.active { background: #333; color: #fff; }
 
@@ -402,6 +403,7 @@
             <a href="/daily-update" class="nav-item">Daily Update</a>
             <a href="/latest" class="nav-item">Latest</a>
             <a href="/kerala-lottery-result" class="nav-item active">Kerala Lottery</a>
+            <a href="/kerala-daily" class="nav-item">Kerala Daily</a>
         </div>
     </div>
 
