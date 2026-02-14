@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Lottery Sambad Result Today {{ current_date }} | 1PM 6PM 8PM Live</title>
+<meta name="description" content="Lottery Sambad Result Today {{ current_date }}. Check live Nagaland State Lottery Sambad 1PM 6PM 8PM draw results, Dear lottery winning numbers, prize list for {{ current_month }} {{ current_year }}.">
+<meta name="keywords" content="lottery sambad, lottery sambad result, lottery sambad today, lottery sambad result today, nagaland lottery, dear lottery result, lottery sambad 1pm, lottery sambad 6pm, lottery sambad 8pm, lottery sambad result today live, nagaland state lottery, west bengal lottery, sikkim lottery, dear lottery today, lottery sambad {{ current_month|lower }} {{ current_year }}, lottery result today">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="Satta King">
+<meta name="language" content="English">
+<meta name="revisit-after" content="1 days">
+<meta name="rating" content="general">
+<meta property="og:title" content="Lottery Sambad Result Today {{ current_date }} | 1PM 6PM 8PM Live">
+<meta property="og:description" content="Check Lottery Sambad Result Today {{ current_date }}. Live Nagaland, West Bengal, Sikkim Dear lottery results for 1PM 6PM 8PM draws.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ base_url }}/lottery-sambad">
+<meta property="og:site_name" content="Satta King">
+<meta property="og:locale" content="en_IN">
+<meta property="og:image" content="{{ base_url }}/favicon.ico">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lottery Sambad Result Today {{ current_date }}">
+<meta name="twitter:description" content="Lottery Sambad Result Today. Check live Dear lottery results for 1PM 6PM 8PM draws.">
+<link rel="canonical" href="{{ base_url }}/lottery-sambad">
+<link rel="alternate" hreflang="en-in" href="{{ base_url }}/lottery-sambad">
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Lottery Sambad Result Today {{ current_date }}",
+    "description": "Check Lottery Sambad Result Today. Live Nagaland State Lottery results for 1PM 6PM 8PM draws.",
+    "url": "{{ base_url }}/lottery-sambad",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "Satta King",
+        "url": "{{ base_url }}/"
+    },
+    "about": {
+        "@type": "Thing",
+        "name": "Lottery Sambad",
+        "description": "Nagaland State Lottery Sambad results and winning numbers"
+    },
+    "dateModified": "{{ current_date }}",
+    "inLanguage": "en-IN"
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ base_url }}/"
+    },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Lottery Sambad Result",
+        "item": "{{ base_url }}/lottery-sambad"
+    }]
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What time are Lottery Sambad results announced?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lottery Sambad results are announced three times daily - at 1:00 PM (Nagaland), 6:00 PM (West Bengal), and 8:00 PM (Sikkim)."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How much is the Lottery Sambad first prize?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The Lottery Sambad first prize is ₹99,00,000 (Ninety-Nine Lakhs) for each draw - 1PM, 6PM, and 8PM."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How to check Lottery Sambad result?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can check Lottery Sambad results on this page which is updated after each draw at 1PM, 6PM, and 8PM IST. Match your ticket number with the winning numbers in the result images."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Which states conduct Lottery Sambad draws?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lottery Sambad draws are conducted by Nagaland (1PM), West Bengal (6PM), and Sikkim (8PM) state lottery departments."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .main-container { max-width: 1400px; margin: 0 auto; padding: 0 15%; }
+    @media (max-width: 1200px) { .main-container { padding: 0 10%; } }
+    @media (max-width: 768px) { .main-container { padding: 0 3%; } }
+    @media (max-width: 480px) { .main-container { padding: 0 2%; } }
+    .header-section { background: transparent; padding: 25px 15%; text-align: center; }
+    @media (max-width: 1200px) { .header-section { padding: 25px 10%; } }
+    @media (max-width: 768px) { .header-section { padding: 25px 3%; } }
+    .site-title { color: #333; font-size: 36px; font-weight: 700; margin: 0; }
+    .site-subtitle { color: #666; font-size: 14px; margin-top: 8px; }
+    .nav-section { background: #000; padding: 10px 15%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    @media (max-width: 1200px) { .nav-section { padding: 12px 10%; } }
+    @media (max-width: 768px) { .nav-section { padding: 12px 3%; } }
+    .nav-menu { display: flex; justify-content: center; gap: 8px; flex-wrap: nowrap; padding: 0 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; }
+    .nav-menu::-webkit-scrollbar { display: none; }
+    .nav-item { color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; text-decoration: none; }
+    .nav-item:hover, .nav-item.active { background: #333; color: #fff; }
+    .page-title-section { background: linear-gradient(135deg, #2c3e50, #8e44ad); padding: 30px 15%; text-align: center; color: #fff; }
+    @media (max-width: 768px) { .page-title-section { padding: 20px 3%; } }
+    .page-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    @media (max-width: 768px) { .page-title { font-size: 22px; } }
+    .page-date { font-size: 16px; opacity: 0.9; }
+    .content-section { padding: 20px 0; }
+    .today-highlight { background: linear-gradient(135deg, #f3e5f5, #e1bee7); border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin-bottom: 20px; text-align: center; }
+    .today-highlight h2 { color: #6a1b9a; font-size: 22px; margin-bottom: 10px; }
+    .draw-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 15px; }
+    @media (max-width: 600px) { .draw-cards { grid-template-columns: 1fr; } }
+    .draw-card { background: #fff; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #ce93d8; }
+    .draw-time-label { font-size: 14px; font-weight: 700; color: #6a1b9a; margin-bottom: 5px; }
+    .draw-name-label { font-size: 16px; font-weight: 600; color: #333; }
+    .result-image-section { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; overflow: hidden; }
+    .section-title-bar { background: #6a1b9a; color: #fff; padding: 12px 20px; font-size: 18px; font-weight: 600; }
+    .result-img-wrapper { padding: 15px; text-align: center; }
+    .result-img-wrapper img { max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .no-result-msg { padding: 30px; text-align: center; color: #888; font-size: 15px; }
+    .info-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; padding: 20px; }
+    .info-card h2 { color: #6a1b9a; font-size: 20px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+    .info-card h3 { color: #2c3e50; font-size: 17px; margin: 15px 0 8px 0; }
+    .info-card p, .info-card li { color: #555; font-size: 15px; line-height: 1.8; margin-bottom: 10px; }
+    .info-card ul { padding-left: 20px; margin-bottom: 15px; }
+    .schedule-table { width: 100%; border-collapse: collapse; }
+    .schedule-table th { background: #f0f4f8; padding: 12px 15px; text-align: left; font-weight: 600; color: #333; border-bottom: 2px solid #ddd; font-size: 14px; }
+    .schedule-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 14px; color: #444; }
+    .schedule-table tr:hover { background: #f8f9fa; }
+    .prize-amount { color: #27ae60; font-weight: 700; }
+    .posts-section { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; overflow: hidden; }
+    .post-link { display: block; padding: 12px 20px; border-bottom: 1px solid #eee; color: #333; text-decoration: none; transition: background 0.2s; }
+    .post-link:hover { background: #f8f9fa; }
+    .post-link-title { font-weight: 600; font-size: 14px; color: #6a1b9a; }
+    .post-link-date { font-size: 12px; color: #888; margin-top: 3px; }
+    .footer { background: #1a1a2e; color: #aaa; padding: 30px 15%; text-align: center; font-size: 13px; margin-top: 30px; }
+    .footer a { color: #3498db; }
+    @media (max-width: 768px) {
+        .schedule-table th, .schedule-table td { padding: 8px 10px; font-size: 12px; }
+        .nav-item { padding: 6px 12px; font-size: 12px; }
+        .footer { padding: 20px 3%; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="header-section">
+        {% if site_settings and site_settings.logo_data %}
+        <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 60px; margin-bottom: 10px;">
+        {% endif %}
+        <h1 class="site-title">Lottery Sambad Result Today</h1>
+        <p class="site-subtitle">Live Nagaland State Lottery Sambad 1PM 6PM 8PM Results</p>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/daily-update" class="nav-item">Daily Update</a>
+            <a href="/latest" class="nav-item">Latest</a>
+            <a href="/kerala-lottery-result" class="nav-item">Kerala Lottery</a>
+            <a href="/lottery-sambad" class="nav-item active">Lottery Sambad</a>
+            <a href="/daily-result" class="nav-item">Daily Result</a>
+        </div>
+    </div>
+
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div style="text-align: center; padding: 10px;">{{ ad_settings.ad_after_header | safe }}</div>
+    {% endif %}
+
+    <div class="page-title-section">
+        <div class="page-title">Lottery Sambad Result Today {{ current_date }}</div>
+        <p class="page-date">{{ current_day }} | 1:00 PM, 6:00 PM, 8:00 PM Draws</p>
+    </div>
+
+    <div class="main-container">
+        <div class="content-section">
+
+            <div class="today-highlight">
+                <h2>Today's Lottery Sambad Draws - {{ current_day }}</h2>
+                <div class="draw-cards">
+                    {% if results and results|length > 0 %}
+                        {% for r in results %}
+                        <div class="draw-card">
+                            <div class="draw-time-label">{{ r.draw_time }}</div>
+                            <div class="draw-name-label">{{ r.draw_name }}</div>
+                            <div style="margin-top:5px;color:#27ae60;font-weight:700;">{{ r.first_prize_amount or '₹99,00,000' }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="draw-card">
+                            <div class="draw-time-label">1:00 PM</div>
+                            <div class="draw-name-label">Dear Lottery</div>
+                            <div style="margin-top:5px;color:#27ae60;font-weight:700;">₹99,00,000</div>
+                        </div>
+                        <div class="draw-card">
+                            <div class="draw-time-label">6:00 PM</div>
+                            <div class="draw-name-label">Dear Lottery</div>
+                            <div style="margin-top:5px;color:#27ae60;font-weight:700;">₹99,00,000</div>
+                        </div>
+                        <div class="draw-card">
+                            <div class="draw-time-label">8:00 PM</div>
+                            <div class="draw-name-label">Dear Lottery</div>
+                            <div style="margin-top:5px;color:#27ae60;font-weight:700;">₹99,00,000</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if results and results|length > 0 %}
+            {% for r in results %}
+            <div class="result-image-section">
+                <div class="section-title-bar">Lottery Sambad {{ r.draw_time }} - {{ r.draw_name }} Result</div>
+                {% if r.image_url %}
+                <div class="result-img-wrapper">
+                    <img src="{{ r.image_url }}" alt="Lottery Sambad {{ r.draw_time }} Result {{ current_date }}" loading="lazy">
+                </div>
+                {% else %}
+                <div class="no-result-msg">Result image will be updated after the {{ r.draw_time }} draw. Please refresh this page.</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="result-image-section">
+                <div class="section-title-bar">Lottery Sambad Results - {{ current_date }}</div>
+                <div class="no-result-msg">Results will be updated after each draw (1PM, 6PM, 8PM). Please check back later or refresh this page.</div>
+            </div>
+            {% endif %}
+
+            {% if ad_settings and ad_settings.manual_ad_code_between_games %}
+            <div style="text-align: center; padding: 10px;">{{ ad_settings.manual_ad_code_between_games | safe }}</div>
+            {% endif %}
+
+            <div class="result-image-section">
+                <div class="section-title-bar">Lottery Sambad Weekly Draw Schedule {{ current_year }}</div>
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>1:00 PM</th>
+                            <th>6:00 PM</th>
+                            <th>8:00 PM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Monday</strong></td><td>Dear Dwarka</td><td>Dear Blitzen</td><td>Dear Finch</td></tr>
+                        <tr><td><strong>Tuesday</strong></td><td>Dear Godavari</td><td>Dear Comet</td><td>Dear Goose</td></tr>
+                        <tr><td><strong>Wednesday</strong></td><td>Dear Indus</td><td>Dear Cupid</td><td>Dear Pelican</td></tr>
+                        <tr><td><strong>Thursday</strong></td><td>Dear Mahandi</td><td>Dear Dancer</td><td>Dear Sandpiper</td></tr>
+                        <tr><td><strong>Friday</strong></td><td>Dear Meghna</td><td>Dear Dasher</td><td>Dear Seagull</td></tr>
+                        <tr><td><strong>Saturday</strong></td><td>Dear Narmada</td><td>Dear Donner</td><td>Dear Stork</td></tr>
+                        <tr><td><strong>Sunday</strong></td><td>Dear Yamuna</td><td>Dear Vixen</td><td>Dear Toucan</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-card">
+                <h2>Lottery Sambad Result Today {{ current_date }} - Complete Guide</h2>
+                <p>Lottery Sambad is one of India's most popular state-run lottery programs, operated jointly by the Nagaland, West Bengal, and Sikkim state lottery departments. With three daily draws at 1:00 PM, 6:00 PM, and 8:00 PM IST, Lottery Sambad offers exciting winning opportunities with a first prize of ₹99,00,000 (Ninety-Nine Lakhs) in every draw.</p>
+                <h3>Prize Structure</h3>
+                <ul>
+                    <li><strong>1st Prize:</strong> ₹99,00,000 (99 Lakhs)</li>
+                    <li><strong>Consolation Prize:</strong> ₹1,000</li>
+                    <li><strong>2nd Prize:</strong> ₹9,000</li>
+                    <li><strong>3rd Prize:</strong> ₹500</li>
+                    <li><strong>4th Prize:</strong> ₹250</li>
+                    <li><strong>5th Prize:</strong> ₹120</li>
+                </ul>
+                <h3>How to Check Result</h3>
+                <ul>
+                    <li>Visit this page after draw time (1PM, 6PM, or 8PM IST)</li>
+                    <li>Find your draw time section and view the result image</li>
+                    <li>Compare your ticket number with the winning numbers</li>
+                    <li>Check all prize tiers for potential winnings</li>
+                </ul>
+            </div>
+
+            {% if posts and posts|length > 0 %}
+            <div class="posts-section">
+                <div class="section-title-bar">Recent Lottery Sambad Posts</div>
+                {% for p in posts %}
+                <a href="/lottery-sambad-result-today/{{ p.slug }}" class="post-link">
+                    <div class="post-link-title">{{ p.title }}</div>
+                    <div class="post-link-date">{{ p.draw_date }} | {{ p.lottery_name }}</div>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if ad_settings and ad_settings.manual_ad_code_before_footer %}
+            <div style="text-align: center; padding: 10px;">{{ ad_settings.manual_ad_code_before_footer | safe }}</div>
+            {% endif %}
+
+            <div class="info-card">
+                <h2>About Lottery Sambad</h2>
+                <p>Lottery Sambad is a collective name for the state lottery draws conducted by Nagaland, West Bengal, and Sikkim. The 1:00 PM draw is conducted by Nagaland State Lottery, the 6:00 PM draw by West Bengal State Lottery, and the 8:00 PM draw by Sikkim State Lottery. Each draw operates independently under the provisions of the Lotteries (Regulation) Act, 1998.</p>
+                <p>Tickets are priced at ₹6 each and are available at authorized lottery agents across these states. The lottery program generates significant revenue for state welfare programs and provides employment to thousands of lottery agents and distributors.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; {{ current_year }} Satta King. All Rights Reserved.</p>
+        <p>
+            <a href="/">Home</a> |
+            <a href="/kerala-lottery-result">Kerala Lottery</a> |
+            <a href="/lottery-sambad">Lottery Sambad</a> |
+            <a href="/privacy-policy">Privacy Policy</a> |
+            <a href="/disclaimer">Disclaimer</a>
+        </p>
+    </div>
+{% endblock %}

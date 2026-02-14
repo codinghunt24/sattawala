@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ post.title }} | Lottery Sambad Live Result</title>
+<meta name="description" content="{{ post.meta_description }}">
+<meta name="keywords" content="{{ post.meta_keywords }}">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="Satta King">
+<meta name="language" content="English">
+<meta name="revisit-after" content="1 days">
+<meta name="rating" content="general">
+<link rel="canonical" href="{{ base_url }}/lottery-sambad-result-today/{{ post.slug }}">
+<link rel="alternate" hreflang="en-in" href="{{ base_url }}/lottery-sambad-result-today/{{ post.slug }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ base_url }}/lottery-sambad-result-today/{{ post.slug }}">
+<meta property="og:title" content="{{ post.title }} | Lottery Sambad">
+<meta property="og:description" content="{{ post.meta_description }}">
+<meta property="og:site_name" content="Satta King">
+<meta property="og:locale" content="en_IN">
+<meta property="og:image" content="{{ base_url }}/favicon.ico">
+<meta property="article:published_time" content="{{ post.draw_date }}T13:00:00+05:30">
+<meta property="article:modified_time" content="{{ post.draw_date }}T23:59:59+05:30">
+<meta property="article:section" content="Lottery Sambad Results">
+<meta property="article:tag" content="{{ post.lottery_name }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.meta_description }}">
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ base_url }}/lottery-sambad-result-today/{{ post.slug }}"
+    },
+    "headline": "{{ post.title }} | Lottery Sambad Live Result",
+    "description": "{{ post.meta_description }}",
+    "datePublished": "{{ post.draw_date }}T13:00:00+05:30",
+    "dateModified": "{{ post.draw_date }}T23:59:59+05:30",
+    "author": {"@type": "Organization", "name": "Satta King", "url": "{{ base_url }}"},
+    "publisher": {"@type": "Organization", "name": "Satta King", "url": "{{ base_url }}"},
+    "keywords": "{{ post.meta_keywords }}",
+    "about": {
+        "@type": "Thing",
+        "name": "Lottery Sambad",
+        "description": "{{ post.lottery_name }} lottery result for {{ date_str }}"
+    },
+    "inLanguage": "en-IN"
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ base_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Lottery Sambad", "item": "{{ base_url }}/lottery-sambad"},
+        {"@type": "ListItem", "position": 3, "name": "{{ post.title }}", "item": "{{ base_url }}/lottery-sambad-result-today/{{ post.slug }}"}
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What is today's Lottery Sambad result for {{ date_str }}?",
+            "acceptedAnswer": {"@type": "Answer", "text": "The Lottery Sambad results for {{ date_str }} include three draws - 1:00 PM, 6:00 PM, and 8:00 PM. Check the result images above for complete winning numbers. The first prize for each draw is ₹99,00,000."}
+        },
+        {
+            "@type": "Question",
+            "name": "What time are Lottery Sambad results announced on {{ date_str }}?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Lottery Sambad results are announced at 1:00 PM (Nagaland), 6:00 PM (West Bengal), and 8:00 PM (Sikkim) IST on {{ date_str }}."}
+        },
+        {
+            "@type": "Question",
+            "name": "What is the first prize of Lottery Sambad?",
+            "acceptedAnswer": {"@type": "Answer", "text": "The Lottery Sambad first prize is ₹99,00,000 (Ninety-Nine Lakhs) for each draw. The total prize pool includes consolation (₹1,000), 2nd (₹9,000), 3rd (₹500), 4th (₹250), and 5th (₹120) prizes."}
+        },
+        {
+            "@type": "Question",
+            "name": "How to claim Lottery Sambad prize?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Lottery Sambad prizes up to ₹5,000 can be claimed from any authorized lottery agent. Prizes between ₹5,001 and ₹1,00,000 from District Lottery Office. Prizes above ₹1,00,000 from Directorate of State Lotteries within 30 days."}
+        },
+        {
+            "@type": "Question",
+            "name": "Which states conduct Lottery Sambad draws?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Lottery Sambad draws are conducted by Nagaland (1PM), West Bengal (6PM), and Sikkim (8PM) state lottery departments under the Lotteries (Regulation) Act, 1998."}
+        },
+        {
+            "@type": "Question",
+            "name": "How much does a Lottery Sambad ticket cost?",
+            "acceptedAnswer": {"@type": "Answer", "text": "A Lottery Sambad ticket costs ₹6 per ticket. Tickets are available at authorized lottery agents across Nagaland, West Bengal, and Sikkim."}
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f4f6f9; color: #222; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .main-wrapper { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+    @media (max-width: 768px) { .main-wrapper { padding: 0 12px; } }
+    .nav-bar { background: #1a1a2e; padding: 12px 0; text-align: center; border-bottom: 3px solid #9c27b0; }
+    .nav-menu-inner {
+        max-width: 1200px; margin: 0 auto;
+        display: flex; justify-content: center; gap: 4px; flex-wrap: nowrap;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; white-space: nowrap; padding: 0 10px;
+    }
+    .nav-menu-inner::-webkit-scrollbar { display: none; }
+    .nav-item { color: #e6edf3; text-decoration: none; padding: 7px 16px; font-size: 14px; border-radius: 20px; transition: all 0.3s; }
+    .nav-item:hover, .nav-item.active { background: #30363d; color: #ce93d8; }
+    .breadcrumb { padding: 12px 0; font-size: 13px; color: #666; }
+    .breadcrumb a { color: #6a1b9a; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .post-title-section { text-align: center; padding: 25px 15px 20px; margin-bottom: 5px; }
+    .post-main-title { font-size: 24px; font-weight: 800; color: #6a1b9a; margin-bottom: 8px; text-transform: uppercase; }
+    .post-subtitle { color: #666; font-size: 14px; }
+    .kerala-result-card { background: #fff; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 2px solid #ce93d8; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .kerala-result-card.waiting { border-color: #3498db; }
+    .result-header { text-align: center; font-size: 20px; font-weight: 700; color: #6a1b9a; margin-bottom: 5px; }
+    .result-date { text-align: center; color: #666; font-size: 13px; margin-bottom: 20px; }
+    .waiting-msg { text-align: center; color: #3498db; font-size: 15px; padding: 20px; background: #eaf4fd; border-radius: 8px; margin-bottom: 15px; }
+    .prize-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 600px) { .prize-grid { grid-template-columns: 1fr; } }
+    .prize-box { background: #f8f9fa; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #e0e0e0; }
+    .prize-gold { border-left: 4px solid #ffd700; background: #fffdf0; }
+    .prize-silver { border-left: 4px solid #a0a0a0; background: #f9f9f9; }
+    .prize-bronze { border-left: 4px solid #cd7f32; background: #fdf8f0; }
+    .prize-label { color: #666; font-size: 12px; margin-bottom: 5px; }
+    .prize-number { color: #1a8c1a; font-size: 22px; font-weight: 700; }
+    .prize-silver .prize-number { color: #0066cc; font-size: 18px; }
+    .prize-bronze .prize-number { color: #b8860b; font-size: 18px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #4a148c; margin: 25px 0 12px; padding-bottom: 8px; border-bottom: 2px solid #9c27b0; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 25px; }
+    .info-item { background: #fff; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0e0e0; }
+    .info-item-label { color: #888; font-size: 11px; margin-bottom: 4px; }
+    .info-item-value { color: #222; font-size: 14px; font-weight: 600; }
+    .post-text { color: #333; font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+    .post-text p { margin-bottom: 12px; }
+    .step-list { padding-left: 20px; margin-bottom: 15px; }
+    .step-list li { color: #333; margin-bottom: 8px; font-size: 14px; }
+    .schedule-tbl, .claim-tbl { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+    .schedule-tbl th, .claim-tbl th { background: #4a148c; color: #fff; padding: 10px; text-align: left; }
+    .schedule-tbl td, .claim-tbl td { padding: 8px 10px; color: #333; border-bottom: 1px solid #e0e0e0; background: #fff; }
+    .schedule-tbl tr:nth-child(even) td, .claim-tbl tr:nth-child(even) td { background: #f8f9fa; }
+    .analysis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .analysis-item { background: #fff; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0e0e0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .analysis-label { color: #888; font-size: 11px; }
+    .analysis-value { color: #6a1b9a; font-size: 18px; font-weight: 700; margin-top: 4px; }
+    .related-links { margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd; }
+    .related-links h3 { color: #4a148c; font-size: 16px; margin-bottom: 10px; }
+    .related-link { display: inline-block; padding: 6px 14px; background: #f3e5f5; color: #6a1b9a; border-radius: 6px; text-decoration: none; margin: 4px; font-size: 13px; border: 1px solid #ce93d8; }
+    .related-link:hover { background: #e1bee7; }
+    @media (max-width: 480px) {
+        .post-main-title { font-size: 18px; }
+        .nav-item { padding: 5px 10px; font-size: 12px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="nav-bar">
+        <div class="nav-menu-inner">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/daily-update" class="nav-item">Daily Update</a>
+            <a href="/latest" class="nav-item">Latest</a>
+            <a href="/kerala-lottery-result" class="nav-item">Kerala Lottery</a>
+            <a href="/lottery-sambad" class="nav-item active">Lottery Sambad</a>
+            <a href="/daily-result" class="nav-item">Daily Result</a>
+        </div>
+    </div>
+
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div style="text-align: center; padding: 10px;">{{ ad_settings.ad_after_header | safe }}</div>
+    {% endif %}
+
+    <div class="main-wrapper">
+        <div class="breadcrumb">
+            <a href="/">Home</a> &raquo; <a href="/lottery-sambad">Lottery Sambad</a> &raquo; {{ post.title }}
+        </div>
+
+        <div class="post-title-section">
+            <h1 class="post-main-title">{{ post.title }}</h1>
+            <p class="post-subtitle">{{ post.lottery_name }} | {{ date_str }} | 1PM 6PM 8PM Live Results</p>
+        </div>
+
+        {{ post.content | safe }}
+
+        <div style="text-align: center; margin: 30px 0; padding: 20px; background: #f3e5f5; border-radius: 10px; border: 1px solid #ce93d8;">
+            <p style="color: #6a1b9a; font-size: 14px; margin-bottom: 8px; font-weight: 600;">Check More Lottery Sambad Results</p>
+            <a href="/lottery-sambad" style="display: inline-block; padding: 10px 25px; background: #6a1b9a; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 700;">Lottery Sambad Result Today</a>
+            <a href="/kerala-lottery-result" style="display: inline-block; padding: 10px 25px; background: #1a5276; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 700; margin-left: 8px;">Kerala Lottery</a>
+        </div>
+    </div>
+
+    {% if ad_settings and ad_settings.manual_ad_code_before_footer %}
+    <div style="text-align: center; padding: 10px;">{{ ad_settings.manual_ad_code_before_footer | safe }}</div>
+    {% endif %}
+{% endblock %}

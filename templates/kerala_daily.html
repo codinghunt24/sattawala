@@ -8,9 +8,9 @@
 <meta name="author" content="Satta King">
 <meta name="language" content="English">
 <meta name="revisit-after" content="1 days">
-<link rel="canonical" href="{{ base_url }}/kerala-daily{% if current_page > 1 %}?page={{ current_page }}{% endif %}">
+<link rel="canonical" href="{{ base_url }}/daily-result{% if current_page > 1 %}?page={{ current_page }}{% endif %}">
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ base_url }}/kerala-daily">
+<meta property="og:url" content="{{ base_url }}/daily-result">
 <meta property="og:title" content="Kerala Daily Lottery Result Posts {{ current_month }} {{ current_year }}">
 <meta property="og:description" content="Daily Kerala Lottery results and winning numbers. Updated every day at 3:00 PM IST.">
 <meta property="og:site_name" content="Satta King">
@@ -35,7 +35,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ base_url }}/"},
-        {"@type": "ListItem", "position": 2, "name": "Kerala Daily", "item": "{{ base_url }}/kerala-daily"}
+        {"@type": "ListItem", "position": 2, "name": "Daily Result", "item": "{{ base_url }}/daily-result"}
     ]
 }
 </script>
@@ -222,7 +222,7 @@
         <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 60px; max-width: 250px;">
         {% endif %}
         <h2 class="site-title">{{ site_settings.site_title if site_settings and site_settings.site_title else 'SATTA KING' }}</h2>
-        <p class="site-subtitle">Kerala Daily Lottery Results</p>
+        <p class="site-subtitle">Daily Result Lottery Results</p>
     </div>
 
     <div class="nav-section">
@@ -232,7 +232,8 @@
             <a href="/daily-update" class="nav-item">Daily Update</a>
             <a href="/latest" class="nav-item">Latest</a>
             <a href="/kerala-lottery-result" class="nav-item">Kerala Lottery</a>
-            <a href="/kerala-daily" class="nav-item active">Kerala Daily</a>
+            <a href="/lottery-sambad" class="nav-item">Lottery Sambad</a>
+            <a href="/daily-result" class="nav-item active">Daily Result</a>
         </div>
     </div>
 
@@ -249,20 +250,25 @@
 
     <div class="page-container">
         <div class="page-title-box">
-            <h1>Kerala Daily Lottery Results</h1>
-            <p>Daily auto-published Kerala Lottery results with winning numbers, prize details & analysis | {{ current_month }} {{ current_year }}</p>
+            <h1>Daily Result - Lottery Results</h1>
+            <p>Daily auto-published Lottery results with winning numbers, prize details & analysis | {{ current_month }} {{ current_year }}</p>
         </div>
 
         {% if posts and posts|length > 0 %}
             {% for post in posts %}
-            <a href="/kerala-lottery-result-today/{{ post.slug }}" class="post-card">
+            <a href="{{ post.url_prefix|default('/kerala-lottery-result-today/') }}{{ post.slug }}" class="post-card">
                 <div class="post-card-top">
                     <div style="flex: 1;">
                         <div class="post-card-title">{{ post.title }}</div>
                         <div class="post-card-meta">
                             <span class="meta-tag meta-date">{{ post.post_date.strftime('%d %b %Y') if post.post_date else '' }}</span>
-                            <span class="meta-tag meta-lottery">{{ post.lottery_name or 'Kerala Lottery' }}</span>
+                            <span class="meta-tag meta-lottery">{{ post.lottery_name or 'Lottery' }}</span>
                             <span class="meta-tag meta-day">{{ post.post_date.strftime('%A') if post.post_date else '' }}</span>
+                            {% if post.source == 'sambad' %}
+                            <span class="meta-tag" style="background: rgba(155,89,182,0.15); color: #9b59b6;">Sambad</span>
+                            {% elif post.source == 'kerala' %}
+                            <span class="meta-tag" style="background: rgba(46,204,113,0.15); color: #2ecc71;">Kerala</span>
+                            {% endif %}
                         </div>
                         <div class="post-card-desc">{{ post.meta_description[:150] }}{% if post.meta_description|length > 150 %}...{% endif %}</div>
                     </div>
@@ -282,7 +288,7 @@
             {% if total_pages > 1 %}
             <div class="pagination">
                 {% if current_page > 1 %}
-                <a href="/kerala-daily?page={{ current_page - 1 }}" class="page-btn">&laquo; Prev</a>
+                <a href="/daily-result?page={{ current_page - 1 }}" class="page-btn">&laquo; Prev</a>
                 {% else %}
                 <span class="page-btn disabled">&laquo; Prev</span>
                 {% endif %}
@@ -291,21 +297,21 @@
                 {% set end_page = [total_pages, current_page + 2] | min %}
 
                 {% if start_page > 1 %}
-                <a href="/kerala-daily?page=1" class="page-btn">1</a>
+                <a href="/daily-result?page=1" class="page-btn">1</a>
                 {% if start_page > 2 %}<span style="color: #8b949e;">...</span>{% endif %}
                 {% endif %}
 
                 {% for p in range(start_page, end_page + 1) %}
-                <a href="/kerala-daily?page={{ p }}" class="page-btn {% if p == current_page %}active{% endif %}">{{ p }}</a>
+                <a href="/daily-result?page={{ p }}" class="page-btn {% if p == current_page %}active{% endif %}">{{ p }}</a>
                 {% endfor %}
 
                 {% if end_page < total_pages %}
                 {% if end_page < total_pages - 1 %}<span style="color: #8b949e;">...</span>{% endif %}
-                <a href="/kerala-daily?page={{ total_pages }}" class="page-btn">{{ total_pages }}</a>
+                <a href="/daily-result?page={{ total_pages }}" class="page-btn">{{ total_pages }}</a>
                 {% endif %}
 
                 {% if current_page < total_pages %}
-                <a href="/kerala-daily?page={{ current_page + 1 }}" class="page-btn">Next &raquo;</a>
+                <a href="/daily-result?page={{ current_page + 1 }}" class="page-btn">Next &raquo;</a>
                 {% else %}
                 <span class="page-btn disabled">Next &raquo;</span>
                 {% endif %}
@@ -334,7 +340,7 @@
     {% endif %}
 
     <div class="footer">
-        <p>Kerala Daily Lottery Results | Updated Daily at 3:00 PM IST</p>
+        <p>Daily Result Lottery Results | Updated Daily at 3:00 PM IST</p>
         <p style="margin-top: 5px;">&copy; {{ current_year }} <a href="/">Satta King</a> | All Rights Reserved</p>
     </div>
 {% endblock %}

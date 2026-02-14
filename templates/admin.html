@@ -448,6 +448,7 @@
             <li><a href="#" onclick="showSection('sitemap')"><span class="nav-icon">🗺️</span> Sitemap</a></li>
             <li><a href="#" onclick="showSection('history')"><span class="nav-icon">📊</span> History Import</a></li>
             <li><a href="#" onclick="showSection('keralaLottery')"><span class="nav-icon">🎰</span> Kerala Lottery</a></li>
+            <li><a href="#" onclick="showSection('lotterySambad')"><span class="nav-icon">🎲</span> Lottery Sambad</a></li>
             <li><a href="#" onclick="showSection('settings')"><span class="nav-icon">⚙️</span> Settings</a></li>
             <li style="margin-top: 12px; border-top: 1px solid #21262d; padding-top: 12px;"><a href="/admin/logout" style="color: #f85149;"><span class="nav-icon">🔒</span> Logout</a></li>
         </ul>
@@ -1152,6 +1153,66 @@
                 <div id="autoSubmitResults" style="margin-top: 15px;"></div>
             </div>
         </div>
+
+        <div id="lotterySambadSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Lottery Sambad Auto-Scrape</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Auto-scrape Lottery Sambad results (1PM, 6PM, 8PM draws) from lotterysambadresult.in at configurable intervals.</p>
+                <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="sambadAutoScrape" style="width: 18px; height: 18px; accent-color: #e2b339;">
+                        <span>Enable Auto-Scrape</span>
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <label>Interval (hours):</label>
+                        <select id="sambadScrapeInterval" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                            <option value="1">Every 1 Hour</option>
+                            <option value="2">Every 2 Hours</option>
+                            <option value="3">Every 3 Hours</option>
+                            <option value="4">Every 4 Hours</option>
+                            <option value="6">Every 6 Hours</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="saveSambadScrapeSettings()">Save Settings</button>
+                    <button class="btn btn-success" onclick="triggerSambadScrape()">Scrape Now</button>
+                </div>
+                <div id="sambadScrapeStatus" style="margin-top: 15px;"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Lottery Sambad Auto-Post</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Auto-publish daily Lottery Sambad SEO posts with 800+ keywords, result analysis, and dynamic content for Google ranking.</p>
+                <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="sambadAutoPost" style="width: 18px; height: 18px; accent-color: #e2b339;">
+                        <span>Enable Auto-Post</span>
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <label>Post Time (IST):</label>
+                        <input type="time" id="sambadPostTime" value="20:30" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <button class="btn btn-primary" onclick="saveSambadPostSettings()">Save Settings</button>
+                    <button class="btn btn-success" onclick="createSambadPostToday()">Create Today's Post</button>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <input type="date" id="sambadManualDate" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                    <button class="btn btn-secondary" onclick="createSambadPostDate()">Create Post for Date</button>
+                </div>
+                <div id="sambadPostStatus" style="margin-top: 15px;"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Published Lottery Sambad Posts</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">All auto-published Lottery Sambad SEO posts</p>
+                <button class="btn btn-secondary" onclick="loadSambadPosts()" style="margin-bottom: 15px;">Refresh Posts</button>
+                <div id="sambadPostsList"></div>
+            </div>
+        </div>
+
         </div>
     </div>
     </div>
@@ -1428,6 +1489,7 @@
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.getElementById('indexingSection').style.display = section === 'indexing' ? 'block' : 'none';
             document.getElementById('keralaLotterySection').style.display = section === 'keralaLottery' ? 'block' : 'none';
+            document.getElementById('lotterySambadSection').style.display = section === 'lotterySambad' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
             if (window.innerWidth <= 768) toggleSidebar();
@@ -1435,6 +1497,7 @@
             if (section === 'ads') loadAdSettings();
             if (section === 'sitemap') loadSitemapStats();
             if (section === 'keralaLottery') { loadKeralaSchedule(); loadKeralaPostSettings(); loadKeralaResults(); loadKeralaPosts(); }
+            if (section === 'lotterySambad') { loadSambadScrapeSettings(); loadSambadPostSettings(); loadSambadPosts(); }
             if (section === 'indexing') loadIndexingStatus();
         }
         
@@ -2776,6 +2839,108 @@
             } catch(e) {
                 document.getElementById('keralaResultsContainer').innerHTML = '<p style="color: #e74c3c;">Error loading results</p>';
             }
+        }
+
+        async function loadSambadScrapeSettings() {
+            try {
+                const res = await fetch('/api/lottery-sambad/scrape-settings');
+                const data = await res.json();
+                document.getElementById('sambadAutoScrape').checked = data.auto_scrape;
+                document.getElementById('sambadScrapeInterval').value = data.scrape_interval || 2;
+                if (data.last_scrape) {
+                    document.getElementById('sambadScrapeStatus').innerHTML = '<p style="color: #8b949e; font-size: 12px;">Last scrape: ' + data.last_scrape + ' | Status: ' + (data.last_scrape_status || 'N/A') + '</p>';
+                }
+            } catch(e) { console.error('Error loading sambad scrape settings', e); }
+        }
+        async function saveSambadScrapeSettings() {
+            try {
+                const res = await fetch('/api/lottery-sambad/scrape-settings', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({auto_scrape: document.getElementById('sambadAutoScrape').checked, scrape_interval: parseInt(document.getElementById('sambadScrapeInterval').value)})});
+                const data = await res.json();
+                document.getElementById('sambadScrapeStatus').innerHTML = data.success ? '<div class="status-msg status-success">Scrape settings saved!</div>' : '<div class="status-msg status-error">Error: ' + data.error + '</div>';
+            } catch(e) { document.getElementById('sambadScrapeStatus').innerHTML = '<div class="status-msg status-error">Error saving settings</div>'; }
+        }
+        async function triggerSambadScrape() {
+            document.getElementById('sambadScrapeStatus').innerHTML = '<div class="loading">Scraping Lottery Sambad results...</div>';
+            try {
+                const res = await fetch('/api/lottery-sambad/scrape', {method: 'POST'});
+                const data = await res.json();
+                if (data.success) {
+                    let msg = 'Scrape successful! Found ' + (data.draws_found || 0) + ' draws.';
+                    document.getElementById('sambadScrapeStatus').innerHTML = '<div class="status-msg status-success">' + msg + '</div>';
+                } else {
+                    document.getElementById('sambadScrapeStatus').innerHTML = '<div class="status-msg status-error">Scrape failed: ' + (data.error || 'Unknown error') + '</div>';
+                }
+            } catch(e) { document.getElementById('sambadScrapeStatus').innerHTML = '<div class="status-msg status-error">Scrape request failed</div>'; }
+        }
+        async function loadSambadPostSettings() {
+            try {
+                const res = await fetch('/api/lottery-sambad/post-settings');
+                const data = await res.json();
+                document.getElementById('sambadAutoPost').checked = data.enabled;
+                document.getElementById('sambadPostTime').value = data.post_time || '20:30';
+            } catch(e) { console.error('Error loading sambad post settings', e); }
+        }
+        async function saveSambadPostSettings() {
+            try {
+                const res = await fetch('/api/lottery-sambad/post-settings', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({enabled: document.getElementById('sambadAutoPost').checked, post_time: document.getElementById('sambadPostTime').value})});
+                const data = await res.json();
+                document.getElementById('sambadPostStatus').innerHTML = data.success ? '<div class="status-msg status-success">Post settings saved!</div>' : '<div class="status-msg status-error">Error: ' + data.error + '</div>';
+            } catch(e) { document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-error">Error saving settings</div>'; }
+        }
+        async function createSambadPostToday() {
+            document.getElementById('sambadPostStatus').innerHTML = '<div class="loading">Creating Lottery Sambad post...</div>';
+            try {
+                const res = await fetch('/api/lottery-sambad/create-post', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({})});
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-success">Post created! <a href="/lottery-sambad-result-today/' + data.slug + '" target="_blank" style="color: #58a6ff;">View Post</a></div>';
+                    loadSambadPosts();
+                } else {
+                    document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-error">Error: ' + (data.error || 'Unknown') + '</div>';
+                }
+            } catch(e) { document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-error">Error creating post</div>'; }
+        }
+        async function createSambadPostDate() {
+            const date = document.getElementById('sambadManualDate').value;
+            if (!date) { alert('Please select a date'); return; }
+            document.getElementById('sambadPostStatus').innerHTML = '<div class="loading">Creating post for ' + date + '...</div>';
+            try {
+                const res = await fetch('/api/lottery-sambad/create-post', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({date: date})});
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-success">Post created for ' + date + '! <a href="/lottery-sambad-result-today/' + data.slug + '" target="_blank" style="color: #58a6ff;">View Post</a></div>';
+                    loadSambadPosts();
+                } else {
+                    document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-error">Error: ' + (data.error || 'Unknown') + '</div>';
+                }
+            } catch(e) { document.getElementById('sambadPostStatus').innerHTML = '<div class="status-msg status-error">Error creating post</div>'; }
+        }
+        async function loadSambadPosts() {
+            try {
+                const res = await fetch('/api/lottery-sambad/posts?limit=30');
+                const data = await res.json();
+                if (!data.posts || data.posts.length === 0) {
+                    document.getElementById('sambadPostsList').innerHTML = '<p style="color: #8b949e;">No posts yet</p>';
+                    return;
+                }
+                let html = '<table style="width: 100%; border-collapse: collapse; font-size: 13px;"><thead><tr style="border-bottom: 1px solid #30363d;"><th style="padding: 8px; text-align: left; color: #e2b339;">Title</th><th style="padding: 8px; text-align: center; color: #e2b339;">Date</th><th style="padding: 8px; text-align: center; color: #e2b339;">Actions</th></tr></thead><tbody>';
+                data.posts.forEach(p => {
+                    html += '<tr style="border-bottom: 1px solid #21262d;">';
+                    html += '<td style="padding: 6px 8px; color: #e6edf3; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + p.title + '</td>';
+                    html += '<td style="padding: 6px 8px; text-align: center; color: #8b949e;">' + (p.draw_date || '') + '</td>';
+                    html += '<td style="padding: 6px 8px; text-align: center;"><a href="/lottery-sambad-result-today/' + p.slug + '" target="_blank" style="color: #58a6ff; font-size: 12px;">View</a> | <a href="#" onclick="deleteSambadPost(' + p.id + ')" style="color: #f85149; font-size: 12px;">Delete</a></td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                document.getElementById('sambadPostsList').innerHTML = html;
+            } catch(e) { document.getElementById('sambadPostsList').innerHTML = '<p style="color: #e74c3c;">Error loading posts</p>'; }
+        }
+        async function deleteSambadPost(id) {
+            if (!confirm('Delete this Lottery Sambad post?')) return;
+            try {
+                await fetch('/api/lottery-sambad/posts/' + id, {method: 'DELETE'});
+                loadSambadPosts();
+            } catch(e) { alert('Error deleting post'); }
         }
 
         loadGames();
