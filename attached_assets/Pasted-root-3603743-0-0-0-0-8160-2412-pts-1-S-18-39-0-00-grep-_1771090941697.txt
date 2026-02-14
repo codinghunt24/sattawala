@@ -1,0 +1,18 @@
+root     3603743  0.0  0.0   8160  2412 pts/1    S+   18:39   0:00 grep --color=auto python
+root@mail:/home/digitalcash24/jj-communication.com# cat /home/digitalcash24/jj-communication.com/.env
+DATABASE_URL=postgresql://sattaadmin:SattaKing2026Secure@localhost:5432/sattaking_db
+SESSION_SECRET=SattaKingSession2026Key
+root@mail:/home/digitalcash24/jj-communication.com# kill 3586845 3586847 3586848 3586849
+root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep jj-communication
+root     3604933  0.0  0.0   8164   648 pts/1    S+   18:41   0:00 grep --color=auto jj-communication
+root@mail:/home/digitalcash24/jj-communication.com# cd /home/digitalcash24/jj-communication.com
+root@mail:/home/digitalcash24/jj-communication.com# source venv/bin/activate
+(venv) root@mail:/home/digitalcash24/jj-communication.com# set -a; source .env; set +a
+(venv) root@mail:/home/digitalcash24/jj-communication.com# gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+(venv) root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep jj-communication
+root     3605321  0.4  0.2  27584 17156 ?        S    18:42   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3605323  6.5  0.5 147180 45360 ?        Sl   18:42   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3605324  5.5  0.5 146700 44732 ?        Sl   18:42   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3605325  6.0  0.5 147904 46296 ?        Sl   18:42   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3605389  0.0  0.0   8164   724 pts/1    R+   18:42   0:00 grep --color=auto jj-communication
+(venv) root@mail:/home/digitalcash24/jj-communication.com# 
