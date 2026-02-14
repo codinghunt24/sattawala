@@ -1,0 +1,645 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Kerala Lottery Result Today {{ current_date }} | Live Winning Numbers</title>
+<meta name="description" content="Kerala Lottery Result Today {{ current_date }}. Check live Kerala lottery winning numbers, prize structure, and results. Kerala State Lottery results for Karunya, Nirmal, Win-Win, Akshaya, Sthree Sakthi, Fifty Fifty, Karunya Plus updated daily.">
+<meta name="keywords" content="kerala lottery result, kerala lottery result today, kerala lottery, kerala lottery today result, kerala state lottery, kerala lottery winning numbers, kerala lottery result today live, karunya lottery result, nirmal lottery result, win win lottery result, akshaya lottery result, sthree sakthi lottery result, fifty fifty lottery result, karunya plus lottery result, kerala bhagyakuri result, kerala lottery chart, kerala lottery number, kerala lottery prize structure, kerala lottery guessing, today lottery result kerala, lottery result today kerala, kerala lottery results, kerala lottery live, kerala lottery draw, kerala lottery ticket result, kerala lottery result chart, kl result today">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="Satta King">
+<meta name="language" content="English">
+<meta name="revisit-after" content="1 days">
+<meta name="rating" content="general">
+<meta property="og:title" content="Kerala Lottery Result Today {{ current_date }} | Live Winning Numbers">
+<meta property="og:description" content="Check Kerala Lottery Result Today {{ current_date }}. Live winning numbers for Karunya, Nirmal, Win-Win, Akshaya, Sthree Sakthi, Fifty Fifty, Karunya Plus lottery draws.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ base_url }}/kerala-lottery-result">
+<meta property="og:site_name" content="Satta King">
+<meta property="og:locale" content="en_IN">
+<meta property="og:image" content="{{ base_url }}/favicon.ico">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kerala Lottery Result Today {{ current_date }}">
+<meta name="twitter:description" content="Kerala Lottery Result Today. Check live winning numbers for all Kerala State Lottery draws.">
+<link rel="canonical" href="{{ base_url }}/kerala-lottery-result">
+<link rel="alternate" hreflang="en-in" href="{{ base_url }}/kerala-lottery-result">
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Kerala Lottery Result Today {{ current_date }}",
+    "description": "Check Kerala Lottery Result Today. Live winning numbers for Karunya, Nirmal, Win-Win, Akshaya lottery draws.",
+    "url": "{{ base_url }}/kerala-lottery-result",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "Satta King",
+        "url": "{{ base_url }}/"
+    },
+    "about": {
+        "@type": "Thing",
+        "name": "Kerala State Lottery",
+        "description": "Official Kerala State Lottery results and winning numbers"
+    },
+    "dateModified": "{{ current_date }}",
+    "inLanguage": "en-IN"
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ base_url }}/"
+    },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Kerala Lottery Result",
+        "item": "{{ base_url }}/kerala-lottery-result"
+    }]
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What time does the Kerala Lottery result come out?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Kerala Lottery results are usually announced at 3:00 PM IST every day. The live draw takes place at Gorky Bhavan, Thiruvananthapuram."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Which Kerala Lottery draws happen on which day?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Monday: Win-Win, Tuesday: Sthree Sakthi, Wednesday: Fifty Fifty, Thursday: Karunya Plus, Friday: Nirmal, Saturday: Karunya, Sunday: Akshaya."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How to check Kerala Lottery result?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can check Kerala Lottery results on this page which is updated daily after the 3:00 PM draw. Match your ticket number with the winning numbers listed in the results."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What is the Kerala Lottery 1st prize amount?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Kerala Lottery 1st prize typically ranges from ₹70 Lakhs to ₹80 Lakhs depending on the lottery type. Karunya and Akshaya offer ₹70 Lakhs, while some bumper lotteries offer up to ₹25 Crores."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How to claim Kerala Lottery prize?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Prizes up to ₹5,000 can be claimed from any lottery agent or agency. Prizes above ₹5,000 must be claimed from the Directorate of Kerala State Lotteries with valid ID proof within 30 days."
+            }
+        }
+    ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "Kerala Lottery Results {{ current_month }} {{ current_year }}",
+    "description": "Daily Kerala State Lottery results including Karunya, Nirmal, Win-Win, Akshaya, Sthree Sakthi, Fifty Fifty, and Karunya Plus draws",
+    "url": "{{ base_url }}/kerala-lottery-result",
+    "temporalCoverage": "{{ current_year }}",
+    "creator": {
+        "@type": "Organization",
+        "name": "Kerala State Lotteries"
+    }
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 15%;
+    }
+    @media (max-width: 1200px) { .main-container { padding: 0 10%; } }
+    @media (max-width: 768px) { .main-container { padding: 0 3%; } }
+    @media (max-width: 480px) { .main-container { padding: 0 2%; } }
+
+    .header-section {
+        background: transparent;
+        padding: 25px 15%;
+        text-align: center;
+    }
+    @media (max-width: 1200px) { .header-section { padding: 25px 10%; } }
+    @media (max-width: 768px) { .header-section { padding: 25px 3%; } }
+    @media (max-width: 480px) { .header-section { padding: 25px 2%; } }
+
+    .site-title { color: #333; font-size: 36px; font-weight: 700; margin: 0; }
+    .site-subtitle { color: #666; font-size: 14px; margin-top: 8px; }
+
+    .nav-section { background: #000; padding: 10px 15%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    @media (max-width: 1200px) { .nav-section { padding: 12px 10%; } }
+    @media (max-width: 768px) { .nav-section { padding: 12px 3%; } }
+    @media (max-width: 480px) { .nav-section { padding: 12px 2%; } }
+
+    .nav-menu { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 0 20px; }
+    .nav-item { color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+    .nav-item:hover, .nav-item.active { background: #333; color: #fff; }
+
+    .page-title-section {
+        background: linear-gradient(135deg, #1a5276, #2e86c1);
+        padding: 30px 15%;
+        text-align: center;
+        color: #fff;
+    }
+    @media (max-width: 768px) { .page-title-section { padding: 20px 3%; } }
+
+    .page-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    @media (max-width: 768px) { .page-title { font-size: 22px; } }
+    .page-date { font-size: 16px; opacity: 0.9; }
+
+    .content-section { padding: 20px 0; }
+
+    .lottery-schedule {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .section-title {
+        background: #1a5276;
+        color: #fff;
+        padding: 12px 20px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .schedule-table th {
+        background: #f0f4f8;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #ddd;
+        font-size: 14px;
+    }
+
+    .schedule-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+        color: #444;
+    }
+
+    .schedule-table tr:hover { background: #f8f9fa; }
+
+    .day-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .day-mon { background: #e74c3c; }
+    .day-tue { background: #9b59b6; }
+    .day-wed { background: #3498db; }
+    .day-thu { background: #e67e22; }
+    .day-fri { background: #2ecc71; }
+    .day-sat { background: #1abc9c; }
+    .day-sun { background: #f39c12; }
+
+    .prize-amount { color: #27ae60; font-weight: 700; }
+
+    .info-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    .info-card h2 {
+        color: #1a5276;
+        font-size: 20px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+    }
+
+    .info-card h3 {
+        color: #2c3e50;
+        font-size: 17px;
+        margin: 15px 0 8px 0;
+    }
+
+    .info-card p, .info-card li {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 10px;
+    }
+
+    .info-card ul { padding-left: 20px; margin-bottom: 15px; }
+
+    .highlight-box {
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        border-left: 4px solid #27ae60;
+        padding: 15px 20px;
+        margin: 15px 0;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .highlight-box strong { color: #1b5e20; }
+
+    .faq-section { margin-top: 20px; }
+
+    .faq-item {
+        background: #fff;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+
+    .faq-question {
+        padding: 15px 20px;
+        font-weight: 600;
+        color: #1a5276;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 15px;
+    }
+
+    .faq-question:hover { background: #f0f4f8; }
+
+    .faq-answer {
+        padding: 0 20px 15px;
+        color: #555;
+        font-size: 14px;
+        line-height: 1.7;
+        display: none;
+    }
+
+    .faq-item.open .faq-answer { display: block; }
+    .faq-toggle { font-size: 18px; color: #999; transition: transform 0.3s; }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); }
+
+    .today-highlight {
+        background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        border: 2px solid #ff9800;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .today-highlight h2 { color: #e65100; font-size: 22px; margin-bottom: 10px; }
+    .today-lottery-name { font-size: 28px; font-weight: 700; color: #1a5276; margin: 10px 0; }
+    .draw-time { font-size: 16px; color: #666; }
+
+    .prize-structure {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .prize-card {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #eee;
+    }
+
+    .prize-card .prize-label { font-size: 13px; color: #888; margin-bottom: 5px; }
+    .prize-card .prize-value { font-size: 20px; font-weight: 700; color: #27ae60; }
+
+    .internal-links {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .internal-links h2 { color: #1a5276; font-size: 18px; margin-bottom: 15px; }
+
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+    }
+
+    .links-grid a {
+        display: block;
+        padding: 10px 15px;
+        background: #f0f4f8;
+        border-radius: 6px;
+        color: #1a5276;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .links-grid a:hover { background: #1a5276; color: #fff; }
+
+    .footer { background: #1a1a2e; color: #aaa; padding: 30px 15%; text-align: center; font-size: 13px; margin-top: 30px; }
+    .footer a { color: #3498db; }
+
+    @media (max-width: 768px) {
+        .schedule-table th, .schedule-table td { padding: 8px 10px; font-size: 12px; }
+        .nav-item { padding: 6px 12px; font-size: 12px; }
+        .today-lottery-name { font-size: 22px; }
+        .footer { padding: 20px 3%; }
+    }
+    @media (max-width: 480px) {
+        .nav-menu { gap: 5px; }
+        .nav-item { padding: 5px 10px; font-size: 11px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="header-section">
+        {% if site_settings and site_settings.logo_data %}
+        <img src="{{ site_settings.logo_data }}" alt="Satta King" style="max-height: 60px; margin-bottom: 10px;">
+        {% endif %}
+        <h1 class="site-title">Kerala Lottery Result Today</h1>
+        <p class="site-subtitle">Live Kerala State Lottery Winning Numbers & Results</p>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-menu">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/chart" class="nav-item">Chart</a>
+            <a href="/daily-update" class="nav-item">Daily Update</a>
+            <a href="/latest" class="nav-item">Latest</a>
+            <a href="/kerala-lottery-result" class="nav-item active">Kerala Lottery</a>
+        </div>
+    </div>
+
+    {% if ad_settings and ad_settings.ad_after_header %}
+    <div style="text-align: center; padding: 10px;">{{ ad_settings.ad_after_header | safe }}</div>
+    {% endif %}
+
+    <div class="page-title-section">
+        <div class="page-title">Kerala Lottery Result Today {{ current_date }}</div>
+        <p class="page-date">{{ today_day }} Draw | Results Updated at 3:00 PM IST</p>
+    </div>
+
+    <div class="main-container">
+        <div class="content-section">
+
+            <div class="today-highlight">
+                <h2>Today's Kerala Lottery Draw</h2>
+                <div class="today-lottery-name">{{ today_lottery }}</div>
+                <p class="draw-time">Draw Time: 3:00 PM IST | Venue: Gorky Bhavan, Thiruvananthapuram</p>
+                <div class="prize-structure">
+                    <div class="prize-card">
+                        <div class="prize-label">1st Prize</div>
+                        <div class="prize-value">₹70 Lakhs</div>
+                    </div>
+                    <div class="prize-card">
+                        <div class="prize-label">2nd Prize</div>
+                        <div class="prize-value">₹5 Lakhs</div>
+                    </div>
+                    <div class="prize-card">
+                        <div class="prize-label">3rd Prize</div>
+                        <div class="prize-value">₹1 Lakh</div>
+                    </div>
+                    <div class="prize-card">
+                        <div class="prize-label">Consolation</div>
+                        <div class="prize-value">₹8,000</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if ad_settings and ad_settings.ad_after_game_list %}
+            <div style="text-align: center; padding: 10px;">{{ ad_settings.ad_after_game_list | safe }}</div>
+            {% endif %}
+
+            <div class="lottery-schedule">
+                <div class="section-title">Kerala Lottery Weekly Schedule {{ current_year }}</div>
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Lottery Name</th>
+                            <th>1st Prize</th>
+                            <th>Ticket Price</th>
+                            <th>Draw Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="day-badge day-mon">Monday</span></td>
+                            <td><strong>Win-Win</strong> (W)</td>
+                            <td class="prize-amount">₹75 Lakhs</td>
+                            <td>₹40</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="day-badge day-tue">Tuesday</span></td>
+                            <td><strong>Sthree Sakthi</strong> (SS)</td>
+                            <td class="prize-amount">₹75 Lakhs</td>
+                            <td>₹40</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="day-badge day-wed">Wednesday</span></td>
+                            <td><strong>Fifty Fifty</strong> (FF)</td>
+                            <td class="prize-amount">₹1 Crore</td>
+                            <td>₹50</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="day-badge day-thu">Thursday</span></td>
+                            <td><strong>Karunya Plus</strong> (KN)</td>
+                            <td class="prize-amount">₹80 Lakhs</td>
+                            <td>₹40</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="day-badge day-fri">Friday</span></td>
+                            <td><strong>Nirmal</strong> (NR)</td>
+                            <td class="prize-amount">₹70 Lakhs</td>
+                            <td>₹40</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="day-badge day-sat">Saturday</span></td>
+                            <td><strong>Karunya</strong> (KR)</td>
+                            <td class="prize-amount">₹80 Lakhs</td>
+                            <td>₹40</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="day-badge day-sun">Sunday</span></td>
+                            <td><strong>Akshaya</strong> (AK)</td>
+                            <td class="prize-amount">₹70 Lakhs</td>
+                            <td>₹40</td>
+                            <td>3:00 PM</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-card">
+                <h2>Kerala Lottery Result Today {{ current_date }} - Complete Guide</h2>
+                <p>Kerala State Lottery is one of the oldest and most trusted government lotteries in India, operated by the Kerala State Government under the Directorate of Kerala State Lotteries. Established in 1967, Kerala Lottery has been providing exciting opportunities for millions of participants across the country.</p>
+
+                <div class="highlight-box">
+                    <strong>Kerala Lottery Result Today:</strong> The {{ today_lottery }} lottery draw takes place today ({{ today_day }}). Results are announced at 3:00 PM IST. Check winning numbers above after the draw.
+                </div>
+
+                <h3>How to Check Kerala Lottery Result</h3>
+                <ul>
+                    <li>Visit this page daily after 3:00 PM IST for updated results</li>
+                    <li>Match your ticket number with the winning numbers displayed</li>
+                    <li>Check all prize categories including consolation prizes</li>
+                    <li>Save your ticket safely until you claim your prize</li>
+                </ul>
+
+                <h3>Kerala Lottery Prize Claim Process</h3>
+                <ul>
+                    <li><strong>Up to ₹5,000:</strong> Claim from any authorized lottery agent</li>
+                    <li><strong>₹5,001 to ₹1,00,000:</strong> Claim from District Lottery Office</li>
+                    <li><strong>Above ₹1,00,000:</strong> Claim from Directorate of State Lotteries, Thiruvananthapuram</li>
+                    <li><strong>Time Limit:</strong> 30 days from the date of draw</li>
+                    <li><strong>Required Documents:</strong> Original ticket, valid photo ID, 2 passport-size photos</li>
+                </ul>
+
+                <h3>Kerala Lottery Tax Deduction</h3>
+                <p>As per Indian tax laws, lottery winnings above ₹10,000 are subject to 30% TDS (Tax Deducted at Source) plus applicable cess. The net amount after tax deduction is paid to the winner.</p>
+            </div>
+
+            {% if ad_settings and ad_settings.ad_before_footer %}
+            <div style="text-align: center; padding: 10px;">{{ ad_settings.ad_before_footer | safe }}</div>
+            {% endif %}
+
+            <div class="info-card">
+                <h2>About Kerala State Lottery</h2>
+                <p>The Kerala State Lottery Department was established on September 1, 1967, making it the first government lottery in India. The lottery was introduced by the then Finance Minister of Kerala, PK Kunju Sahib, with the aim of providing employment and generating revenue for the state.</p>
+
+                <h3>Types of Kerala Lottery</h3>
+                <p>Kerala conducts 7 weekly lottery draws throughout the week. Each lottery has a different name, prize structure, and ticket price. The weekly lotteries include Win-Win, Sthree Sakthi, Fifty Fifty, Karunya Plus, Nirmal, Karunya, and Akshaya.</p>
+
+                <h3>Kerala Bumper Lottery {{ current_year }}</h3>
+                <p>In addition to weekly draws, Kerala also conducts 6 bumper lotteries annually with massive prize pools:</p>
+                <ul>
+                    <li><strong>Christmas New Year Bumper</strong> - 1st Prize: ₹25 Crore</li>
+                    <li><strong>Summer Bumper</strong> - 1st Prize: ₹10 Crore</li>
+                    <li><strong>Vishu Bumper</strong> - 1st Prize: ₹12 Crore</li>
+                    <li><strong>Monsoon Bumper</strong> - 1st Prize: ₹10 Crore</li>
+                    <li><strong>Thiruvonam Bumper</strong> - 1st Prize: ₹25 Crore</li>
+                    <li><strong>Pooja Bumper</strong> - 1st Prize: ₹10 Crore</li>
+                </ul>
+
+                <h3>Kerala Lottery Result History</h3>
+                <p>Kerala Lottery has created thousands of millionaires since its inception in 1967. The lottery is fully transparent with live draws conducted at Gorky Bhavan, Near Bakery Junction, Thiruvananthapuram, Kerala. All draws are conducted under the supervision of two judges and a panel of officials.</p>
+            </div>
+
+            <div class="internal-links">
+                <h2>Related Results & Charts</h2>
+                <div class="links-grid">
+                    <a href="/">Satta King Result Today</a>
+                    <a href="/chart">Satta King Record Chart</a>
+                    <a href="/daily-update">Daily Result Updates</a>
+                    <a href="/latest">Latest News & Results</a>
+                    <a href="/chart?game=gali">Gali Result Chart</a>
+                    <a href="/chart?game=disawar">Disawar Result Chart</a>
+                    <a href="/chart?game=faridabad">Faridabad Result Chart</a>
+                    <a href="/chart?game=ghaziabad">Ghaziabad Result Chart</a>
+                </div>
+            </div>
+
+            <div class="faq-section">
+                <div class="info-card" style="padding: 0; overflow: hidden;">
+                    <h2 style="padding: 20px 20px 15px; margin: 0; border-bottom: none;">Frequently Asked Questions - Kerala Lottery</h2>
+
+                    <div class="faq-item open">
+                        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                            What time does the Kerala Lottery result come out?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">Kerala Lottery results are announced daily at 3:00 PM IST. The live draw takes place at Gorky Bhavan, Near Bakery Junction, Thiruvananthapuram, Kerala. Results are usually available on this page within minutes of the draw.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                            Which Kerala Lottery draws happen on which day?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">Monday: Win-Win (W), Tuesday: Sthree Sakthi (SS), Wednesday: Fifty Fifty (FF), Thursday: Karunya Plus (KN), Friday: Nirmal (NR), Saturday: Karunya (KR), Sunday: Akshaya (AK). Each lottery has a different prize structure and ticket price.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                            How to claim Kerala Lottery prize?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">Prizes up to ₹5,000 can be claimed from any authorized lottery agent. Prizes between ₹5,001 to ₹1,00,000 can be claimed from the District Lottery Office. Prizes above ₹1,00,000 must be claimed from the Directorate of State Lotteries in Thiruvananthapuram with original ticket, valid photo ID, and 2 passport-size photos within 30 days.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                            Is Kerala Lottery legal?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">Yes, Kerala Lottery is 100% legal and is operated by the Kerala State Government under the Directorate of Kerala State Lotteries. It was established in 1967 and is regulated under the Kerala Paper Lotteries (Regulation) Rules, 2005. It is one of the most transparent lottery systems in India.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                            What is the tax on Kerala Lottery winnings?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">Lottery winnings above ₹10,000 are subject to 30% TDS (Tax Deducted at Source) plus 4% Health & Education Cess, making the effective tax rate approximately 31.2%. The tax is deducted at source before the prize amount is paid to the winner.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                            Can I buy Kerala Lottery tickets online?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">Currently, Kerala Government does not sell lottery tickets online officially. Tickets can only be purchased from authorized lottery agents and outlets across Kerala and some other states where lottery is legal. Be cautious of fraudulent online lottery sellers.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Kerala Lottery Result Today {{ current_date }} | Updated Daily at 3:00 PM IST</p>
+        <p style="margin-top: 8px;">Disclaimer: This website is for informational purposes only. We are not affiliated with Kerala State Lotteries Department.</p>
+        <p style="margin-top: 8px;">&copy; {{ current_year }} <a href="/">Satta King</a> | All Rights Reserved</p>
+    </div>
+{% endblock %}

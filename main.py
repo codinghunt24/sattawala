@@ -376,6 +376,32 @@ def index():
     base_url = get_base_url()
     return render_template('index.html', games=games_with_slug, current_date=current_date, last_update_time=current_time, today_date=today_date, yesterday_date=yesterday_date, site_settings=site_settings, ad_settings=ad_settings, daily_posts=daily_posts, base_url=base_url)
 
+@app.route('/kerala-lottery-result')
+def kerala_lottery_page():
+    now = get_ist_now()
+    current_date = now.strftime("%d %B %Y")
+    current_month = now.strftime("%B")
+    current_year = now.strftime("%Y")
+    today_day = now.strftime("%A")
+    day_lottery_map = {
+        'Monday': 'Win-Win (W)',
+        'Tuesday': 'Sthree Sakthi (SS)',
+        'Wednesday': 'Fifty Fifty (FF)',
+        'Thursday': 'Karunya Plus (KN)',
+        'Friday': 'Nirmal (NR)',
+        'Saturday': 'Karunya (KR)',
+        'Sunday': 'Akshaya (AK)'
+    }
+    today_lottery = day_lottery_map.get(today_day, 'Kerala Lottery')
+    site_settings = get_site_settings()
+    ad_settings = get_ad_settings()
+    base_url = get_base_url()
+    return render_template('kerala_lottery.html',
+        current_date=current_date, current_month=current_month,
+        current_year=current_year, today_day=today_day,
+        today_lottery=today_lottery, site_settings=site_settings,
+        ad_settings=ad_settings, base_url=base_url)
+
 @app.route('/daily-update')
 def daily_update_page():
     now = get_ist_now()
@@ -2400,6 +2426,12 @@ def sitemap_pages():
         <lastmod>{now}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>{base_url}/kerala-lottery-result</loc>
+        <lastmod>{now}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
     </url>
 </urlset>'''
     return xml, 200, {'Content-Type': 'application/xml'}
