@@ -284,7 +284,7 @@ def init_database():
 
 init_database()
 
-ALLOWED_QUERY_PARAMS = {'page', 'game', 'month', 'year'}
+ALLOWED_QUERY_PARAMS = {'page', 'game', 'month', 'year', 'srsltid'}
 SPAM_PARAMS = {'o', 'p', 'ref', 'fbclid', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'}
 
 @app.before_request
@@ -299,7 +299,7 @@ def block_spam_query_params():
         return redirect(url, code=301)
     
     if request.path.startswith('/_stcore/'):
-        return ('', 404)
+        return redirect('/', code=301)
     
     allowed_txt_files = ['/robots.txt', '/ads.txt']
     if request.path in allowed_txt_files:
@@ -307,13 +307,13 @@ def block_spam_query_params():
     else:
         blocked_extensions = ('.py', '.py.backup', '.md', '.toml', '.lock', '.gz', '.sh', '.cfg', '.ini', '.log', '.env', '.git')
         if any(request.path.endswith(ext) for ext in blocked_extensions):
-            return ('', 404)
+            return redirect('/', code=301)
     
     blocked_paths = ['/venv/', '/.git/', '/.cache/', '/.local/', '/.streamlit/', 
                      '/.pythonlibs/', '/.upm/', '/attached_assets/', '/templates/',
                      '/__pycache__/']
     if any(request.path.startswith(bp) for bp in blocked_paths):
-        return ('', 404)
+        return redirect('/', code=301)
     
     if request.path.startswith('/category/'):
         return ('', 410)
@@ -344,11 +344,11 @@ def block_spam_query_params():
     
     param_keys = set(request.args.keys())
     if param_keys & SPAM_PARAMS:
-        return ('', 404)
+        return redirect('/', code=301)
     
     unknown_params = param_keys - ALLOWED_QUERY_PARAMS
     if unknown_params:
-        return ('', 404)
+        pass
 
 def get_base_url():
     return request.host_url.rstrip('/').replace('http://', 'https://')
