@@ -2748,7 +2748,7 @@ def page_not_found(e):
         if request.path.startswith(old_path):
             return '', 410
     
-    return "Page Not Found", 404
+    return redirect('/', code=301)
 
 @app.route('/download-project')
 def download_project():
