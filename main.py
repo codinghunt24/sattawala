@@ -285,9 +285,19 @@ def init_database():
 init_database()
 
 ALLOWED_QUERY_PARAMS = {'page', 'game', 'month', 'year'}
+SPAM_PARAMS = {'o', 'p', 'ref', 'fbclid', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'}
 
 @app.before_request
 def block_spam_query_params():
+    if request.headers.get('X-Forwarded-Proto') == 'http':
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
+    
+    host = request.headers.get('Host', '')
+    if host.startswith('www.'):
+        url = request.url.replace('://www.', '://', 1)
+        return redirect(url, code=301)
+    
     if request.path.startswith('/_stcore/'):
         return ('', 404)
     
@@ -310,13 +320,14 @@ def block_spam_query_params():
     
     if request.path.startswith('/api/') or request.path.startswith('/admin'):
         return None
-    unknown_params = set(request.args.keys()) - ALLOWED_QUERY_PARAMS
+    
+    param_keys = set(request.args.keys())
+    if param_keys & SPAM_PARAMS:
+        return ('', 404)
+    
+    unknown_params = param_keys - ALLOWED_QUERY_PARAMS
     if unknown_params:
-        clean_args = {k: v for k, v in request.args.items() if k in ALLOWED_QUERY_PARAMS}
-        clean_url = request.path
-        if clean_args:
-            clean_url += '?' + '&'.join(f'{k}={v}' for k, v in clean_args.items())
-        return redirect(clean_url, code=301)
+        return ('', 404)
 
 def get_base_url():
     return request.host_url.rstrip('/').replace('http://', 'https://')
