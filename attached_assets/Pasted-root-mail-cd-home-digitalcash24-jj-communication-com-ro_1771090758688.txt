@@ -1,0 +1,26 @@
+root@mail:~# cd /home/digitalcash24/jj-communication.com
+root@mail:/home/digitalcash24/jj-communication.com# cd /home/digitalcash24/jj-communication.com
+root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep python
+root         643  0.0  0.2  29976 18396 ?        Ss   Feb10   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         670  0.0  0.2  31884 23992 ?        Ss   Feb10   2:00 /usr/bin/python3 /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+root         857  0.0  0.2 108140 20864 ?        Ssl  Feb10   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root      160900  0.0  1.1 191940 90168 ?        Sl   Feb10   1:44 /usr/bin/python3 /usr/local/bin/gunicorn --bind 127.0.0.1:8003 --workers 3 --preload main:app
+root      160922  0.0  0.2  27584 19468 ?        Ss   Feb10   1:40 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root      160924  0.7  2.2 509052 179620 ?       Sl   Feb10  44:17 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root      160925  0.7  2.2 508284 179124 ?       Sl   Feb10  44:34 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root      160928  0.7  1.9 433276 157548 ?       Sl   Feb10  43:16 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root      173811  0.1  0.9 312156 74876 ?        Sl   Feb10   6:55 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app --daemon
+root     1619279  0.9  0.7 314136 58520 ?        S    Feb12  30:16 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app --daemon
+root     2008699  0.0  1.1 197948 91972 ?        S    Feb12   1:08 /usr/bin/python3 /usr/local/bin/gunicorn --bind 127.0.0.1:8003 --workers 3 --preload main:app
+root     2008700  0.0  1.1 197204 91140 ?        S    Feb12   1:08 /usr/bin/python3 /usr/local/bin/gunicorn --bind 127.0.0.1:8003 --workers 3 --preload main:app
+root     2639738  0.0  1.1 196704 90868 ?        S    Feb13   0:32 /usr/bin/python3 /usr/local/bin/gunicorn --bind 127.0.0.1:8003 --workers 3 --preload main:app
+digital+ 2769280  0.0  0.2  27592 19356 ?        Ss   Feb13   0:19 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+ 2769295  0.0  1.0 186020 81444 ?        Sl   Feb13   0:08 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+ 2769296  0.0  0.9 185320 80804 ?        Sl   Feb13   0:08 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+ 2769297  0.0  1.0 186440 82260 ?        Sl   Feb13   0:08 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+root     3586845  0.0  0.2  27580 17012 ?        S    18:09   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3586847  0.0  0.5 151988 47968 ?        Sl   18:09   0:01 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3586848  0.0  0.5 152224 48160 ?        Sl   18:09   0:00 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3586849  0.0  0.6 157496 53568 ?        Sl   18:09   0:01 /home/digitalcash24/jj-communication.com/venv/bin/python3 /home/digitalcash24/jj-communication.com/venv/bin/gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+root     3603743  0.0  0.0   8160  2412 pts/1    S+   18:39   0:00 grep --color=auto python
+root@mail:/home/digitalcash24/jj-communication.com# 
