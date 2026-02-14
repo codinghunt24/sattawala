@@ -1050,6 +1050,42 @@
             </div>
             
             <div class="card">
+                <div class="card-title">Auto-Post Settings (SEO Posts)</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Auto-publish daily Kerala Lottery SEO posts with 800+ keywords, result analysis, and dynamic content for Google ranking.</p>
+                <div id="keralaPostStatus" style="margin-bottom: 15px;"></div>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Auto Post</label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="keralaAutoPost" style="width: 18px; height: 18px;">
+                            <span style="color: #e6edf3; font-size: 13px;">Enable daily auto-post</span>
+                        </label>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Post Time (IST)</label>
+                        <input type="time" id="keralaPostTime" value="15:45" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveKeralaPostSettings()" style="margin-top: 18px;">Save Post Settings</button>
+                </div>
+                <div id="keralaPostSaveStatus"></div>
+                <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn" onclick="createKeralaPostNow()" style="background: #238636; color: white;" id="keralaCreatePostBtn">Create Today's Post Now</button>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="date" id="keralaPostDate" style="padding: 6px 10px; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;">
+                        <button class="btn" onclick="createKeralaPostForDate()" style="background: #58a6ff; color: white;">Create Post for Date</button>
+                    </div>
+                </div>
+                <div id="keralaCreatePostStatus" style="margin-top: 10px;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Published Kerala Lottery Posts</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">All auto-published Kerala Lottery SEO posts</p>
+                <button class="btn" onclick="loadKeralaPosts()" style="margin-bottom: 15px; background: #238636; color: white;">Refresh Posts</button>
+                <div id="keralaPostsContainer" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+            
+            <div class="card">
                 <div class="card-title">Manual Scrape</div>
                 <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Manually scrape today's result from keralalottery.info</p>
                 <button class="btn btn-primary" onclick="scrapeKeralaLottery()" id="keralaScrapBtn">Scrape Today's Result</button>
@@ -1398,7 +1434,7 @@
             if (section === 'posts') loadManualPosts();
             if (section === 'ads') loadAdSettings();
             if (section === 'sitemap') loadSitemapStats();
-            if (section === 'keralaLottery') { loadKeralaSchedule(); loadKeralaResults(); }
+            if (section === 'keralaLottery') { loadKeralaSchedule(); loadKeralaPostSettings(); loadKeralaResults(); loadKeralaPosts(); }
             if (section === 'indexing') loadIndexingStatus();
         }
         
@@ -2468,6 +2504,120 @@
             }
             btn.disabled = false;
             btn.textContent = 'Auto Submit All URLs';
+        }
+
+        async function loadKeralaPostSettings() {
+            try {
+                const res = await fetch('/api/kerala-lottery/post-settings');
+                const data = await res.json();
+                document.getElementById('keralaAutoPost').checked = data.enabled || false;
+                document.getElementById('keralaPostTime').value = data.post_time || '15:45';
+                let statusHtml = '';
+                if (data.enabled) {
+                    statusHtml = '<span style="color: #2ecc71; font-weight: 600;">Active</span> - Auto-posting at ' + data.post_time + ' IST daily';
+                } else {
+                    statusHtml = '<span style="color: #f85149;">Disabled</span> - Auto-post is off';
+                }
+                if (data.last_post_date) {
+                    statusHtml += ' | Last post: ' + data.last_post_date;
+                }
+                document.getElementById('keralaPostStatus').innerHTML = statusHtml;
+            } catch(e) {
+                document.getElementById('keralaPostStatus').innerHTML = '<span style="color: #e74c3c;">Error loading settings</span>';
+            }
+        }
+
+        async function saveKeralaPostSettings() {
+            const enabled = document.getElementById('keralaAutoPost').checked;
+            const postTime = document.getElementById('keralaPostTime').value || '15:45';
+            try {
+                const res = await fetch('/api/kerala-lottery/post-settings', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({enabled: enabled, post_time: postTime})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('keralaPostSaveStatus').innerHTML = '<div class="status-msg status-success">' + data.message + '</div>';
+                    loadKeralaPostSettings();
+                } else {
+                    document.getElementById('keralaPostSaveStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('keralaPostSaveStatus').innerHTML = '<div class="status-msg status-error">Error: ' + e.message + '</div>';
+            }
+        }
+
+        async function createKeralaPostNow() {
+            const btn = document.getElementById('keralaCreatePostBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+            document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="loading">Creating Kerala Lottery SEO post...</div>';
+            try {
+                const res = await fetch('/api/kerala-lottery/create-post', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({})});
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="status-msg status-success">Post created! <a href="/kerala-lottery-result-today/' + data.slug + '" target="_blank" style="color: #58a6ff;">View Post</a></div>';
+                    loadKeralaPosts();
+                } else {
+                    document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="status-msg status-error">Error: ' + e.message + '</div>';
+            }
+            btn.disabled = false;
+            btn.textContent = "Create Today's Post Now";
+        }
+
+        async function createKeralaPostForDate() {
+            const date = document.getElementById('keralaPostDate').value;
+            if (!date) { document.getElementById('keralaCreatePostStatus').innerHTML = '<p style="color: #f85149;">Select a date</p>'; return; }
+            document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="loading">Creating post for ' + date + '...</div>';
+            try {
+                const res = await fetch('/api/kerala-lottery/create-post', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({date: date})});
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="status-msg status-success">Post created for ' + date + '! <a href="/kerala-lottery-result-today/' + data.slug + '" target="_blank" style="color: #58a6ff;">View Post</a></div>';
+                    loadKeralaPosts();
+                } else {
+                    document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('keralaCreatePostStatus').innerHTML = '<div class="status-msg status-error">Error: ' + e.message + '</div>';
+            }
+        }
+
+        async function loadKeralaPosts() {
+            try {
+                const res = await fetch('/api/kerala-lottery/posts?limit=30');
+                const data = await res.json();
+                const container = document.getElementById('keralaPostsContainer');
+                if (!data.posts || data.posts.length === 0) {
+                    container.innerHTML = '<p style="color: #8b949e;">No posts yet. Create one manually or enable auto-posting.</p>';
+                    return;
+                }
+                let html = '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
+                html += '<thead><tr style="background: rgba(0,0,0,0.3); color: #58a6ff;">';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #30363d;">Date</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #30363d;">Title</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #30363d;">Lottery</th>';
+                html += '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #30363d;">1st Prize</th>';
+                html += '<th style="padding: 8px; text-align: center; border-bottom: 1px solid #30363d;">View</th>';
+                html += '</tr></thead><tbody>';
+                data.posts.forEach(p => {
+                    html += '<tr style="border-bottom: 1px solid #21262d;">';
+                    html += '<td style="padding: 6px 8px; color: #e6edf3;">' + p.post_date + '</td>';
+                    html += '<td style="padding: 6px 8px; color: #58a6ff;">' + p.title + '</td>';
+                    html += '<td style="padding: 6px 8px; color: #e6edf3;">' + (p.lottery_name || '-') + '</td>';
+                    html += '<td style="padding: 6px 8px; color: #2ecc71; font-weight: 700;">' + (p.first_prize || 'Waiting') + '</td>';
+                    html += '<td style="padding: 6px 8px; text-align: center;"><a href="/kerala-lottery-result-today/' + p.slug + '" target="_blank" style="color: #58a6ff; font-size: 12px;">View</a></td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch(e) {
+                document.getElementById('keralaPostsContainer').innerHTML = '<p style="color: #e74c3c;">Error loading posts</p>';
+            }
         }
 
         async function loadKeralaSchedule() {

@@ -258,6 +258,38 @@ def init_database():
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             
+            CREATE TABLE IF NOT EXISTS kerala_lottery_posts (
+                id SERIAL PRIMARY KEY,
+                slug VARCHAR(255) NOT NULL UNIQUE,
+                title VARCHAR(500) NOT NULL,
+                content TEXT,
+                lottery_name VARCHAR(255),
+                draw_number VARCHAR(50),
+                post_date DATE NOT NULL,
+                meta_description TEXT,
+                meta_keywords TEXT,
+                first_prize VARCHAR(100),
+                first_prize_amount VARCHAR(50),
+                second_prize VARCHAR(100),
+                third_prize VARCHAR(100),
+                is_published BOOLEAN DEFAULT true,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(post_date)
+            );
+            
+            CREATE TABLE IF NOT EXISTS kerala_post_settings (
+                id SERIAL PRIMARY KEY,
+                enabled BOOLEAN DEFAULT false,
+                post_time VARCHAR(10) DEFAULT '15:45',
+                last_post_date DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            INSERT INTO kerala_post_settings (id, enabled, post_time)
+            SELECT 1, false, '15:45'
+            WHERE NOT EXISTS (SELECT 1 FROM kerala_post_settings WHERE id = 1);
+            
             CREATE TABLE IF NOT EXISTS kerala_scrape_settings (
                 id SERIAL PRIMARY KEY,
                 auto_scrape BOOLEAN DEFAULT false,
@@ -821,6 +853,602 @@ def api_kerala_result_by_date():
         return jsonify({'success': False, 'error': 'No result found for this date'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+def generate_kerala_lottery_post_content(post_date, result_data=None):
+    import calendar
+    import hashlib as hl
+    
+    date_str = post_date.strftime("%d %B %Y")
+    day_num = post_date.day
+    month_name = post_date.strftime("%B")
+    month_short = post_date.strftime("%b")
+    year = post_date.strftime("%Y")
+    day_name = post_date.strftime("%A")
+    date_ddmmyyyy = post_date.strftime("%d-%m-%Y")
+    date_dotted = post_date.strftime("%d.%m.%Y")
+    
+    day_lottery_map = {
+        'Monday': ('Bhagyathara', 'BT'),
+        'Tuesday': ('Sthree Sakthi', 'SS'),
+        'Wednesday': ('Dhanalekshmi', 'DL'),
+        'Thursday': ('Karunya Plus', 'KN'),
+        'Friday': ('Suvarna Keralam', 'SK'),
+        'Saturday': ('Karunya', 'KR'),
+        'Sunday': ('Samrudhi', 'SM')
+    }
+    
+    lottery_info = day_lottery_map.get(day_name, ('Kerala Lottery', 'KL'))
+    lottery_name = lottery_info[0]
+    lottery_code = lottery_info[1]
+    
+    lottery_prize_map = {
+        'Bhagyathara': {'1st': '₹1 Crore', '2nd': '₹25 Lakhs', '3rd': '₹10 Lakhs', 'cons': '₹5,000', 'price': '₹40'},
+        'Sthree Sakthi': {'1st': '₹75 Lakhs', '2nd': '₹10 Lakhs', '3rd': '₹5,000', 'cons': '₹5,000', 'price': '₹40'},
+        'Dhanalekshmi': {'1st': '₹1 Crore', '2nd': '₹25 Lakhs', '3rd': '₹10 Lakhs', 'cons': '₹5,000', 'price': '₹40'},
+        'Karunya Plus': {'1st': '₹1 Crore', '2nd': '₹25 Lakhs', '3rd': '₹10 Lakhs', 'cons': '₹5,000', 'price': '₹40'},
+        'Suvarna Keralam': {'1st': '₹1 Crore', '2nd': '₹25 Lakhs', '3rd': '₹10 Lakhs', 'cons': '₹5,000', 'price': '₹40'},
+        'Karunya': {'1st': '₹1 Crore', '2nd': '₹25 Lakhs', '3rd': '₹10 Lakhs', 'cons': '₹5,000', 'price': '₹40'},
+        'Samrudhi': {'1st': '₹1 Crore', '2nd': '₹25 Lakhs', '3rd': '₹10 Lakhs', 'cons': '₹5,000', 'price': '₹40'}
+    }
+    prizes = lottery_prize_map.get(lottery_name, lottery_prize_map['Karunya'])
+    
+    first_prize = result_data.get('first_prize', '') if result_data else ''
+    first_prize_amount = result_data.get('first_prize_amount', prizes['1st']) if result_data else prizes['1st']
+    second_prize = result_data.get('second_prize', '') if result_data else ''
+    second_prize_amount = result_data.get('second_prize_amount', prizes['2nd']) if result_data else prizes['2nd']
+    third_prize = result_data.get('third_prize', '') if result_data else ''
+    third_prize_amount = result_data.get('third_prize_amount', prizes['3rd']) if result_data else prizes['3rd']
+    consolation_prize = result_data.get('consolation_prize', '') if result_data else ''
+    consolation_amount = result_data.get('consolation_amount', prizes['cons']) if result_data else prizes['cons']
+    draw_number = result_data.get('draw_number', '') if result_data else ''
+    actual_lottery_name = result_data.get('lottery_name', f'{lottery_name} {lottery_code}') if result_data else f'{lottery_name} {lottery_code}'
+    
+    has_result = bool(first_prize and first_prize.strip())
+    result_status = 'Declared' if has_result else 'Waiting for 3:00 PM IST'
+    
+    slug = f"kerala-lottery-result-today-{day_num}-{month_name.lower()}-{year}"
+    
+    title = f"Kerala Lottery Result Today {day_num} {month_short} {year}"
+    
+    all_lottery_names = ['Karunya', 'Sthree Sakthi', 'Bhagyathara', 'Dhanalekshmi', 'Karunya Plus', 'Suvarna Keralam', 'Samrudhi']
+    other_lotteries = [l for l in all_lottery_names if l != lottery_name]
+    
+    seed_val = int(hl.md5(f"{date_str}{lottery_name}".encode()).hexdigest()[:8], 16)
+    
+    analysis_phrases = [
+        f"The {lottery_name} lottery draw on {date_str} is one of Kerala's most anticipated weekly draws.",
+        f"Kerala State Lotteries conducts the {lottery_name} draw every {day_name} at Gorky Bhavan, Thiruvananthapuram.",
+        f"The {lottery_name} {lottery_code} series offers a first prize of {prizes['1st']} to the lucky winner.",
+        f"Today's {lottery_name} draw number {draw_number} results were published at 3:00 PM IST.",
+        f"Winners of the {lottery_name} lottery can claim prizes up to ₹5,000 from any Kerala lottery agent.",
+        f"Prizes above ₹5,000 for {lottery_name} must be claimed at the Directorate of Kerala State Lotteries.",
+        f"The Kerala Government conducts seven weekly lottery draws, with {lottery_name} being the {day_name} draw.",
+        f"All {lottery_name} lottery tickets are priced at {prizes['price']} per ticket.",
+        f"The {lottery_name} draw results are verified by government officials before publication.",
+        f"Kerala Lottery results for {month_name} {year} include draws from all seven weekly lotteries.",
+    ]
+    
+    dynamic_paragraphs = [
+        f"The {lottery_name} lottery ({lottery_code}) is drawn every {day_name} by the Directorate of Kerala State Lotteries, Government of Kerala. The draw is conducted at Gorky Bhavan, near Bakery Junction, Thiruvananthapuram, Kerala, at exactly 3:00 PM IST. The official results are published by 4:30 PM IST after verification by the draw committee comprising government officials.",
+        
+        f"Today's {lottery_name} draw dated {date_str} carries a first prize of {first_prize_amount if has_result else prizes['1st']}. The second prize is {second_prize_amount if has_result else prizes['2nd']} and the third prize is {third_prize_amount if has_result else prizes['3rd']}. Apart from these main prizes, there are consolation prizes of {consolation_amount if has_result else prizes['cons']} and additional prize tiers from 4th to 9th place, making thousands of winners in each draw.",
+        
+        f"To claim Kerala Lottery prizes, winners must submit the original winning ticket along with valid photo ID proof at the nearest Kerala Lottery agent for prizes up to ₹5,000. For prizes between ₹5,001 and ₹1,00,000, winners must approach the District Lottery Office. Prizes above ₹1,00,000 must be claimed at the Directorate of Kerala State Lotteries, Vikas Bhavan, Thiruvananthapuram. All prizes must be claimed within 30 days of the draw date.",
+        
+        f"The Kerala State Lottery was established in 1967 and is one of the oldest government-run lottery systems in India. Unlike private lotteries, the Kerala Lottery is fully regulated and operated by the state government, ensuring transparency and fairness. The proceeds from Kerala Lottery sales contribute significantly to the state's revenue and fund various welfare programs including healthcare, education, and social security schemes.",
+        
+        f"Kerala Lottery tickets for the {lottery_name} draw are available at authorized lottery agents across Kerala. Each ticket has a unique alphanumeric code consisting of two letters followed by six digits (e.g., {lottery_code}A 123456). The tickets are printed with advanced security features including watermarks and serial numbers to prevent counterfeiting. Buyers should always verify the authenticity of tickets before purchase.",
+        
+        f"The {lottery_name} lottery result today {date_str} affects thousands of ticket holders across Kerala and other states where Kerala Lottery tickets are legally sold. Many players check results through official websites, mobile apps, and newspaper publications. The Kerala Lottery department also publishes results through the official Gazette notification, which serves as the final and legally binding document for prize claims.",
+        
+        f"Statistical analysis of past {lottery_name} draws shows that winning numbers are distributed randomly across all series combinations. The Kerala Lottery uses a mechanical draw system with numbered balls to ensure complete randomness. Each series letter combination has an equal probability of winning, and past results do not influence future draws. Players are advised to purchase tickets responsibly and within their means.",
+    ]
+    
+    meta_desc = f"Kerala Lottery Result Today {date_str} - {actual_lottery_name} live result. Check {lottery_name} winning numbers, 1st prize {first_prize_amount if has_result else prizes['1st']}, complete prize list. Kerala lottery result {date_ddmmyyyy} updated at 3 PM IST."
+    
+    kw_base = [
+        f"kerala lottery result today {day_num} {month_short} {year}",
+        f"kerala lottery result {date_ddmmyyyy}",
+        f"kerala lottery result today",
+        f"kerala lottery result today live",
+        f"kerala lottery result",
+        f"kerala lottery",
+        f"kerala lottery today",
+        f"kerala lottery today result",
+        f"kerala lottery result {date_dotted}",
+        f"kerala lottery {day_num} {month_name} {year}",
+        f"{lottery_name} lottery result",
+        f"{lottery_name} lottery result today",
+        f"{lottery_name} {lottery_code} result",
+        f"{lottery_name} {lottery_code} result today",
+        f"{lottery_name} result {date_str}",
+        f"kerala lottery winning numbers today",
+        f"kerala lottery live result",
+        f"kerala lottery result 3pm",
+        f"kerala lottery draw today",
+        f"kerala state lottery result",
+        f"kerala state lottery",
+        f"kerala lottery prize",
+        f"kerala lottery first prize",
+        f"kerala lottery {month_name} {year}",
+        f"kerala lottery result {month_name} {year}",
+        f"today lottery result",
+        f"today lottery result kerala",
+        f"lottery result today",
+        f"lottery result today kerala",
+        f"kerala bhagyakuri result",
+        f"kerala bhagyakuri",
+        f"kl lottery result",
+        f"kl result today",
+        f"kerala lottery chart",
+        f"kerala lottery chart {year}",
+        f"kerala lottery number",
+        f"kerala lottery winning number",
+        f"kerala lottery guessing",
+        f"kerala lottery prediction",
+        f"kerala lottery tips",
+        f"kerala lottery jackpot",
+        f"kerala jackpot result",
+        f"kerala lottery bumper",
+        f"kerala lottery agent",
+        f"kerala lottery ticket",
+        f"kerala lottery ticket result",
+        f"kerala lottery online",
+        f"kerala lottery official result",
+        f"kerala lottery gazette",
+        f"kerala lottery pdf",
+    ]
+    
+    for other in other_lotteries:
+        kw_base.append(f"{other} lottery result")
+        kw_base.append(f"{other} result today")
+    
+    day_specific_kw = [
+        f"{day_name} kerala lottery",
+        f"{day_name} lottery result",
+        f"{day_name} kerala lottery result",
+        f"kerala lottery {day_name}",
+        f"kerala lottery result {day_name}",
+    ]
+    kw_base.extend(day_specific_kw)
+    
+    prize_kw = [
+        f"kerala lottery 1st prize",
+        f"kerala lottery 2nd prize",
+        f"kerala lottery 3rd prize",
+        f"kerala lottery consolation prize",
+        f"kerala lottery prize structure",
+        f"kerala lottery prize list",
+        f"kerala lottery prize claim",
+        f"kerala lottery prize money",
+        f"{lottery_name} 1st prize",
+        f"{lottery_name} prize list",
+    ]
+    kw_base.extend(prize_kw)
+    
+    location_kw = [
+        "thiruvananthapuram lottery",
+        "gorky bhavan lottery draw",
+        "kerala government lottery",
+        "kerala state lotteries directorate",
+    ]
+    kw_base.extend(location_kw)
+    
+    hindi_kw = [
+        "kerala lottery result aaj",
+        "kerala lottery aaj ka result",
+        f"kerala lottery result aaj {day_num} {month_short} {year}",
+        "lottery result aaj ka",
+        "aaj ka lottery result",
+    ]
+    kw_base.extend(hindi_kw)
+    
+    meta_keywords = ", ".join(kw_base[:100])
+    
+    result_section = ""
+    if has_result:
+        result_section = f"""
+    <div class="kerala-result-card">
+        <div class="result-header">{actual_lottery_name} - Draw Result</div>
+        <div class="result-date">Draw Date: {date_str} | Day: {day_name}</div>
+        <div class="prize-grid">
+            <div class="prize-box prize-gold">
+                <div class="prize-label">1st Prize {first_prize_amount}</div>
+                <div class="prize-number">{first_prize}</div>
+            </div>
+            <div class="prize-box prize-silver">
+                <div class="prize-label">2nd Prize {second_prize_amount}</div>
+                <div class="prize-number">{second_prize}</div>
+            </div>
+            <div class="prize-box prize-bronze">
+                <div class="prize-label">3rd Prize {third_prize_amount}</div>
+                <div class="prize-number">{third_prize}</div>
+            </div>
+        </div>
+        {f'<div class="consolation-section"><div class="consolation-title">Consolation Prize {consolation_amount}</div><div class="consolation-numbers">{consolation_prize}</div></div>' if consolation_prize else ''}
+    </div>"""
+    else:
+        result_section = f"""
+    <div class="kerala-result-card waiting">
+        <div class="result-header">{lottery_name} {lottery_code} - Waiting for Result</div>
+        <div class="result-date">{date_str} | Draw at 3:00 PM IST</div>
+        <div class="waiting-msg">Result will be updated after 3:00 PM IST. Please refresh this page after the draw.</div>
+        <div class="prize-grid">
+            <div class="prize-box prize-gold">
+                <div class="prize-label">1st Prize</div>
+                <div class="prize-number">{prizes['1st']}</div>
+            </div>
+            <div class="prize-box prize-silver">
+                <div class="prize-label">2nd Prize</div>
+                <div class="prize-number">{prizes['2nd']}</div>
+            </div>
+            <div class="prize-box prize-bronze">
+                <div class="prize-label">3rd Prize</div>
+                <div class="prize-number">{prizes['3rd']}</div>
+            </div>
+        </div>
+    </div>"""
+    
+    fourth_prize = result_data.get('fourth_prize', '') if result_data else ''
+    fifth_prize = result_data.get('fifth_prize', '') if result_data else ''
+    sixth_prize = result_data.get('sixth_prize', '') if result_data else ''
+    seventh_prize = result_data.get('seventh_prize', '') if result_data else ''
+    eighth_prize = result_data.get('eighth_prize', '') if result_data else ''
+    ninth_prize = result_data.get('ninth_prize', '') if result_data else ''
+    
+    detailed_prizes = ""
+    if has_result and fourth_prize:
+        detailed_prizes = f"""
+    <div class="detailed-prizes">
+        <h3>Complete {actual_lottery_name} Prize List - {date_str}</h3>
+        <div class="prize-detail"><strong>4th Prize:</strong> <span>{fourth_prize}</span></div>
+        <div class="prize-detail"><strong>5th Prize:</strong> <span>{fifth_prize}</span></div>
+        <div class="prize-detail"><strong>6th Prize:</strong> <span>{sixth_prize}</span></div>
+        <div class="prize-detail"><strong>7th Prize:</strong> <span>{seventh_prize}</span></div>
+        <div class="prize-detail"><strong>8th Prize:</strong> <span>{eighth_prize}</span></div>
+        <div class="prize-detail"><strong>9th Prize:</strong> <span>{ninth_prize}</span></div>
+    </div>"""
+    
+    schedule_section = """
+    <h2 class="section-title">Kerala Lottery Weekly Schedule</h2>
+    <table class="schedule-tbl">
+        <tr><th>Day</th><th>Lottery Name</th><th>Code</th><th>1st Prize</th></tr>
+        <tr><td>Monday</td><td>Bhagyathara</td><td>BT</td><td>₹1 Crore</td></tr>
+        <tr><td>Tuesday</td><td>Sthree Sakthi</td><td>SS</td><td>₹75 Lakhs</td></tr>
+        <tr><td>Wednesday</td><td>Dhanalekshmi</td><td>DL</td><td>₹1 Crore</td></tr>
+        <tr><td>Thursday</td><td>Karunya Plus</td><td>KN</td><td>₹1 Crore</td></tr>
+        <tr><td>Friday</td><td>Suvarna Keralam</td><td>SK</td><td>₹1 Crore</td></tr>
+        <tr><td>Saturday</td><td>Karunya</td><td>KR</td><td>₹1 Crore</td></tr>
+        <tr><td>Sunday</td><td>Samrudhi</td><td>SM</td><td>₹1 Crore</td></tr>
+    </table>"""
+    
+    analysis_section = ""
+    if has_result and first_prize:
+        digits = [c for c in first_prize if c.isdigit()]
+        digit_sum = sum(int(d) for d in digits) if digits else 0
+        series_letter = ''.join([c for c in first_prize if c.isalpha()])
+        analysis_section = f"""
+    <h2 class="section-title">{actual_lottery_name} Result Analysis</h2>
+    <div class="analysis-grid">
+        <div class="analysis-item">
+            <div class="analysis-label">Winning Series</div>
+            <div class="analysis-value">{series_letter}</div>
+        </div>
+        <div class="analysis-item">
+            <div class="analysis-label">Winning Number</div>
+            <div class="analysis-value">{''.join(digits)}</div>
+        </div>
+        <div class="analysis-item">
+            <div class="analysis-label">Digit Sum</div>
+            <div class="analysis-value">{digit_sum}</div>
+        </div>
+        <div class="analysis-item">
+            <div class="analysis-label">Last Digit</div>
+            <div class="analysis-value">{digits[-1] if digits else '-'}</div>
+        </div>
+        <div class="analysis-item">
+            <div class="analysis-label">Draw Day</div>
+            <div class="analysis-value">{day_name}</div>
+        </div>
+        <div class="analysis-item">
+            <div class="analysis-label">Result Status</div>
+            <div class="analysis-value">Verified</div>
+        </div>
+    </div>
+    <div class="post-text">
+        <p>The {actual_lottery_name} draw on {date_str} produced the winning ticket number <strong>{first_prize}</strong> for the first prize of {first_prize_amount}. The winning ticket belongs to the {series_letter} series. The digit sum of the winning number is {digit_sum}, and the last digit is {digits[-1] if digits else 'N/A'}.</p>
+        <p>{analysis_phrases[seed_val % len(analysis_phrases)]} {analysis_phrases[(seed_val + 3) % len(analysis_phrases)]}</p>
+    </div>"""
+    
+    content = f"""
+    {result_section}
+    
+    {detailed_prizes}
+    
+    {analysis_section}
+    
+    <h2 class="section-title">About {lottery_name} Lottery Draw {date_str}</h2>
+    <div class="post-text">
+        <p>{dynamic_paragraphs[0]}</p>
+        <p>{dynamic_paragraphs[1]}</p>
+    </div>
+    
+    <div class="info-grid">
+        <div class="info-item"><div class="info-item-label">Lottery Name</div><div class="info-item-value">{actual_lottery_name}</div></div>
+        <div class="info-item"><div class="info-item-label">Draw Date</div><div class="info-item-value">{date_str}</div></div>
+        <div class="info-item"><div class="info-item-label">Draw Day</div><div class="info-item-value">{day_name}</div></div>
+        <div class="info-item"><div class="info-item-label">Draw Number</div><div class="info-item-value">{draw_number or 'TBA'}</div></div>
+        <div class="info-item"><div class="info-item-label">Result Status</div><div class="info-item-value">{result_status}</div></div>
+        <div class="info-item"><div class="info-item-label">Draw Time</div><div class="info-item-value">3:00 PM IST</div></div>
+        <div class="info-item"><div class="info-item-label">Ticket Price</div><div class="info-item-value">{prizes['price']}</div></div>
+        <div class="info-item"><div class="info-item-label">1st Prize</div><div class="info-item-value">{first_prize_amount if has_result else prizes['1st']}</div></div>
+        <div class="info-item"><div class="info-item-label">Draw Venue</div><div class="info-item-value">Gorky Bhavan, Thiruvananthapuram</div></div>
+        <div class="info-item"><div class="info-item-label">Organizer</div><div class="info-item-value">Directorate of Kerala State Lotteries</div></div>
+        <div class="info-item"><div class="info-item-label">Month</div><div class="info-item-value">{month_name} {year}</div></div>
+        <div class="info-item"><div class="info-item-label">Claim Period</div><div class="info-item-value">30 Days</div></div>
+    </div>
+    
+    {schedule_section}
+    
+    <h2 class="section-title">How to Check {lottery_name} Result {date_str}</h2>
+    <div class="post-text">
+        <p>{dynamic_paragraphs[2]}</p>
+        <ol class="step-list">
+            <li>Visit this page after 3:00 PM IST on {date_str}</li>
+            <li>Find your ticket series letters (e.g., {lottery_code}A, {lottery_code}B, etc.)</li>
+            <li>Match the full 6-digit number with the winning numbers above</li>
+            <li>Check consolation and other prize tiers if main numbers don't match</li>
+            <li>For prize claim, visit the nearest Kerala Lottery agent with your winning ticket</li>
+        </ol>
+    </div>
+    
+    <h2 class="section-title">Kerala Lottery History & Information</h2>
+    <div class="post-text">
+        <p>{dynamic_paragraphs[3]}</p>
+        <p>{dynamic_paragraphs[4]}</p>
+    </div>
+    
+    <h2 class="section-title">{lottery_name} Draw Details & Statistics</h2>
+    <div class="post-text">
+        <p>{dynamic_paragraphs[5]}</p>
+        <p>{dynamic_paragraphs[6]}</p>
+    </div>
+    
+    <h2 class="section-title">Kerala Lottery Prize Claim Process</h2>
+    <div class="post-text">
+        <table class="claim-tbl">
+            <tr><th>Prize Range</th><th>Claim Location</th><th>Documents Required</th></tr>
+            <tr><td>Up to ₹5,000</td><td>Any Kerala Lottery Agent</td><td>Original ticket + ID proof</td></tr>
+            <tr><td>₹5,001 to ₹1,00,000</td><td>District Lottery Office</td><td>Original ticket + ID + Bank details</td></tr>
+            <tr><td>Above ₹1,00,000</td><td>Directorate, Thiruvananthapuram</td><td>Original ticket + ID + Bank details + Photographs</td></tr>
+        </table>
+        <p>Note: All prizes must be claimed within 30 days of the draw date. Prizes above ₹10,000 are subject to income tax deduction as per Government of India rules. The Kerala State Lotteries Directorate is located at Vikas Bhavan, Palayam, Thiruvananthapuram.</p>
+    </div>
+    
+    <div class="related-links">
+        <h3>Related Pages</h3>
+        <a href="/kerala-lottery-result" class="related-link">Kerala Lottery Result Today</a>
+        <a href="/" class="related-link">Satta King Home</a>
+        <a href="/chart" class="related-link">Result Chart</a>
+    </div>
+    """
+    
+    return {
+        'slug': slug,
+        'title': title,
+        'content': content,
+        'meta_description': meta_desc,
+        'meta_keywords': meta_keywords,
+        'lottery_name': actual_lottery_name,
+        'draw_number': draw_number,
+        'first_prize': first_prize,
+        'first_prize_amount': first_prize_amount if has_result else prizes['1st'],
+        'second_prize': second_prize,
+        'third_prize': third_prize,
+    }
+
+def create_kerala_lottery_post(post_date=None):
+    try:
+        if not post_date:
+            post_date = get_ist_now().date()
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM kerala_lottery_results WHERE draw_date = %s", (post_date,))
+        row = cur.fetchone()
+        
+        result_data = None
+        if row:
+            result_data = {
+                'lottery_name': row[2], 'draw_number': row[3],
+                'first_prize': row[4], 'first_prize_amount': row[5],
+                'second_prize': row[6], 'second_prize_amount': row[7],
+                'third_prize': row[8], 'third_prize_amount': row[9],
+                'consolation_prize': row[10], 'consolation_amount': row[11],
+                'fourth_prize': row[12], 'fifth_prize': row[13],
+                'sixth_prize': row[14], 'seventh_prize': row[15],
+                'eighth_prize': row[16], 'ninth_prize': row[17],
+            }
+        
+        post_data = generate_kerala_lottery_post_content(post_date, result_data)
+        
+        cur.execute("""
+            INSERT INTO kerala_lottery_posts 
+            (slug, title, content, lottery_name, draw_number, post_date, meta_description, meta_keywords,
+             first_prize, first_prize_amount, second_prize, third_prize)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (post_date) DO UPDATE SET
+            title = EXCLUDED.title, content = EXCLUDED.content, lottery_name = EXCLUDED.lottery_name,
+            draw_number = EXCLUDED.draw_number, meta_description = EXCLUDED.meta_description,
+            meta_keywords = EXCLUDED.meta_keywords, first_prize = EXCLUDED.first_prize,
+            first_prize_amount = EXCLUDED.first_prize_amount, second_prize = EXCLUDED.second_prize,
+            third_prize = EXCLUDED.third_prize, updated_at = CURRENT_TIMESTAMP
+        """, (post_data['slug'], post_data['title'], post_data['content'], post_data['lottery_name'],
+              post_data['draw_number'], post_date, post_data['meta_description'], post_data['meta_keywords'],
+              post_data['first_prize'], post_data['first_prize_amount'], post_data['second_prize'], post_data['third_prize']))
+        
+        cur.execute("UPDATE kerala_post_settings SET last_post_date = %s WHERE id = 1", (post_date,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"Kerala lottery post created/updated for {post_date}")
+        return {'success': True, 'slug': post_data['slug'], 'title': post_data['title']}
+    except Exception as e:
+        print(f"Error creating Kerala lottery post: {e}")
+        return {'success': False, 'error': str(e)}
+
+def auto_kerala_post_job():
+    try:
+        now = get_ist_now()
+        today = now.date()
+        result = create_kerala_lottery_post(today)
+        if result.get('success'):
+            print(f"[{now}] Kerala auto-post: Created/updated post for {today}")
+        else:
+            print(f"[{now}] Kerala auto-post: Failed - {result.get('error')}")
+    except Exception as e:
+        print(f"Kerala auto-post error: {e}")
+
+def get_kerala_post_settings():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT enabled, post_time, last_post_date FROM kerala_post_settings WHERE id = 1")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return {'enabled': row[0], 'post_time': row[1] or '15:45', 'last_post_date': str(row[2]) if row[2] else None}
+        return {'enabled': False, 'post_time': '15:45', 'last_post_date': None}
+    except:
+        return {'enabled': False, 'post_time': '15:45', 'last_post_date': None}
+
+def setup_kerala_post_scheduler():
+    try:
+        settings = get_kerala_post_settings()
+        try:
+            if scheduler.get_job('kerala_auto_post'):
+                scheduler.remove_job('kerala_auto_post')
+            if scheduler.get_job('kerala_auto_post_update'):
+                scheduler.remove_job('kerala_auto_post_update')
+        except:
+            pass
+        
+        if settings.get('enabled'):
+            post_time = settings.get('post_time', '15:45')
+            hour, minute = map(int, post_time.split(':'))
+            from apscheduler.triggers.cron import CronTrigger
+            scheduler.add_job(
+                auto_kerala_post_job,
+                CronTrigger(hour=hour, minute=minute, timezone=pytz.timezone('Asia/Kolkata')),
+                id='kerala_auto_post',
+                replace_existing=True
+            )
+            update_hour = hour + 1 if minute + 30 >= 60 else hour
+            update_minute = (minute + 30) % 60
+            scheduler.add_job(
+                auto_kerala_post_job,
+                CronTrigger(hour=update_hour, minute=update_minute, timezone=pytz.timezone('Asia/Kolkata')),
+                id='kerala_auto_post_update',
+                replace_existing=True
+            )
+            print(f"Kerala auto-post scheduled at {post_time} IST (update at {update_hour:02d}:{update_minute:02d})")
+    except Exception as e:
+        print(f"Error setting up Kerala post scheduler: {e}")
+
+@app.route('/api/kerala-lottery/post-settings', methods=['GET'])
+def api_get_kerala_post_settings():
+    return jsonify(get_kerala_post_settings())
+
+@app.route('/api/kerala-lottery/post-settings', methods=['POST'])
+def api_update_kerala_post_settings():
+    try:
+        data = request.json
+        enabled = data.get('enabled', False)
+        post_time = data.get('post_time', '15:45')
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE kerala_post_settings SET enabled = %s, post_time = %s WHERE id = 1", (enabled, post_time))
+        conn.commit()
+        cur.close()
+        conn.close()
+        setup_kerala_post_scheduler()
+        return jsonify({'success': True, 'message': f"Auto-post {'enabled at ' + post_time + ' IST' if enabled else 'disabled'}"})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/kerala-lottery/create-post', methods=['POST'])
+def api_create_kerala_post():
+    data = request.json or {}
+    date_str = data.get('date')
+    if date_str:
+        try:
+            post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except:
+            post_date = get_ist_now().date()
+    else:
+        post_date = get_ist_now().date()
+    result = create_kerala_lottery_post(post_date)
+    return jsonify(result)
+
+@app.route('/api/kerala-lottery/posts')
+def api_kerala_lottery_posts():
+    try:
+        limit = request.args.get('limit', 30, type=int)
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, slug, title, lottery_name, draw_number, post_date, first_prize, first_prize_amount, is_published, created_at
+            FROM kerala_lottery_posts ORDER BY post_date DESC LIMIT %s
+        """, (limit,))
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        posts = [{'id': r[0], 'slug': r[1], 'title': r[2], 'lottery_name': r[3], 'draw_number': r[4],
+                  'post_date': str(r[5]), 'first_prize': r[6], 'first_prize_amount': r[7],
+                  'is_published': r[8], 'created_at': str(r[9])} for r in rows]
+        return jsonify({'posts': posts})
+    except Exception as e:
+        return jsonify({'posts': [], 'error': str(e)})
+
+@app.route('/kerala-lottery-result-today/<slug>')
+def kerala_lottery_post_page(slug):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, slug, title, content, lottery_name, draw_number, post_date, 
+                   meta_description, meta_keywords, first_prize, first_prize_amount,
+                   second_prize, third_prize, is_published
+            FROM kerala_lottery_posts WHERE slug = %s AND is_published = true
+        """, (slug,))
+        post = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if not post:
+            return redirect('/', code=301)
+        
+        post_data = {
+            'id': post[0], 'slug': post[1], 'title': post[2], 'content': post[3],
+            'lottery_name': post[4], 'draw_number': post[5], 'post_date': post[6],
+            'meta_description': post[7], 'meta_keywords': post[8],
+            'first_prize': post[9], 'first_prize_amount': post[10],
+            'second_prize': post[11], 'third_prize': post[12]
+        }
+        
+        site_settings = get_site_settings()
+        ad_settings = get_ad_settings()
+        base_url = get_base_url()
+        date_str = post[6].strftime("%d %B %Y") if post[6] else ''
+        month_name = post[6].strftime("%B") if post[6] else ''
+        year = post[6].strftime("%Y") if post[6] else ''
+        
+        return render_template('kerala_lottery_post.html', 
+            post=post_data, site_settings=site_settings, ad_settings=ad_settings,
+            base_url=base_url, date_str=date_str, month_name=month_name, year=year)
+    except Exception as e:
+        return redirect('/', code=301)
 
 @app.route('/kerala-lottery-result')
 def kerala_lottery_page():
@@ -2305,6 +2933,7 @@ def view_post(slug):
 
 setup_daily_post_scheduler()
 setup_kerala_scrape_scheduler()
+setup_kerala_post_scheduler()
 
 def get_site_settings():
     try:
