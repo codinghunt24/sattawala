@@ -447,6 +447,7 @@
             <li><a href="#" onclick="showSection('ads')"><span class="nav-icon">📢</span> Ads</a></li>
             <li><a href="#" onclick="showSection('sitemap')"><span class="nav-icon">🗺️</span> Sitemap</a></li>
             <li><a href="#" onclick="showSection('history')"><span class="nav-icon">📊</span> History Import</a></li>
+            <li><a href="#" onclick="showSection('keralaLottery')"><span class="nav-icon">🎰</span> Kerala Lottery</a></li>
             <li><a href="#" onclick="showSection('settings')"><span class="nav-icon">⚙️</span> Settings</a></li>
             <li style="margin-top: 12px; border-top: 1px solid #21262d; padding-top: 12px;"><a href="/admin/logout" style="color: #f85149;"><span class="nav-icon">🔒</span> Logout</a></li>
         </ul>
@@ -1025,6 +1026,22 @@
         </div>
     </div>
         
+        <div id="keralaLotterySection" style="display: none;">
+            <div class="card">
+                <div class="card-title">Kerala Lottery Results Scraping</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">Scrape today's Kerala Lottery results from keralalottery.info and store date-wise</p>
+                <button class="btn btn-primary" onclick="scrapeKeralaLottery()" id="keralaScrapBtn">Scrape Today's Result</button>
+                <div id="keralaScrapeStatus" style="margin-top: 15px;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Stored Kerala Lottery Results</div>
+                <p style="color: #8b949e; margin-bottom: 15px; font-size: 13px;">All scraped results stored date-wise in database</p>
+                <button class="btn" onclick="loadKeralaResults()" style="margin-bottom: 15px; background: #238636; color: white;">Refresh Results</button>
+                <div id="keralaResultsContainer" style="max-height: 600px; overflow-y: auto;"></div>
+            </div>
+        </div>
+        
         <div id="indexingSection" style="display: none;">
             <div class="card">
                 <div class="card-title">Google Service Account</div>
@@ -1342,12 +1359,14 @@
             document.getElementById('historySection').style.display = section === 'history' ? 'block' : 'none';
             document.getElementById('settingsSection').style.display = section === 'settings' ? 'block' : 'none';
             document.getElementById('indexingSection').style.display = section === 'indexing' ? 'block' : 'none';
+            document.getElementById('keralaLotterySection').style.display = section === 'keralaLottery' ? 'block' : 'none';
             document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
             event.target.classList.add('active');
             if (window.innerWidth <= 768) toggleSidebar();
             if (section === 'posts') loadManualPosts();
             if (section === 'ads') loadAdSettings();
             if (section === 'sitemap') loadSitemapStats();
+            if (section === 'keralaLottery') loadKeralaResults();
             if (section === 'indexing') loadIndexingStatus();
         }
         
@@ -2417,6 +2436,62 @@
             }
             btn.disabled = false;
             btn.textContent = 'Auto Submit All URLs';
+        }
+
+        async function scrapeKeralaLottery() {
+            const btn = document.getElementById('keralaScrapBtn');
+            btn.disabled = true;
+            btn.textContent = 'Scraping...';
+            document.getElementById('keralaScrapeStatus').innerHTML = '<div class="loading">Fetching Kerala Lottery results from keralalottery.info...</div>';
+            try {
+                const res = await fetch('/api/kerala-lottery/scrape', {method: 'POST'});
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('keralaScrapeStatus').innerHTML = '<div class="status-msg status-success">Result scraped! Date: ' + data.date + ' | Lottery: ' + data.lottery_name + ' | 1st Prize: ' + data.first_prize + ' (' + data.first_prize_amount + ')</div>';
+                    loadKeralaResults();
+                } else {
+                    document.getElementById('keralaScrapeStatus').innerHTML = '<div class="status-msg status-error">' + (data.error || 'Scraping failed') + '</div>';
+                }
+            } catch(e) {
+                document.getElementById('keralaScrapeStatus').innerHTML = '<div class="status-msg status-error">Error: ' + e.message + '</div>';
+            }
+            btn.disabled = false;
+            btn.textContent = "Scrape Today's Result";
+        }
+
+        async function loadKeralaResults() {
+            try {
+                const res = await fetch('/api/kerala-lottery/results?limit=30');
+                const data = await res.json();
+                const container = document.getElementById('keralaResultsContainer');
+                if (!data.results || data.results.length === 0) {
+                    container.innerHTML = '<p style="color: #8b949e;">No results scraped yet. Click "Scrape Today\'s Result" to fetch.</p>';
+                    return;
+                }
+                let html = '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
+                html += '<thead><tr style="background: rgba(0,0,0,0.3); color: #58a6ff;">';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Date</th>';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Lottery</th>';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">1st Prize</th>';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">Amount</th>';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">2nd Prize</th>';
+                html += '<th style="padding: 10px; text-align: left; border-bottom: 1px solid #30363d;">3rd Prize</th>';
+                html += '</tr></thead><tbody>';
+                data.results.forEach(r => {
+                    html += '<tr style="border-bottom: 1px solid #21262d;">';
+                    html += '<td style="padding: 8px 10px; color: #e6edf3;">' + r.draw_date + '</td>';
+                    html += '<td style="padding: 8px 10px; color: #58a6ff; font-weight: 600;">' + (r.lottery_name || '-') + '</td>';
+                    html += '<td style="padding: 8px 10px; color: #2ecc71; font-weight: 700;">' + (r.first_prize || '-') + '</td>';
+                    html += '<td style="padding: 8px 10px; color: #f0c040;">' + (r.first_prize_amount || '-') + '</td>';
+                    html += '<td style="padding: 8px 10px; color: #e6edf3;">' + (r.second_prize || '-') + '</td>';
+                    html += '<td style="padding: 8px 10px; color: #e6edf3;">' + (r.third_prize || '-') + '</td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch(e) {
+                document.getElementById('keralaResultsContainer').innerHTML = '<p style="color: #e74c3c;">Error loading results</p>';
+            }
         }
 
         loadGames();

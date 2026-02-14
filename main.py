@@ -463,69 +463,65 @@ def scrape_kerala_lottery_results():
         eighth_prizes = ""
         ninth_prizes = ""
         
-        h3_tags = soup.find_all('h3')
-        for h3 in h3_tags:
-            text = h3.get_text().strip()
+        all_prize_tags = soup.find_all(['h3', 'h4'])
+        for tag in all_prize_tags:
+            text = tag.get_text().strip()
             if '1st Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 if amount_match:
                     first_prize_amount = amount_match.group()
-                next_el = h3.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     first_prize = next_el.get_text().strip()
             elif '2nd Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 if amount_match:
                     second_prize_amount = amount_match.group()
-                next_el = h3.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     second_prize = next_el.get_text().strip()
             elif '3rd Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 if amount_match:
                     third_prize_amount = amount_match.group()
-                next_el = h3.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     third_prize = next_el.get_text().strip()
-        
-        h4_tags = soup.find_all('h4')
-        for h4 in h4_tags:
-            text = h4.get_text().strip()
-            if 'Consolation' in text:
+            elif 'Consolation' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
                 if amount_match:
                     consolation_amount = amount_match.group()
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     consolation_prizes = next_el.get_text().strip()
             elif '4th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     fourth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
             elif '5th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     fifth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
             elif '6th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     sixth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
             elif '7th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     seventh_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
             elif '8th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     eighth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
             elif '9th Prize' in text:
                 amount_match = re.search(r'₹[\d,]+', text)
-                next_el = h4.find_next_sibling()
+                next_el = tag.find_next_sibling()
                 if next_el:
                     ninth_prizes = (amount_match.group() + " | " if amount_match else "") + next_el.get_text().strip()
         
