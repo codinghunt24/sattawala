@@ -1788,6 +1788,26 @@ def view_post(slug):
         conn.close()
         
         if not row:
+            import re
+            old_format = re.match(r'^(.+)-result-(\d{1,2})-(\d{2})-(\d{4})$', slug)
+            if old_format:
+                game_part = old_format.group(1)
+                day = old_format.group(2)
+                month_num = int(old_format.group(3))
+                year = old_format.group(4)
+                month_names = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',
+                               7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'}
+                month_name = month_names.get(month_num, '')
+                if month_name:
+                    new_slug = f"{game_part}-result-{day}-{month_name}-{year}"
+                    conn2 = get_db_connection()
+                    cur2 = conn2.cursor()
+                    cur2.execute("SELECT slug FROM daily_posts WHERE slug = %s AND is_published = true", (new_slug,))
+                    exists = cur2.fetchone()
+                    cur2.close()
+                    conn2.close()
+                    if exists:
+                        return redirect(f'/{new_slug}', code=301)
             return "Post not found", 404
         
         post = {
