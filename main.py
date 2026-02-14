@@ -290,6 +290,24 @@ ALLOWED_QUERY_PARAMS = {'page', 'game', 'month', 'year'}
 def block_spam_query_params():
     if request.path.startswith('/_stcore/'):
         return ('', 404)
+    
+    allowed_txt_files = ['/robots.txt', '/ads.txt']
+    if request.path in allowed_txt_files:
+        pass
+    else:
+        blocked_extensions = ('.py', '.py.backup', '.md', '.toml', '.lock', '.gz', '.sh', '.cfg', '.ini', '.log', '.env', '.git')
+        if any(request.path.endswith(ext) for ext in blocked_extensions):
+            return ('', 404)
+    
+    blocked_paths = ['/venv/', '/.git/', '/.cache/', '/.local/', '/.streamlit/', 
+                     '/.pythonlibs/', '/.upm/', '/attached_assets/', '/templates/',
+                     '/__pycache__/']
+    if any(request.path.startswith(bp) for bp in blocked_paths):
+        return ('', 404)
+    
+    if request.path.startswith('/category/'):
+        return ('', 410)
+    
     if request.path.startswith('/api/') or request.path.startswith('/admin'):
         return None
     unknown_params = set(request.args.keys()) - ALLOWED_QUERY_PARAMS
@@ -2229,13 +2247,40 @@ def robots_txt():
     base_url = request.host_url.rstrip('/').replace('http://', 'https://')
     content = f"""User-agent: *
 Allow: /
+Allow: /chart
+Allow: /daily-update
+Allow: /latest
+Allow: /privacy-policy
+Allow: /about
+Allow: /contact
+Allow: /disclaimer
+Allow: /robots.txt
+Allow: /ads.txt
+Allow: /sitemap.xml
+Allow: /sitemap-*.xml
+
 Disallow: /admin
 Disallow: /admin/
 Disallow: /api/
+Disallow: /download-project
+Disallow: /*.py$
+Disallow: /*.py.backup$
+Disallow: /*.md$
+Disallow: /*.toml$
+Disallow: /*.lock$
+Disallow: /*.sh$
+Disallow: /*.env$
+Disallow: /venv/
+Disallow: /.git/
+Disallow: /.cache/
+Disallow: /.local/
+Disallow: /.streamlit/
+Disallow: /.pythonlibs/
+Disallow: /.upm/
+Disallow: /attached_assets/
+Disallow: /templates/
 Disallow: /*?o=
 Disallow: /*&o=
-
-Clean-param: o /
 
 Sitemap: {base_url}/sitemap.xml
 """
@@ -2660,10 +2705,17 @@ def api_save_redirect_settings():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    settings = get_site_settings()
-    if settings.get('redirect_404_enabled', True):
-        redirect_url = settings.get('redirect_404_url', '/')
-        return redirect(redirect_url)
+    if request.path.endswith(('.py', '.py.backup', '.md', '.toml', '.lock', '.gz', '.sh', '.cfg', '.ini', '.log')):
+        return '', 410
+    
+    old_paths = ['/category/', '/post/samsung', '/post/nokia', '/post/realme', '/post/vivo', 
+                 '/post/oppo', '/post/xiaomi', '/post/iphone', '/post/oneplus', '/post/motorola',
+                 '/post/redmi', '/post/poco', '/post/tecno', '/post/infinix', '/post/iqoo',
+                 '/post/nothing', '/post/google-pixel', '/post/honor', '/post/lava', '/post/micromax']
+    for old_path in old_paths:
+        if request.path.startswith(old_path):
+            return '', 410
+    
     return "Page Not Found", 404
 
 @app.route('/download-project')
