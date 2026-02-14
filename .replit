@@ -1,7 +1,7 @@
-modules = ["web", "python-3.11", "postgresql-16"]
+modules = ["web", "python-3.11", "bash", "postgresql-16"]
 [deployment]
 deploymentTarget = "autoscale"
-run = ["streamlit", "run", "app.py", "--server.port", "5000"]
+run = ["python", "app.py"]
 
 [nix]
 channel = "stable-25_05"
@@ -22,13 +22,13 @@ args = "Start Website"
 name = "Start Website"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "streamlit run app.py --server.port 5000"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python app.py"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
