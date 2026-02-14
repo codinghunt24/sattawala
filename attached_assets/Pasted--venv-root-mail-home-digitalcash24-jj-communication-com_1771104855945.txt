@@ -1,0 +1,21 @@
+(venv) root@mail:/home/digitalcash24/jj-communication.com# gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+(venv) root@mail:/home/digitalcash24/jj-communication.com# curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8002/
+200(venv) root@mail:/home/digitalcash24/jj-communication.com# pkill -f "gunicorn.*main:app"
+(venv) root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep gunicorn
+root      173811  0.1  0.9 312412 75632 ?        Sl   Feb10   7:05 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app --daemon
+root     1619279  0.9  0.7 314204 58352 ?        S    Feb12  32:47 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app --daemon
+root     3762238  0.9  0.2  27584 19624 ?        Ss   22:33   0:00 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     3762240  8.4  1.1 197600 92348 ?        Sl   22:33   0:00 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     3762241  8.5  1.1 197600 92348 ?        Sl   22:33   0:00 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root     3762242  8.3  1.1 197600 92348 ?        Sl   22:33   0:00 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+digital+ 3762272  1.2  0.2  27592 19728 ?        Ss   22:33   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+ 3762285  8.2  0.8 170528 65932 ?        Sl   22:33   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+ 3762286  9.8  0.8 170524 65932 ?        Sl   22:33   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+ 3762287  9.0  0.8 170520 65928 ?        Sl   22:33   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+root     3762355  0.0  0.0   8160  2512 pts/1    S+   22:33   0:00 grep --color=auto gunicorn
+(venv) root@mail:/home/digitalcash24/jj-communication.com# cd /home/digitalcash24/jj-communication.com
+(venv) root@mail:/home/digitalcash24/jj-communication.com# source venv/bin/activate
+(venv) root@mail:/home/digitalcash24/jj-communication.com# set -a; source .env; set +a
+(venv) root@mail:/home/digitalcash24/jj-communication.com# gunicorn --bind 127.0.0.1:8002 --workers 3 --daemon main:app
+(venv) root@mail:/home/digitalcash24/jj-communication.com# curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8002/super-king-result-27-01-2026
+200(venv) root@mail:/home/digitalcash24/jj-communication.com# 
