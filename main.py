@@ -318,6 +318,27 @@ def block_spam_query_params():
     if request.path.startswith('/category/'):
         return ('', 410)
     
+    old_redirect_map = {
+        '/index': '/',
+        '/index.php': '/',
+        '/index.html': '/',
+        '/home': '/',
+        '/home/': '/',
+        '/about-us': '/about',
+        '/contact-us': '/contact',
+    }
+    clean_path = request.path.rstrip('/')
+    if clean_path in old_redirect_map:
+        return redirect(old_redirect_map[clean_path], code=301)
+    
+    gone_paths = ['/shop/', '/product', '/f/', '/wp-', '/wp/', 
+                  '/index.php/', '/xmlrpc', '/feed']
+    if any(request.path.startswith(gp) for gp in gone_paths):
+        return ('', 410)
+    
+    if request.path.endswith(('.php', '.asp', '.aspx', '.jsp')):
+        return ('', 410)
+    
     if request.path.startswith('/api/') or request.path.startswith('/admin'):
         return None
     
