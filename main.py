@@ -1808,7 +1808,7 @@ def view_post(slug):
                     conn2.close()
                     if exists:
                         return redirect(f'/{new_slug}', code=301)
-            return "Post not found", 404
+            return redirect('/', code=301)
         
         post = {
             'id': row[0],
