@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set active_nav = 'kerala' %}
 
 {% block head %}
 <title>{{ post.title }} | {{ post.lottery_name }} Live Result</title>
@@ -113,20 +114,6 @@
 
 {% block styles %}
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #f4f6f9; color: #222; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
-    .main-wrapper { max-width: 900px; margin: 0 auto; padding: 0 20px; }
-    @media (max-width: 768px) { .main-wrapper { padding: 0 12px; } }
-    .nav-bar { background: #1a1a2e; padding: 12px 0; text-align: center; border-bottom: 3px solid #e2b339; }
-    .nav-menu-inner {
-        max-width: 1200px; margin: 0 auto;
-        display: flex; justify-content: center; gap: 4px; flex-wrap: nowrap;
-        overflow-x: auto; -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; -ms-overflow-style: none; white-space: nowrap; padding: 0 10px;
-    }
-    .nav-menu-inner::-webkit-scrollbar { display: none; }
-    .nav-item { color: #e6edf3; text-decoration: none; padding: 7px 16px; font-size: 14px; border-radius: 20px; transition: all 0.3s; }
-    .nav-item:hover, .nav-item.active { background: #30363d; color: #e2b339; }
     .breadcrumb { padding: 12px 0; font-size: 13px; color: #666; }
     .breadcrumb a { color: #0066cc; text-decoration: none; }
     .breadcrumb a:hover { text-decoration: underline; }
@@ -153,8 +140,11 @@
     .consolation-numbers { color: #333; font-size: 12px; word-break: break-all; line-height: 1.6; }
     .detailed-prizes { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 25px; border: 1px solid #e0e0e0; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
     .detailed-prizes h3 { color: #b8860b; font-size: 16px; margin-bottom: 15px; }
-    .prize-detail { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 12px; color: #333; word-break: break-all; line-height: 1.5; }
-    .prize-detail strong { color: #c0392b; }
+    .prize-detail { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px; color: #333; line-height: 1.6; }
+    .prize-detail strong { color: #c0392b; font-size: 14px; display: block; margin-bottom: 6px; }
+    .prize-amount-tag { display: inline-block; background: #1a5276; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+    .num-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .num-chip { display: inline-block; background: #f0f4f8; border: 1px solid #d0d8e0; color: #1a1a2e; padding: 4px 10px; border-radius: 5px; font-size: 13px; font-weight: 600; font-family: 'Courier New', monospace; letter-spacing: 1px; }
     .section-title { font-size: 18px; font-weight: 700; color: #1a5276; margin: 25px 0 12px; padding-bottom: 8px; border-bottom: 2px solid #2980b9; }
     .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 25px; }
     .info-item { background: #fff; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0e0e0; }
@@ -176,36 +166,14 @@
     .related-links h3 { color: #1a5276; font-size: 16px; margin-bottom: 10px; }
     .related-link { display: inline-block; padding: 6px 14px; background: #eaf4fd; color: #0066cc; border-radius: 6px; text-decoration: none; margin: 4px; font-size: 13px; border: 1px solid #d0e3f5; }
     .related-link:hover { background: #d0e3f5; }
-    .prize-detail { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px; color: #333; line-height: 1.6; }
-    .prize-detail strong { color: #c0392b; font-size: 14px; display: block; margin-bottom: 6px; }
-    .prize-amount-tag { display: inline-block; background: #1a5276; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
-    .num-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-    .num-chip { display: inline-block; background: #f0f4f8; border: 1px solid #d0d8e0; color: #1a1a2e; padding: 4px 10px; border-radius: 5px; font-size: 13px; font-weight: 600; font-family: 'Courier New', monospace; letter-spacing: 1px; }
     @media (max-width: 480px) {
         .post-main-title { font-size: 18px; }
-        .nav-item { padding: 5px 10px; font-size: 12px; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-    <div class="nav-bar">
-        <div class="nav-menu-inner">
-            <a href="/" class="nav-item">Home</a>
-            <a href="/chart" class="nav-item">Chart</a>
-            <a href="/daily-update" class="nav-item">Daily Update</a>
-            <a href="/latest" class="nav-item">Latest</a>
-            <a href="/kerala-lottery-result" class="nav-item active">Kerala Lottery</a>
-            <a href="/lottery-sambad" class="nav-item">Lottery Sambad</a>
-            <a href="/daily-result" class="nav-item">Daily Result</a>
-        </div>
-    </div>
-
-    {% if ad_settings and ad_settings.ad_after_header %}
-    <div style="text-align: center; padding: 10px;">{{ ad_settings.ad_after_header | safe }}</div>
-    {% endif %}
-
-    <div class="main-wrapper">
+    <div class="page-wrapper">
         <div class="breadcrumb">
             <a href="/">Home</a> &raquo; <a href="/kerala-lottery-result">Kerala Lottery</a> &raquo; {{ post.title }}
         </div>
