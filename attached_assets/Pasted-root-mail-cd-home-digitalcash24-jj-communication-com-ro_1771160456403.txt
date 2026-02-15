@@ -1,0 +1,154 @@
+root@mail:~# cd /home/digitalcash24/jj-communication.com
+root@mail:/home/digitalcash24/jj-communication.com# pkill -f gunicorn
+root@mail:/home/digitalcash24/jj-communication.com# gunicorn --bind 0.0.0.0:5000 --workers 2 --daemon main:app
+root@mail:/home/digitalcash24/jj-communication.com# cd /home/digitalcash24/jj-communication.com
+root@mail:/home/digitalcash24/jj-communication.com# pip install flask gunicorn psycopg2 requests beautifulsoup4
+Requirement already satisfied: flask in /usr/local/lib/python3.8/dist-packages (3.0.3)
+Requirement already satisfied: gunicorn in /usr/local/lib/python3.8/dist-packages (23.0.0)
+Collecting psycopg2
+  Downloading psycopg2-2.9.10.tar.gz (385 kB)
+     |████████████████████████████████| 385 kB 17.0 MB/s 
+Requirement already satisfied: requests in /usr/lib/python3/dist-packages (2.22.0)
+Requirement already satisfied: beautifulsoup4 in /usr/local/lib/python3.8/dist-packages (4.14.3)
+Requirement already satisfied: Werkzeug>=3.0.0 in /usr/local/lib/python3.8/dist-packages (from flask) (3.0.6)
+Requirement already satisfied: blinker>=1.6.2 in /usr/local/lib/python3.8/dist-packages (from flask) (1.8.2)
+Requirement already satisfied: Jinja2>=3.1.2 in /usr/local/lib/python3.8/dist-packages (from flask) (3.1.6)
+Requirement already satisfied: importlib-metadata>=3.6.0; python_version < "3.10" in /usr/local/lib/python3.8/dist-packages (from flask) (8.5.0)
+Requirement already satisfied: itsdangerous>=2.1.2 in /usr/local/lib/python3.8/dist-packages (from flask) (2.2.0)
+Requirement already satisfied: click>=8.1.3 in /usr/local/lib/python3.8/dist-packages (from flask) (8.1.8)
+Requirement already satisfied: packaging in /usr/lib/python3/dist-packages (from gunicorn) (20.3)
+Requirement already satisfied: typing-extensions>=4.0.0 in /usr/local/lib/python3.8/dist-packages (from beautifulsoup4) (4.13.2)
+Requirement already satisfied: soupsieve>=1.6.1 in /usr/local/lib/python3.8/dist-packages (from beautifulsoup4) (2.7)
+Requirement already satisfied: MarkupSafe>=2.1.1 in /usr/local/lib/python3.8/dist-packages (from Werkzeug>=3.0.0->flask) (2.1.5)
+Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.8/dist-packages (from importlib-metadata>=3.6.0; python_version < "3.10"->flask) (3.20.2)
+Building wheels for collected packages: psycopg2
+  Building wheel for psycopg2 (setup.py) ... error
+  ERROR: Command errored out with exit status 1:
+   command: /usr/bin/python3 -u -c 'import sys, setuptools, tokenize; sys.argv[0] = '"'"'/tmp/pip-install-7lzoor86/psycopg2/setup.py'"'"'; __file__='"'"'/tmp/pip-install-7lzoor86/psycopg2/setup.py'"'"';f=getattr(tokenize, '"'"'open'"'"', open)(__file__);code=f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();exec(compile(code, __file__, '"'"'exec'"'"'))' bdist_wheel -d /tmp/pip-wheel-9dipdksr
+       cwd: /tmp/pip-install-7lzoor86/psycopg2/
+  Complete output (38 lines):
+  running bdist_wheel
+  running build
+  running build_py
+  creating build
+  creating build/lib.linux-x86_64-3.8
+  creating build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/_json.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/extensions.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/errorcodes.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/errors.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/sql.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/_ipaddress.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/tz.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/extras.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/__init__.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/_range.py -> build/lib.linux-x86_64-3.8/psycopg2
+  copying lib/pool.py -> build/lib.linux-x86_64-3.8/psycopg2
+  running build_ext
+  building 'psycopg2._psycopg' extension
+  creating build/temp.linux-x86_64-3.8
+  creating build/temp.linux-x86_64-3.8/psycopg
+  x86_64-linux-gnu-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -g -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -DPSYCOPG_VERSION=2.9.10 (dt dec pq3 ext lo64) -DPSYCOPG_DEBUG=1 -DPG_VERSION_NUM=120022 -DHAVE_LO64=1 -DPSYCOPG_DEBUG=1 -I/usr/include/python3.8 -I. -I/usr/include/postgresql -I/usr/include/postgresql/12/server -I/usr/include/libxml2 -I/usr/include/mit-krb5 -c psycopg/psycopgmodule.c -o build/temp.linux-x86_64-3.8/psycopg/psycopgmodule.o -Wdeclaration-after-statement
+  In file included from psycopg/psycopgmodule.c:28:
+  ./psycopg/psycopg.h:36:10: fatal error: libpq-fe.h: No such file or directory
+     36 | #include <libpq-fe.h>
+        |          ^~~~~~~~~~~~
+  compilation terminated.
+  
+  It appears you are missing some prerequisite to build the package from source.
+  
+  You may install a binary package by installing 'psycopg2-binary' from PyPI.
+  If you want to install psycopg2 from source, please install the packages
+  required for the build and try again.
+  
+  For further information please check the 'doc/src/install.rst' file (also at
+  <https://www.psycopg.org/docs/install.html>).
+  
+  error: command 'x86_64-linux-gnu-gcc' failed with exit status 1
+  ----------------------------------------
+  ERROR: Failed building wheel for psycopg2
+  Running setup.py clean for psycopg2
+Failed to build psycopg2
+Installing collected packages: psycopg2
+    Running setup.py install for psycopg2 ... error
+    ERROR: Command errored out with exit status 1:
+     command: /usr/bin/python3 -u -c 'import sys, setuptools, tokenize; sys.argv[0] = '"'"'/tmp/pip-install-7lzoor86/psycopg2/setup.py'"'"'; __file__='"'"'/tmp/pip-install-7lzoor86/psycopg2/setup.py'"'"';f=getattr(tokenize, '"'"'open'"'"', open)(__file__);code=f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();exec(compile(code, __file__, '"'"'exec'"'"'))' install --record /tmp/pip-record-61grvnnr/install-record.txt --single-version-externally-managed --compile --install-headers /usr/local/include/python3.8/psycopg2
+         cwd: /tmp/pip-install-7lzoor86/psycopg2/
+    Complete output (38 lines):
+    running install
+    running build
+    running build_py
+    creating build
+    creating build/lib.linux-x86_64-3.8
+    creating build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/_json.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/extensions.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/errorcodes.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/errors.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/sql.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/_ipaddress.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/tz.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/extras.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/__init__.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/_range.py -> build/lib.linux-x86_64-3.8/psycopg2
+    copying lib/pool.py -> build/lib.linux-x86_64-3.8/psycopg2
+    running build_ext
+    building 'psycopg2._psycopg' extension
+    creating build/temp.linux-x86_64-3.8
+    creating build/temp.linux-x86_64-3.8/psycopg
+    x86_64-linux-gnu-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -g -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -DPSYCOPG_VERSION=2.9.10 (dt dec pq3 ext lo64) -DPSYCOPG_DEBUG=1 -DPG_VERSION_NUM=120022 -DHAVE_LO64=1 -DPSYCOPG_DEBUG=1 -I/usr/include/python3.8 -I. -I/usr/include/postgresql -I/usr/include/postgresql/12/server -I/usr/include/libxml2 -I/usr/include/mit-krb5 -c psycopg/psycopgmodule.c -o build/temp.linux-x86_64-3.8/psycopg/psycopgmodule.o -Wdeclaration-after-statement
+    In file included from psycopg/psycopgmodule.c:28:
+    ./psycopg/psycopg.h:36:10: fatal error: libpq-fe.h: No such file or directory
+       36 | #include <libpq-fe.h>
+          |          ^~~~~~~~~~~~
+    compilation terminated.
+    
+    It appears you are missing some prerequisite to build the package from source.
+    
+    You may install a binary package by installing 'psycopg2-binary' from PyPI.
+    If you want to install psycopg2 from source, please install the packages
+    required for the build and try again.
+    
+    For further information please check the 'doc/src/install.rst' file (also at
+    <https://www.psycopg.org/docs/install.html>).
+    
+    error: command 'x86_64-linux-gnu-gcc' failed with exit status 1
+    ----------------------------------------
+ERROR: Command errored out with exit status 1: /usr/bin/python3 -u -c 'import sys, setuptools, tokenize; sys.argv[0] = '"'"'/tmp/pip-install-7lzoor86/psycopg2/setup.py'"'"'; __file__='"'"'/tmp/pip-install-7lzoor86/psycopg2/setup.py'"'"';f=getattr(tokenize, '"'"'open'"'"', open)(__file__);code=f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();exec(compile(code, __file__, '"'"'exec'"'"'))' install --record /tmp/pip-record-61grvnnr/install-record.txt --single-version-externally-managed --compile --install-headers /usr/local/include/python3.8/psycopg2 Check the logs for full command output.
+root@mail:/home/digitalcash24/jj-communication.com# pkill -f python
+root@mail:/home/digitalcash24/jj-communication.com# python app.py &
+[1] 99766
+root@mail:/home/digitalcash24/jj-communication.com# 
+Command 'python' not found, did you mean:
+
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3
+
+^C
+[1]+  Exit 127                python app.py
+root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep python
+root       99731  0.1  0.2  27584 19484 ?        Ss   13:59   0:00 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root       99733  1.6  1.1 271372 94612 ?        Sl   13:59   0:01 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root       99734  1.6  1.1 271376 94612 ?        Sl   13:59   0:01 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root       99735  2.0  1.1 271372 94612 ?        Sl   13:59   0:01 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+digital+   99768  0.1  0.2  27592 19480 ?        Ss   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+root       99769  0.7  0.6 235328 55340 ?        Ssl  13:59   0:00 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app
+digital+   99771  0.9  0.8 170528 65688 ?        Sl   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+   99773  0.8  0.8 170528 65760 ?        Sl   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+   99774  0.8  0.8 170528 65680 ?        Sl   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+root       99777  0.5  0.5 164328 46468 ?        S    13:59   0:00 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app
+root      100089  1.3  0.2  31888 24168 ?        Ss   14:00   0:00 /usr/bin/python3 /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+root      100220  0.0  0.0   8160  2620 pts/1    S+   14:00   0:00 grep --color=auto python
+root@mail:/home/digitalcash24/jj-communication.com# ps aux | grep gunicorn
+root       99731  0.1  0.2  27584 19484 ?        Ss   13:59   0:00 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root       99733  1.5  1.1 271372 94612 ?        Sl   13:59   0:01 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root       99734  1.6  1.1 271376 94612 ?        Sl   13:59   0:01 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+root       99735  1.9  1.1 271372 94612 ?        Sl   13:59   0:01 /home/digitalcash24/cricbuzz-live-score.com/venv/bin/python3 /home/digitalcash24/cricbuzz-live-score.com/venv/bingunicorn --workers 3 --bind 127.0.0.1:8000 --timeout 300 main:app
+digital+   99768  0.1  0.2  27592 19480 ?        Ss   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+root       99769  0.7  0.6 235328 55340 ?        Ssl  13:59   0:00 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app
+digital+   99771  0.8  0.8 170528 65688 ?        Sl   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+   99773  0.8  0.8 170528 65760 ?        Sl   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+digital+   99774  0.8  0.8 170528 65680 ?        Sl   13:59   0:00 /home/digitalcash24/sarkariresult.com.kg/venv/bin/python3 /home/digitalcash24/sarkariresult.com.kg/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8004 --reuse-port --timeout 120 main:app
+root       99777  0.4  0.5 164328 46468 ?        S    13:59   0:00 /home/digitalcash24/sattaking.com.im/venv/bin/python3 /home/digitalcash24/sattaking.com.im/venv/bin/gunicorn --bind 0.0.0.0:8001 --workers 1 --preload app:app
+root      100233  0.0  0.0   8160  2532 pts/1    S+   14:00   0:00 grep --color=auto gunicorn
+root@mail:/home/digitalcash24/jj-communication.com# 
